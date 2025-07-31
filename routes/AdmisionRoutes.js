@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const AdmisionController = require("../controllers/AdmisionController");
+const EmergenciaController = require("../controllers/EmergenciaController");
 const { validarAdmision } = require("../middlewares/admisionValidator");
 const { validationResult } = require("express-validator");
 
@@ -26,7 +27,7 @@ router.post(
 );
 
 // Creamos una admision y luego asignamos una habitacion
-router.post("/registrarEmergencia", AdmisionController.registrarYAsignar);
+router.post("/registrarEmergencia", EmergenciaController.registrarYAsignarEmergencia);
 
 // Cancelar una admision - Cambiar el estado del estado booleano a false
 router.patch("/cancelarAdmision/:id", AdmisionController.darDeBajaAdmision);

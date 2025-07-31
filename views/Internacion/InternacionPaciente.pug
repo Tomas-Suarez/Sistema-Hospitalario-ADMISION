@@ -27,18 +27,17 @@ block content
       tbody
         each admision in admisiones
           tr
-            td= admision.Paciente.documento
-            td= admision.Paciente.nombre
-            td= admision.Paciente.apellido
-            td= admision.TipoIngreso.descripcion
-            td= admision.MotivoAdmision.descripcion
+            td= admision.paciente.documento
+            td= admision.paciente.nombre
+            td= admision.paciente.apellido
+            td= admision.tipo_ingreso
+            td= admision.motivo
             td= new Date(admision.fecha_entrada).toLocaleDateString('es-AR')
             td
-              // Botón para registrar internación
               button.btn-abrir-internacion(
                 type="button",
                 data-id=admision.id_admision,
-                data-idPaciente=admision.Paciente.id_paciente
+                data-idPaciente=admision.paciente.id_paciente
               )
                 span.editar-boton
                   img.icono-info(src="/img/icon-crearPaciente.png", alt="Registrar internacion")

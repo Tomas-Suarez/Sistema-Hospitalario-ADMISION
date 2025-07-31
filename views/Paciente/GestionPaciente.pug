@@ -14,11 +14,6 @@ block scripts
 block content
   .contenido-paciente
 
-    if errorDniExistente
-      .notificacion-flotante
-        span No se pudo guardar el paciente: ya existe alguien con ese DNI.
-        button(type="button", class="cerrar-notificacion", onclick="this.parentElement.style.display='none'") ×
-
     h1 Lista de Pacientes
     button#btn-abrir-crearPaciente.btn-crearPaciente(type="button")
       span.editar-boton

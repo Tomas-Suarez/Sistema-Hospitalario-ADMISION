@@ -4,7 +4,7 @@ const path = require('path');
 const methodOverride = require('method-override');
 require('./models/Asociaciones'); //Importa y ejecuta todas las asociaciones de los models - SEQUELIZE
 const logging = require('./middlewares/logging');
-const error404 = require('./middlewares/404notFound');
+const GlobalErrorHandler = require("./middlewares/GlobalErrorHandler")
 const app = express();
 
 // Importar las rutas
@@ -51,8 +51,16 @@ app.get('/', (req, res) =>{
     res.render('Principal');
 })
 
-//Middleware para renderizar cuando ocurre un error 404 (Osea cuando no se encuentra la ruta)
-app.use(error404);
+//Middleware para renderizar cuando ocurre un error
+app.use((req, res, next) => {
+  res.status(404).render("error", {
+    status: 404,
+    message: "Página no encontrada",
+  });
+});
+
+// Middleware global de errores
+app.use(GlobalErrorHandler);
 
 // Sincronización de la Base de datos antes de iniciar el servidor
 syncDatabase().then(() => {
