@@ -25,12 +25,12 @@ block content
       tbody
         each internacion in internaciones
           tr
-            td= internacion.Admision.Paciente.documento
-            td= internacion.Admision.Paciente.nombre
-            td= internacion.Admision.Paciente.apellido
-            td= internacion.Cama.Habitacion.Ala.nombre
-            td= internacion.Cama.Habitacion.numero
-            td= internacion.Cama.numero
+            td= internacion.admision.paciente.documento
+            td= internacion.admision.paciente.nombre
+            td= internacion.admision.paciente.apellido
+            td= internacion.cama.habitacion.nombre_ala
+            td= internacion.cama.habitacion.numero
+            td= internacion.cama.numero
             td
               button.btn-dar-alta-hospitalaria(
                 type="button",
