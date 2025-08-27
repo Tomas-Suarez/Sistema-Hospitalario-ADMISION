@@ -50,7 +50,7 @@ const getAsignacionesActuales = async () => {
       }
     ]
   });
-
+  
   return asignaciones.map(AsignacionDormitorioMapper.toDto);
 };
 

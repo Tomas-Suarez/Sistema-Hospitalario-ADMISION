@@ -1,9 +1,9 @@
-class CreationFailedException extends Error{
-    constructor(message){
-        super(message);
-        this.name = "CreationFailedException";
-        this.status = 400;
-    }
+const CustomException = require("./CustomException");
+
+class CreationFailedException extends CustomException{
+  constructor(message) {
+    super("CreationFailedException", message, 400);
+  }
 }
 
 

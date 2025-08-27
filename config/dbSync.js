@@ -22,6 +22,8 @@ require("../models/AlaModels");
 require("../models/GuardiaModels");
 require("../models/AltaHospitalariaModels");
 require("../models/MotivoAltaModels");
+require("../models/RolModels");
+require("../models/UsuarioModels");
 
 async function syncDatabase() {
   try {

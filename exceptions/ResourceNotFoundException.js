@@ -1,9 +1,9 @@
-class ResourceNotFoundException extends Error{
-    constructor(message){
-        super(message);
-        this.name = "ResourceNotFoundException";
-        this.status = 404;
-    }
+const CustomException = require("./CustomException");
+
+class ResourceNotFoundException extends CustomException{
+  constructor(message) {
+    super("ResourceNotFoundException", message, 404);
+  }
 }
 
 

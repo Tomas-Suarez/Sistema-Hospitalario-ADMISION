@@ -1,9 +1,9 @@
-class InactivePatientException extends Error{
-    constructor(message){
-        super(message);
-        this.name = "InactivePatientException";
-        this.status = 409;
-    }
+const CustomException = require("./CustomException");
+
+class InactivePatientException extends CustomException{
+  constructor(message) {
+    super("InactivePatientException", message, 409);
+  }
 }
 
 

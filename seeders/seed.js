@@ -7,6 +7,7 @@ const Ala = require("../models/AlaModels");
 const Habitacion = require("../models/HabitacionModels");
 const Cama = require("../models/CamaModels");
 const Paciente = require("../models/PacienteModels");
+const Rol = require("../models/RolModels");
 
 async function seed() {
   try {
@@ -26,6 +27,13 @@ async function seed() {
       { id_seguro: 3, nombre: "Swiss Medical", tipo: "Privado" },
       { id_seguro: 4, nombre: "IOMA", tipo: "Público" },
       { id_seguro: 5, nombre: "Galeno", tipo: "Privado" },
+    ]);
+
+    await Rol.bulkCreate([
+      { id_rol: 1, nombre: "Medico" },
+      { id_rol: 2, nombre: "Enfermero" },
+      { id_rol: 3, nombre: "Recepcionista" },
+      { id_rol: 4, nombre: "Admin" },
     ]);
 
     await Paciente.bulkCreate([

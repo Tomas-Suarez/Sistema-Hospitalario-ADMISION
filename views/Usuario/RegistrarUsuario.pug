@@ -1,0 +1,18 @@
+block content
+  h1 Registrar Usuario
+  form(method="POST", action="/usuarios/registro")
+    div
+      label(for="nombre_usuario") Nombre de Usuario:
+      input(type="text", name="nombre_usuario", required)
+    div
+      label(for="email") Email:
+      input(type="email", name="email", required)
+    div
+      label(for="password") Contraseña:
+      input(type="password", name="password", required)
+    div
+      label(for="id_rol") Rol:
+      select(name="id_rol", required)
+        each rol in roles
+          option(value=rol.id_rol)= rol.nombre
+    button(type="submit") Registrar

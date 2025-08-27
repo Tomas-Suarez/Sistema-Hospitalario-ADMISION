@@ -1,9 +1,9 @@
-class DuplicatedResourceException extends Error{
-    constructor(message){
-        super(message);
-        this.name = "DuplicatedResourceException";
-        this.status = 409;
-    }
+const CustomException = require("./CustomException");
+
+class DuplicatedResourceException extends CustomException{
+  constructor(message) {
+    super("DuplicatedResourceException", message, 409);
+  }
 }
 
 

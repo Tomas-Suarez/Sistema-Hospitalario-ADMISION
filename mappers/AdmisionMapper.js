@@ -1,14 +1,21 @@
+const objectMapper = require("object-mapper");
 const AdmisionResponseDTO = require("../dto/response/AdmisionResponseDTO");
 const Admision = require("../models/AdmisionModels");
 
+const admisionMap = {
+  "id_admision": "id_admision",
+  "id_paciente": "id_paciente",
+  "id_tipo": "id_tipo",
+  "id_motivo": "id_motivo",
+  "fecha_entrada": "fecha_entrada",
+  "fecha_salida": "fecha_salida",
+  "detalles": "detalles",
+  "estado": "estado"
+};
+
 function toEntity(admisionRequestDTO) {
   return Admision.build({
-    id_paciente: admisionRequestDTO.id_paciente,
-    id_tipo: admisionRequestDTO.id_tipo,
-    id_motivo: admisionRequestDTO.id_motivo,
-    fecha_entrada: admisionRequestDTO.fecha_entrada,
-    fecha_salida: admisionRequestDTO.fecha_salida,
-    detalles: admisionRequestDTO.detalles,
+    ...admisionRequestDTO,
     estado: true,
   });
 }
@@ -16,26 +23,22 @@ function toEntity(admisionRequestDTO) {
 function toDto(admisionEntity) {
   if (!admisionEntity) return null;
 
+  const dtoObj = objectMapper(admisionEntity.toJSON(), admisionMap);
+
   return new AdmisionResponseDTO({
-    id_admision: admisionEntity.id_admision,
-    fecha_entrada: admisionEntity.fecha_entrada,
-    fecha_salida: admisionEntity.fecha_salida,
-    detalles: admisionEntity.detalles,
-    estado: admisionEntity.estado,
-    tipo: admisionEntity.TipoIngreso,
-    motivo: admisionEntity.MotivoAdmision,
-    paciente: admisionEntity.Paciente,
+    ...dtoObj,
+    tipo: admisionEntity.TipoIngreso || null,
+    motivo: admisionEntity.MotivoAdmision || null,
+    paciente: admisionEntity.Paciente || null,
   });
 }
 
 function updateEntityFromDto(admisionRequestDTO, entity) {
-  entity.id_paciente = admisionRequestDTO.id_paciente;
-  entity.id_tipo = admisionRequestDTO.id_tipo;
-  entity.id_motivo = admisionRequestDTO.id_motivo;
-  entity.fecha_entrada = admisionRequestDTO.fecha_entrada;
-  entity.fecha_salida = admisionRequestDTO.fecha_salida;
-  entity.detalles = admisionRequestDTO.detalles;
-  entity.estado = admisionRequestDTO.estado !== undefined ? admisionRequestDTO.estado : entity.estado;
+  Object.assign(entity, admisionRequestDTO);
+
+  if (admisionRequestDTO.estado === undefined) {
+    entity.estado = entity.estado;
+  }
 }
 
 module.exports = {

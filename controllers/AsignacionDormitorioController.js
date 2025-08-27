@@ -5,7 +5,6 @@ const getAsignacionesActuales = async (req, res, next) => {
   try {
     const internaciones = await AsignacionDormitorioService.getAsignacionesActuales();
     res.render("GestionarInternacion/GestionarInternacion", { internaciones });
-    console.log("👉 Lo que llega al Pug:", JSON.stringify(internaciones, null, 2));
 
   } catch (error) {
     next(error)
