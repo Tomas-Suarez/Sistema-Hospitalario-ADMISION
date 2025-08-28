@@ -1,21 +1,28 @@
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
+const ForbiddenException = require("../exceptions/ForbiddenException");
+const {
+  PERMISOS_NECESARIOS_INVALIDOS,
+} = require("../constants/ErrorConstants");
 
-function checkRole(requiredRole) {
+function checkRole(requiredRoles) {
   return (req, res, next) => {
     try {
       const token = req.cookies.jwt || req.headers.authorization?.split(" ")[1];
-      if (!token) return res.status(401).redirect("/usuarios/login");
-
+      if (!token){ 
+        return res.status(401).redirect("/usuarios/login");
+      }
       const decoded = jwt.verify(token, JWT_SECRET);
-      if (decoded.rol !== requiredRole) {
-        return res.status(403).send("No tienes permiso para acceder a esta página");
+      const rolesArray = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+
+      if (!rolesArray.includes(decoded.rol)) {
+        throw new ForbiddenException(PERMISOS_NECESARIOS_INVALIDOS);
       }
 
       req.user = decoded;
       next();
-    } catch (err) {
-      return res.status(401).redirect("/usuarios/login");
+    } catch (error) {
+      next(error);
     }
   };
 }

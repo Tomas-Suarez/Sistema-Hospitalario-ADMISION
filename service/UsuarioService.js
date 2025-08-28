@@ -41,14 +41,13 @@ const loginUsuario = async (credencial, password) => {
     where: {
       [Op.or]: [{ email: credencial }, { nombre_usuario: credencial }],
     },
-    include: ["Rol"],
+    include: ["rol"],
   });
 
   if (!usuario) {
     throw new InvalidCredentialsException(CREDENCIALES_INVALIDAS);
   }
 
-  // Verificamos la contraseña
   const valido = await bcrypt.compare(password, usuario.password_hash);
   if (!valido) {
     throw new InvalidCredentialsException(CREDENCIALES_INVALIDAS);
@@ -58,7 +57,7 @@ const loginUsuario = async (credencial, password) => {
     id_usuario: usuario.id_usuario,
     nombre_usuario: usuario.nombre_usuario,
     email: usuario.email,
-    rol: usuario.Rol?.nombre || null,
+    rol: usuario.rol?.nombre,
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });

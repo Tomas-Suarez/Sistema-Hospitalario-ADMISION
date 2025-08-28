@@ -1,18 +1,21 @@
 const UsuarioService = require("../service/UsuarioService");
 const Rol = require("../models/RolModels");
-const { EMAIL_EXISTENTE, CREDENCIALES_INVALIDAS } = require("../constants/UsuarioConstants");
+const {
+  EMAIL_EXISTENTE,
+  CREDENCIALES_INVALIDAS,
+} = require("../constants/UsuarioConstants");
 
 const getRegistroUsuario = async (req, res, next) => {
-    try{
-        const roles = await Rol.findAll({
-            attributes: ["id_rol", "nombre"],
-        });
+  try {
+    const roles = await Rol.findAll({
+      attributes: ["id_rol", "nombre"],
+    });
 
-        res.render("Usuario/RegistrarUsuario", { roles });
-    }catch(error){
-        next(error);
-    }
-}
+    res.render("Usuario/RegistrarUsuario", { roles });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const createUsuario = async (req, res, next) => {
   try {
@@ -32,13 +35,23 @@ const createUsuario = async (req, res, next) => {
     const roles = await Rol.findAll({
       attributes: ["id_rol", "nombre"],
     });
-    
+
     if (error.name === "DuplicatedResourceException") {
       return res.status(409).render("Usuario/RegistrarUsuario", {
         roles,
         mensajeError: EMAIL_EXISTENTE,
       });
     }
+    next(error);
+  }
+};
+
+const getLogin = async (req, res, next) => {
+  try {
+    res.render("Usuario/LoginUsuario", {
+      mensajeError: null,
+    });
+  } catch (error) {
     next(error);
   }
 };
@@ -52,18 +65,28 @@ const loginUsuario = async (req, res, next) => {
       password
     );
 
-    // Si usas JWT para un API, se devuelve JSON
-    res.status(200).json({ usuario, token });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: false,
+      maxAge: 3600000
+    });
+
+    return res.redirect("/");
+    
   } catch (error) {
     if (error.name === "InvalidCredentialsException") {
-      return res.status(401).json({ mensajeError: CREDENCIALES_INVALIDAS });
+      return res.status(401).render("Usuario/LoginUsuario", {
+        mensajeError: CREDENCIALES_INVALIDAS,
+      });
     }
     next(error);
   }
 };
 
+
 module.exports = {
   createUsuario,
   loginUsuario,
   getRegistroUsuario,
+  getLogin,
 };

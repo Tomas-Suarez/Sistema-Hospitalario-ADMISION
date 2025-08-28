@@ -21,63 +21,64 @@ html(lang="es")
               img(src="/img/icon-home.png", alt="inicio")
               |  Inicio
 
-          li.section-title RECEPCION
-          li
-            a(href="/pacientes/RegistrarAdmision/", class="nav-item")
-              img(src="/img/icon-admision.png", alt="admision")
-              |  Registrar admisiones
-          li
-            a(href="/admisiones/InternacionPaciente/", class="nav-item")
-              img(src="/img/icon-pacienteInternado.png", alt="internacion")
-              |  Internar paciente
-          li
-            a(href="/asignaciones/GestionInternacion/", class="nav-item")
-              img(src="/img/icon-gestionar.png", alt="gestion")
-              |  Gestionar internación
-          li
-            a(href="/pacientes/internacion-emergencia/", class="nav-item")
-              img(src="/img/icon-emergencia.png", alt="emergencia")
-              |  Emergencia
+          //- ================= ADMIN =================
+          if userRole === "Admin"
+            li.section-title PACIENTES
+            li
+              a(href="/pacientes/GestionPaciente/", class="nav-item")
+                img(src="/img/icon-paciente.png", alt="paciente")
+                |  Gestionar pacientes
 
-          li.section-title PACIENTES
-          li
-            a(href="/pacientes/GestionPaciente/", class="nav-item")
-              img(src="/img/icon-paciente.png", alt="paciente")
-              |  Gestionar pacientes
+            li.section-title PERSONAL DE SALUD
+            li
+              a(href="/medicos/GestionMedico", class="nav-item")
+                img(src="/img/icon-medico.png", alt="medico")
+                |  Gestionar Médicos
+            li
+              a(href="/enfermeros/crear", class="nav-item")
+                img(src="/img/icon-medico.png", alt="enfermero")
+                |  Gestionar Enfermeros
+          //- ================= MÉDICO =================
+          else if userRole === "Medico"
+            li.section-title PACIENTES
+            li
+              a(href="/pacientes/GestionPaciente/", class="nav-item")
+                img(src="/img/icon-paciente.png", alt="paciente")
+                |  Mis Pacientes
 
-          li.section-title PERSONAL DE SALUD
-          li
-            a(href="#", class="nav-item")
-              img(src="/img/icon-medico.png", alt="medico")
-              |  Gestionar Médicos
-          li
-            a(href="#", class="nav-item")
-              img(src="/img/icon-medico.png", alt="enfermero")
-              |  Gestionar Enfermeros
+            li.section-title EVALUACIONES
+            li
+              a(href="#", class="nav-item")
+                img(src="/img/icon-evaluacion.png", alt="medica")
+                |  Evaluación médica
+            li
+              a(href="#", class="nav-item")
+                img(src="#", alt="consulta")
+                |  Consultar por paciente
 
-          li.section-title HABITACIONES
-          li
-            a(href="/habitaciones/ListaHabitacion/", class="nav-item")
-              img(src="/img/icon-habitacion.png", alt="habitacion")
-              |  Consultar estado
+          //- ================= ENFERMERO =================
+          else if userRole === "Enfermero"
+            li.section-title PACIENTES
+            li
+              a(href="/pacientes/GestionPaciente/", class="nav-item")
+                img(src="/img/icon-paciente.png", alt="paciente")
+                |  Mis Pacientes
 
-          li.section-title EVALUACIONES
-          li
-            a(href="#", class="nav-item")
-              img(src="/img/icon-evaluacion.png", alt="medica")
-              |  Evaluación médica
-          li
-            a(href="#", class="nav-item")
-              img(src="/img/icon-evaluacion.png", alt="enfermeria")
-              |  Evaluación enfermería
-          li
-            a(href="#", class="nav-item")
-              img(src="/img/icon-evaluacion.png", alt="signos")
-              |  Signos vitales
-          li
-            a(href="#", class="nav-item")
-              img(src="/img/icon-evaluacion.png", alt="consulta")
-              |  Consultar por paciente
+            li.section-title EVALUACIONES
+            li
+              a(href="#", class="nav-item")
+                img(src="/img/icon-evaluacion.png", alt="enfermeria")
+                |  Evaluación enfermería
+            li
+              a(href="#", class="nav-item")
+                img(src="#", alt="signos")
+                |  Signos vitales
+          //- ================= BOTÓN DE LOGOUT =================
+          if userRole
+            li
+              a(href="/usuarios/logout/", class="nav-item")
+                img(src="/img/icon-admision.png", alt="logout")
+                |  Cerrar sesión
 
       main.contenido-principal
         block content

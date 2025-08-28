@@ -17,6 +17,8 @@ const ContactoEmergencia = require("./ContactoEmergenciaModels");
 const SeguroMedico = require("./SeguroMedicoModels");
 const MotivoAdmision = require("./MotivoAdmisionModels");
 const Ala = require("./AlaModels");
+const Usuario = require("./UsuarioModels");
+const Rol = require("./RolModels");
 
 // Relación Paciente - Admision
 Paciente.hasMany(Admision, { foreignKey: "id_paciente" });
@@ -97,3 +99,9 @@ AsignacionDormitorio.belongsTo(Cama, { foreignKey: "id_cama" });
 // Relación Paciente - HistorialMedico
 Paciente.hasMany(HistorialMedico, { foreignKey: "id_paciente" });
 HistorialMedico.belongsTo(Paciente, { foreignKey: "id_paciente" });
+
+// Relación Rol - Usuario
+Rol.hasMany(Usuario, { foreignKey: "id_rol", as: "usuarios" });
+
+// Relación Usuario - Rol
+Usuario.belongsTo(Rol, { foreignKey: "id_rol", as: "rol" });

@@ -13,12 +13,10 @@ html(lang="es")
 
   body
     .container
-      include ../includes/nav.pug
       include includes/tablaMedico.pug
       include includes/modalMedico.pug
       include includes/formMedico.pug
       
       
-      +nav()
       +tablaMedicos(medicos)
       +modalMedico()

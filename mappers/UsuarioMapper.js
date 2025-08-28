@@ -6,7 +6,7 @@ const usuarioMap = {
   "id_usuario": "id_usuario",
   "nombre_usuario": "nombre_usuario",
   "email": "email",
-  "Rol.nombre": "rol.nombre"
+  "rol.nombre": "rol.nombre"
 };
 
 function toEntity(usuarioRequestDTO) {
