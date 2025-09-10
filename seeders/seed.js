@@ -8,6 +8,8 @@ const Habitacion = require("../models/HabitacionModels");
 const Cama = require("../models/CamaModels");
 const Paciente = require("../models/PacienteModels");
 const Rol = require("../models/RolModels");
+const Guardia = require("../models/GuardiaModels");
+const Especialidad = require("../models/EspecialidadModels");
 
 async function seed() {
   try {
@@ -34,6 +36,35 @@ async function seed() {
       { id_rol: 2, nombre: "Enfermero" },
       { id_rol: 3, nombre: "Recepcionista" },
       { id_rol: 4, nombre: "Admin" },
+    ]);
+
+    await Guardia.bulkCreate([
+      {
+        id_guardia: 1,
+        nombre: "Mañana",
+        hora_inicio: "08:00:00",
+        hora_fin: "14:00:00",
+      },
+      {
+        id_guardia: 2,
+        nombre: "Tarde",
+        hora_inicio: "14:00:00",
+        hora_fin: "20:00:00",
+      },
+      {
+        id_guardia: 3,
+        nombre: "Noche",
+        hora_inicio: "20:00:00",
+        hora_fin: "08:00:00",
+      },
+    ]);
+
+    await Especialidad.bulkCreate([
+      { id_especialidad: 1, nombre: "Cardiología" },
+      { id_especialidad: 2, nombre: "Neurología" },
+      { id_especialidad: 3, nombre: "Pediatría" },
+      { id_especialidad: 4, nombre: "Traumatología" },
+      { id_especialidad: 5, nombre: "Medicina General" },
     ]);
 
     await Paciente.bulkCreate([

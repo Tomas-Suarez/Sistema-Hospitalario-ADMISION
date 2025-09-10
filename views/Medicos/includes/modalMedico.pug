@@ -1,6 +1,41 @@
-include ../includes/formMedico.pug
 mixin modalMedico()
   #modal-editar.hidden
     .modal-contenido
-      h2 Editar Medico
-      +formMedico("medicos/actualizar", "edit-id")
+      h2 Editar Médico
+      form#form-medico(method="POST", action="#")
+        input(type="hidden", name="_method", value="PUT")
+        input(type="hidden", name="id_medico", id="edit-id")
+
+        div
+          label(for="edit-nombre") Nombre:
+          input(type="text", name="nombre", id="edit-nombre", required)
+        div
+          label(for="edit-apellido") Apellido:
+          input(type="text", name="apellido", id="edit-apellido", required)
+        div
+          label(for="edit-documento") Documento:
+          input(type="text", name="documento", id="edit-documento", required)
+        div
+          label(for="edit-genero") Género:
+          select(name="genero", id="edit-genero", required)
+            option(disabled selected value="") -- Seleccione --
+            option(value="Masculino") Masculino
+            option(value="Femenino") Femenino
+        div
+          label(for="edit-matricula") Matrícula:
+          input(type="text", name="matricula", id="edit-matricula", required)
+        div
+          label(for="edit-id_especialidad") Especialidad:
+          select(name="id_especialidad", id="edit-id_especialidad", required)
+            option(disabled selected value="") -- Seleccione --
+            each esp in especialidades
+              option(value=esp.id_especialidad)= esp.nombre
+        div
+          label(for="edit-id_guardia") Guardia:
+          select(name="id_guardia", id="edit-id_guardia", required)
+            option(disabled selected value="") -- Seleccione --
+            each g in guardias
+              option(value=g.id_guardia)= g.nombre
+        div
+          button(type="submit") Guardar Cambios
+          button(type="button", id="cerrar-modal") Cancelar

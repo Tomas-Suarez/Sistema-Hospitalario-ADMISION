@@ -1,20 +1,19 @@
-.container {
-  display: flex;
-  height: 100vh;
-}
-
-.contenido {
-  flex: 1;
+.contenido-medico {
+  position: absolute;
+  left: 16%;
+  width: 84%;
   padding: 20px;
-  max-width: 100%;
   box-sizing: border-box;
+  height: 100vh;
+  overflow: auto;
+  background-color: #f7f7f7;
 }
 
 #TablaMedico {
   width: 100%;
   border-radius: 8px;
   font-weight: 300;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 #TablaMedico thead th {
@@ -30,7 +29,6 @@
   border-radius: 3px;
   padding: 10px;
 }
-
 
 button, .btn-editar, .btn-historial {
   background: none;
@@ -150,29 +148,11 @@ button, .btn-editar, .btn-historial {
   transition: background-color 0.3s ease;
 }
 
-/* Botón Contacto Emergencia */
-.contacto-boton {
-  display: inline-flex;
-  align-items: center;
-  background-color: #b62b59;
-  padding: 6px 10px;
-  border-radius: 4px;
-  color: #e6e1e1;
-  font-weight: bold;
-  border: 1px solid #90caf9;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.contacto-boton:hover {
-  background-color: #af3f65;
-}
-
 .editar-boton:hover {
   background-color: #1ba179;
 }
 
-/* Columna accion */
+/* Columna acción */
 #TablaMedico td:last-child,
 #TablaMedico th:last-child {
   white-space: nowrap;
@@ -187,9 +167,11 @@ button, .btn-editar, .btn-historial {
   margin-right: 5px;
   vertical-align: middle;
 }
+
 .estado-indicador.activo {
   background-color: #4CAF50;
 }
+
 .estado-indicador.inactivo {
   background-color: #F44336;
 }
@@ -228,8 +210,8 @@ button, .btn-editar, .btn-historial {
   background-color: #c82333;
 }
 
-button, .btn-editar, .btn-historial, .btn-cambiar-estado, 
-.historial-boton, .informacion-boton, .editar-boton, 
+button, .btn-editar, .btn-historial, .btn-cambiar-estado,
+.historial-boton, .informacion-boton, .editar-boton,
 .estado-boton-verde, .estado-boton-rojo {
   font-family: 'Arial', sans-serif;
   font-weight: bold;
@@ -240,3 +222,27 @@ button, .btn-editar, .btn-historial, .btn-cambiar-estado,
   user-select: none;
 }
 
+.notificacion-flotante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #f44336; /* rojo */
+  color: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 1;
+  transition: opacity 1s ease;
+  z-index: 9999;
+}
+
+.notificacion-flotante button.cerrar-notificacion {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}

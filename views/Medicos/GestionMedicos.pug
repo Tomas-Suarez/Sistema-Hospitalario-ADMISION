@@ -1,22 +1,73 @@
-doctype html
-html(lang="es")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Lista de Médicos
-    link(rel="stylesheet", href="/css/VistaMedico.css")
-    link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
-    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
-    script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
-    script(src="/js/DataTableMedico.js")
-    script(src="/js/Medico.js")
+extends ../layout
 
-  body
-    .container
-      include includes/tablaMedico.pug
-      include includes/modalMedico.pug
-      include includes/formMedico.pug
-      
-      
-      +tablaMedicos(medicos)
-      +modalMedico()
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  script(src="/js/DataTableMedico.js")
+  script(src="/js/Medico.js")
+
+block content
+  .contenido-medico
+    h1 Lista de Médicos
+    button#btn-abrir-crearMedico.btn-crearMedico(type="button")
+      span.editar-boton
+        img.icono-info(src="/img/icon-crearMedico.png", alt="crear")
+        |  Crear Médico
+
+    table#TablaMedico
+      thead
+        tr
+          th Documento
+          th Nombre
+          th Apellido
+          th Matrícula
+          th Especialidad
+          th Guardia
+          th Estado
+          th Acciones
+      tbody
+        each medico in medicos
+          tr
+            td= medico.documento
+            td= medico.nombre
+            td= medico.apellido
+            td= medico.matricula
+            td= medico.nombre_especialidad
+            td= medico.guardia ? medico.guardia.nombre : "-"
+            td.estado
+              span.estado-indicador(class=medico.estado ? 'activo' : 'inactivo')
+              | #{medico.estado ? 'Activo' : 'Inactivo'}
+            td
+              button.btn-editar(
+                type="button",
+                data-id=medico.id_medico,
+                data-nombre=medico.nombre,
+                data-apellido=medico.apellido,
+                data-documento=medico.documento,
+                data-matricula=medico.matricula,
+                data-id_especialidad=medico.id_especialidad,
+                data-id_guardia=medico.id_guardia
+              )
+                span.editar-boton
+                  img.icono-info(src="/img/icon-editar.png", alt="editar")
+                  |  Editar
+
+              form(method="POST", action=`/medicos/cambiar-estado/${medico.id_medico}`, style="display:inline")
+                input(type="hidden", name="_method", value="PATCH")
+                input(type="hidden", name="estado", value=medico.estado ? 'false' : 'true')
+                button(type="submit", class="btn-cambiar-estado")
+                  if medico.estado
+                    span.estado-boton-rojo
+                      img.icono-info(src="/img/icon-estado.png", alt="Dar de baja", title="Dar de baja")
+                      |  Dar de baja
+                  else
+                    span.estado-boton-verde
+                      img.icono-info(src="/img/icon-estado.png", alt="Dar de alta", title="Dar de alta")
+                      |  Restaurar
+
+  include includes/modalMedico.pug
+  +modalMedico()

@@ -1,9 +1,18 @@
 const Medico = require("../models/MedicoModels");
 const Guardia = require("../models/GuardiaModels");
 const Especialidad = require("../models/EspecialidadModels");
+const MedicoMapper = require("../mappers/MedicoMapper");
+const { Op } = require("sequelize");
+const {
+  MATRICULA_YA_EXISTENTE,
+  MEDICO_NO_ENCONTRADO_POR_ID,
+  MEDICO_DNI_EXISTENTE_UPDATE,
+  MEDICO_MATRICULA_EXISTENTE_UPDATE,
+} = require("../constants/MedicoConstants");
+const DuplicatedResourceException = require("../exceptions/DuplicatedResourceException");
+const ResourceNotFoundException = require("../exceptions/ResourceNotFoundException");
 
 const getAllMedicos = async () => {
-  try {
     const medicos = await Medico.findAll({
       include: [
         {
@@ -16,84 +25,99 @@ const getAllMedicos = async () => {
         },
       ],
     });
-    return medicos;
-  } catch (error) {
-    throw new Error("Ocurrió un error al obtener los médicos: " + error.message);
-  }
+
+    return medicos.map(MedicoMapper.toDto);
 };
 
-const createMedico = async (datos) => {
-  try {
+const createMedico = async (medicoRequestDTO) => {
+
+    const medicoEntity = MedicoMapper.toEntity(medicoRequestDTO);
+
     const existeMatricula = await Medico.findOne({
-      where: { matricula: datos.matricula },
+      where: { matricula: medicoEntity.matricula },
     });
 
     if (existeMatricula) {
-      throw new Error("La matrícula ya está registrada.");
+      throw new DuplicatedResourceException(MATRICULA_YA_EXISTENTE);
     }
 
     const existeDocumento = await Medico.findOne({
-      where: { documento: datos.documento },
+      where: { documento: medicoEntity.documento },
     });
 
     if (existeDocumento) {
-      throw new Error("El documento ya está registrado.");
+      throw new DuplicatedResourceException(DNI_YA_EXISTENTE);
     }
 
     const medico = await Medico.create({
-      nombre: datos.nombre,
-      apellido: datos.apellido,
-      genero: datos.genero,
-      documento: datos.documento,
-      matricula: datos.matricula,
-      id_especialidad: datos.id_especialidad,
-      id_guardia: datos.id_guardia,
-      estado: datos.estado,
+      nombre: medicoEntity.nombre,
+      apellido: medicoEntity.apellido,
+      genero: medicoEntity.genero,
+      documento: medicoEntity.documento,
+      matricula: medicoEntity.matricula,
+      id_especialidad: medicoEntity.id_especialidad,
+      id_guardia: medicoEntity.id_guardia,
+      estado: medicoEntity.estado,
     });
 
-    return { medico, creado: true };
-  } catch (error) {
-    throw new Error("Ocurrió un error al crear el médico: " + error.message);
-  }
+    return {
+      medico: MedicoMapper.toDto(medico),
+      creado: true
+    };
 };
 
-const updateMedico = async (datos) => {
-  try {
-    const [actualizado] = await Medico.update(
-      {
-        nombre: datos.nombre,
-        apellido: datos.apellido,
-        genero: datos.genero,
-        matricula: datos.matricula,
-        id_especialidad: datos.id_especialidad,
-        id_guardia: datos.id_guardia,
+const updateMedico = async (medicoRequestDTO) => {
+
+    const medico = await Medico.findByPk(medicoRequestDTO.id_medico);
+
+    if(!medico){
+      throw new ResourceNotFoundException(
+        MEDICO_NO_ENCONTRADO_POR_ID + medicoRequestDTO.id_medico
+      );
+    }
+
+    const otroMedicoConMismoDNI = await Medico.findOne({
+      where: {
+        documento: medicoRequestDTO.documento,
+        id_medico: { [Op.ne]: medicoRequestDTO.id_medico},
       },
-      {
-        where: {
-          id_medico: datos.id_medico,
-        },
-      }
-    );
-    if (actualizado === 0) {
-      throw new Error("No se encontró ningún médico para actualizar.");
+    });
+
+    if(otroMedicoConMismoDNI) {
+      throw new DuplicatedResourceException(
+        MEDICO_DNI_EXISTENTE_UPDATE
+      );
     }
-  } catch (error) {
-    throw new Error("Ocurrió un error al actualizar el médico: " + error.message);
-  }
+
+    const otroMedicoConMismaMatricula = await Medico.findOne({
+      where: {
+        matricula: medicoRequestDTO.matricula,
+        id_medico: { [Op.ne]: medicoRequestDTO.id_medico},
+      },
+    });
+
+    if(otroMedicoConMismaMatricula) {
+      throw new DuplicatedResourceException(
+        MEDICO_MATRICULA_EXISTENTE_UPDATE
+      );
+    }
+
+    MedicoMapper.updateEntityFromDto(medicoRequestDTO, medico);
+    await medico.save();
+
+    return MedicoMapper.toDto(medico);
 };
 
-const changeStatusMedico = async (datos) => {
-  try {
+const changeStatusMedico = async ({ id_medico, estado}) => {
     const [actualizado] = await Medico.update(
-      { estado: datos.estado },
-      { where: { id_medico: datos.id_medico } }
+      { estado },
+      { where: { id_paciente } }
     );
+
     if (actualizado === 0) {
-      throw new Error("No se encontró ningún médico para cambiar el estado.");
+      throw new ResourceNotFoundException(MEDICO_NO_ENCONTRADO_POR_ID + id_medico);
     }
-  } catch (error) {
-    throw new Error("Ocurrió un error al cambiar el estado del médico: " + error.message);
-  }
+    return { actualizado: true };
 };
 
 module.exports = {
