@@ -31,6 +31,33 @@ async function seed() {
       { id_seguro: 5, nombre: "Galeno", tipo: "Privado" },
     ]);
 
+       await Rol.bulkCreate([
+      { id_rol: 1, nombre: "Medico" },
+      { id_rol: 2, nombre: "Enfermero" },
+      { id_rol: 3, nombre: "Recepcionista" },
+      { id_rol: 4, nombre: "Admin" },
+    ]);
+
+    await Usuario.bulkCreate([
+      {
+        id_usuario: 1,
+        id_rol: 4,
+        nombre_usuario: "SoyAdmin",
+        password_hash:
+          "$2b$10$N.uXQcaMqmJtLCnseXXUc.1m8QwbeQtVNGO4QFuW81K3OtCXXVTRa",
+        email: "admin@gmail.com",
+      },
+      {
+        id_usuario: 2,
+        id_rol: 1,
+        nombre_usuario: "SoyMedico",
+        password_hash:
+          "$2b$10$TgWKl8TN1hHWfnl8seyMWud2frIKlYS/PWNXxPHeXdza4q8Mzx1Uu",
+        email: "medico@gmail.com",
+      },
+    ]);
+
+
     await Rol.bulkCreate([
       { id_rol: 1, nombre: "Medico" },
       { id_rol: 2, nombre: "Enfermero" },
