@@ -1,5 +1,6 @@
 const UsuarioService = require("../service/UsuarioService");
 const Rol = require("../models/RolModels");
+const Usuario = require("../models/UsuarioModels");
 const {
   EMAIL_EXISTENTE,
   CREDENCIALES_INVALIDAS,
@@ -83,10 +84,27 @@ const loginUsuario = async (req, res, next) => {
   }
 };
 
+const getAllRecepcionistas = async (req, res, next) => {
+  try {
+    const recepcionistas = await Usuario.findAll({
+      include: {
+        model: Rol,
+        as: "rol",
+        where: { nombre: "Recepcionista" }
+      }
+    });
+
+    res.render("Recepcionistas/GestionRecepcionistas", { recepcionistas });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 module.exports = {
   createUsuario,
   loginUsuario,
   getRegistroUsuario,
   getLogin,
+  getAllRecepcionistas
 };

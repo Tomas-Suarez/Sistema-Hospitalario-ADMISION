@@ -16,4 +16,6 @@ router.get("/logout", (req, res) => {
   res.redirect("/usuarios/login");
 });
 
+router.get("/recepcionistas", checkRole("Admin"), UsuarioController.getAllRecepcionistas);
+
 module.exports = router;

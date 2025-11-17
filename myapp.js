@@ -58,7 +58,7 @@ app.use("/usuarios", usuarioRoutes);
 // Ruta principal donde se encuentra la vista principal
 app.get(
   "/",
-  checkRole(["Admin", "Medico", "Enfermero"]),
+  checkRole(["Admin", "Medico", "Enfermero", "Recepcionista"]),
   (req, res) => {
     res.render("Principal");
   }

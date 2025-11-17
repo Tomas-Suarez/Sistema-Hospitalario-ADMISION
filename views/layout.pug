@@ -19,42 +19,70 @@ html(lang="es")
           li
             a(href="/", class="nav-item")
               img(src="/img/icon-home.png", alt="inicio")
-              |  Inicio
+              | Inicio
 
           //- ================= ADMIN =================
           if userRole === "Admin"
+            li.section-title PERSONAL
+            li
+              a(href="/usuarios/recepcionistas", class="nav-item")
+                img(src="/img/icon-gestionar.png", alt="recep")
+                | Gestionar Recepción
+            li
+              a(href="/medicos/GestionMedico", class="nav-item")
+                img(src="/img/icon-medico.png", alt="medico")
+                | Gestionar Médicos
+            li
+              a(href="/enfermeros/GestionEnfermero", class="nav-item")
+                img(src="/img/icon-medico.png", alt="enfermero")
+                | Gestionar Enfermeros
             li.section-title PACIENTES
             li
               a(href="/pacientes/GestionPaciente/", class="nav-item")
                 img(src="/img/icon-paciente.png", alt="paciente")
-                |  Gestionar pacientes
+                | Gestionar Pacientes
 
-            li.section-title PERSONAL DE SALUD
+          //- ================= RECEPCIONISTA =================
+          else if userRole === "Recepcionista"
+            li.section-title GESTIÓN
             li
-              a(href="/medicos/GestionMedico", class="nav-item")
-                img(src="/img/icon-medico.png", alt="medico")
-                |  Gestionar Médicos
+              a(href="/pacientes/GestionPaciente/", class="nav-item")
+                img(src="/img/icon-paciente.png", alt="paciente")
+                | Pacientes
+            
+            li.section-title ADMISIONES
             li
-              a(href="/enfermeros/crear", class="nav-item")
-                img(src="/img/icon-medico.png", alt="enfermero")
-                |  Gestionar Enfermeros
+              a(href="/pacientes/RegistrarAdmision", class="nav-item")
+                img(src="/img/icon-admision.png", alt="admision")
+                | Nueva Admisión
+            li
+              a(href="/pacientes/internacion-emergencia", class="nav-item")
+                img(src="/img/icon-emergencia.png", alt="emergencia")
+                | Ingreso Emergencia
+
+            li.section-title INTERNACIÓN
+            li
+              a(href="/admisiones/InternacionPaciente", class="nav-item")
+                img(src="/img/icon-habitacion.png", alt="camas")
+                | Asignar Camas
+
           //- ================= MÉDICO =================
           else if userRole === "Medico"
             li.section-title PACIENTES
             li
               a(href="/pacientes/GestionPaciente/", class="nav-item")
                 img(src="/img/icon-paciente.png", alt="paciente")
-                |  Mis Pacientes
+                | Mis Pacientes
 
             li.section-title EVALUACIONES
             li
-              a(href="#", class="nav-item")
+              a(href="/evaluaciones/pacientes", class="nav-item")
                 img(src="/img/icon-evaluacion.png", alt="medica")
-                |  Evaluación médica
+                | Evaluación médica
             li
               a(href="#", class="nav-item")
-                img(src="#", alt="consulta")
-                |  Consultar por paciente
+                img(src="/img/icon-info.png", alt="consulta")
+                | Consultar por paciente
 
           //- ================= ENFERMERO =================
           else if userRole === "Enfermero"
@@ -62,23 +90,24 @@ html(lang="es")
             li
               a(href="/pacientes/GestionPaciente/", class="nav-item")
                 img(src="/img/icon-paciente.png", alt="paciente")
-                |  Mis Pacientes
+                | Mis Pacientes
 
             li.section-title EVALUACIONES
             li
               a(href="#", class="nav-item")
                 img(src="/img/icon-evaluacion.png", alt="enfermeria")
-                |  Evaluación enfermería
+                | Evaluación enfermería
             li
               a(href="#", class="nav-item")
-                img(src="#", alt="signos")
-                |  Signos vitales
+                img(src="/img/icon-evaluacion.png", alt="signos")
+                | Signos vitales
+
           //- ================= BOTÓN DE LOGOUT =================
           if userRole
             li
               a(href="/usuarios/logout/", class="nav-item")
                 img(src="/img/icon-admision.png", alt="logout")
-                |  Cerrar sesión
+                | Cerrar sesión
 
       main.contenido-principal
         block content

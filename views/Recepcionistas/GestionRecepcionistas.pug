@@ -1,0 +1,58 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css") 
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  script(src="/js/Recepcionista.js")
+
+block content
+  .contenido-medico
+    h1 Gestión de Recepcionistas
+    
+    button#btn-abrir-crear.btn-crearMedico(type="button")
+      span.editar-boton
+        img.icono-info(src="/img/icon-crearPaciente.png", alt="crear")
+        | Crear Recepcionista
+
+    table#TablaRecepcionistas
+      thead
+        tr
+          th ID
+          th Usuario
+          th Email
+          th Rol
+          th Acciones
+      tbody
+        each recep in recepcionistas
+          tr
+            td= recep.id_usuario
+            td= recep.nombre_usuario
+            td= recep.email
+            td= recep.rol ? recep.rol.nombre : 'Sin Rol'
+            td
+              button.btn-editar(type="button")
+                span.editar-boton Editar
+
+  #modal-editar.hidden
+    .modal-contenido
+      h2 Nuevo Recepcionista
+      form(method="POST", action="/usuarios/registro")
+        input(type="hidden", name="id_rol", value="3")
+        
+        div
+          label(for="nombre_usuario") Usuario:
+          input(type="text", name="nombre_usuario", required, placeholder="Ej: recepcion_tarde")
+        div
+          label(for="email") Email:
+          input(type="email", name="email", required, placeholder="correo@hospital.com")
+        div
+          label(for="password") Contraseña:
+          input(type="password", name="password", required)
+        
+        div
+          button(type="submit") Guardar
+          button(type="button", id="cerrar-modal", style="background-color: #dc3545; margin-top: 10px;") Cancelar
