@@ -113,7 +113,7 @@ const updateMedico = async (medicoRequestDTO) => {
 const changeStatusMedico = async ({ id_medico, estado}) => {
     const [actualizado] = await Medico.update(
       { estado },
-      { where: { id_paciente } }
+      { where: { id_medico } }
     );
 
     if (actualizado === 0) {

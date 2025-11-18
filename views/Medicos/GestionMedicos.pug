@@ -48,6 +48,7 @@ block content
                 data-nombre=medico.nombre,
                 data-apellido=medico.apellido,
                 data-documento=medico.documento,
+                data-genero=medico.genero,
                 data-matricula=medico.matricula,
                 data-id_especialidad=medico.id_especialidad,
                 data-id_guardia=medico.id_guardia
@@ -56,8 +57,9 @@ block content
                   img.icono-info(src="/img/icon-editar.png", alt="editar")
                   |  Editar
 
-              form(method="POST", action=`/medicos/cambiar-estado/${medico.id_medico}`, style="display:inline")
+              form(method="POST", action="/medicos/cambiar-estado", style="display:inline")
                 input(type="hidden", name="_method", value="PATCH")
+                input(type="hidden", name="id_medico", value=medico.id_medico)
                 input(type="hidden", name="estado", value=medico.estado ? 'false' : 'true')
                 button(type="submit", class="btn-cambiar-estado")
                   if medico.estado

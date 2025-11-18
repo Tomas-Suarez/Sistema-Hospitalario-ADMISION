@@ -45,7 +45,8 @@ const createMedico = async (req, res, next) => {
 
 const updateMedico = async (req, res, next) => {
   try {
-    const datos = parseMedicoFromBody(req.body);
+    const id_medico = parseInt(req.body.id_medico);
+    const datos = parseMedicoFromBody(req.body, id_medico);
     await MedicoService.updateMedico(datos);
 
     res.redirect("/medicos/GestionMedico/");
@@ -56,7 +57,7 @@ const updateMedico = async (req, res, next) => {
 
 const changeStatusMedico = async (req, res, next) => {
   try {
-    const id_medico = parseInt(req.params.id);
+    const id_medico = parseInt(req.body.id_medico);
     const estado = req.body.estado === 'true';
     await MedicoService.changeStatusMedico( { id_medico, estado });
 

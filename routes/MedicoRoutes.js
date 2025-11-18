@@ -25,9 +25,9 @@ router.post(
   );
   
   // Actualizar medico
-  router.post("/actualizar", medicoController.updateMedico);
+  router.put("/actualizar", medicoController.updateMedico);
 
   // Cambiar el estado de un medico
-  router.post("/cambiar-estado", medicoController.changeStatusMedico);
+  router.patch("/cambiar-estado", medicoController.changeStatusMedico);
 
 module.exports = router;

@@ -50,8 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".btn-editar").forEach((btn) => {
     btn.addEventListener("click", () => {
       const medicoId = btn.dataset.id;
-
-      formMedico.action = `/medicos/actualizar/${medicoId}`;
+      formMedico.action = "/medicos/actualizar"; 
 
       document.getElementById("edit-id").value = medicoId;
       document.getElementById("edit-nombre").value = btn.dataset.nombre || "";
@@ -62,8 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const genero = btn.dataset.genero || "Masculino";
       document.getElementById("edit-genero").value = ["Masculino", "Femenino"].includes(genero) ? genero : "Masculino";
 
-      document.getElementById("edit-id_especialidad").value = btn.dataset.especialidad || "";
-      document.getElementById("edit-id_guardia").value = btn.dataset.guardia || "";
+      document.getElementById("edit-id_especialidad").value = btn.dataset.id_especialidad || "";
+      document.getElementById("edit-id_guardia").value = btn.dataset.id_guardia || "";
 
       let methodInput = formMedico.querySelector('input[name="_method"]');
       if (!methodInput) {
@@ -97,23 +96,18 @@ document.addEventListener("DOMContentLoaded", () => {
             inputUsuario.setCustomValidity("El usuario es obligatorio.");
             inputUsuario.reportValidity();
             valido = false;
-        }
-        if (!inputEmail.value.trim() || !inputEmail.value.includes('@')) {
+        } else if (!inputEmail.value.trim() || !inputEmail.value.includes('@')) {
             inputEmail.setCustomValidity("Ingrese un email válido.");
             inputEmail.reportValidity();
             valido = false;
-        }
-        if (inputPassword.value.length < 4) {
+        } else if (inputPassword.value.length < 4) {
             inputPassword.setCustomValidity("La contraseña debe tener al menos 4 caracteres.");
             inputPassword.reportValidity();
             valido = false;
         }
     }
 
-    if (!valido) {
-        e.preventDefault();
-        return;
-    }
+    if (!valido) { e.preventDefault(); return; }
 
     const nombre = document.getElementById("edit-nombre");
     const apellido = document.getElementById("edit-apellido");
@@ -127,33 +121,27 @@ document.addEventListener("DOMContentLoaded", () => {
       nombre.reportValidity();
       valido = false;
     } 
-
-    if (valido && apellido.value.trim().length < 2) {
+    else if (apellido.value.trim().length < 2) {
       apellido.setCustomValidity("El apellido debe tener al menos 2 letras.");
       apellido.reportValidity();
       valido = false;
     } 
-
-    if (valido && !/^\d{7,10}$/.test(documento.value.trim())) {
+    else if (!/^\d{7,10}$/.test(documento.value.trim())) {
       documento.setCustomValidity("El DNI debe tener entre 7 y 10 números.");
       documento.reportValidity();
       valido = false;
     } 
-
-
-    if (valido && matricula.value.trim().length === 0) {
+    else if (matricula.value.trim().length === 0) {
       matricula.setCustomValidity("Debe ingresar la matrícula.");
       matricula.reportValidity();
       valido = false;
     }
-
-    if (valido && !especialidad.value) {
+    else if (!especialidad.value) {
       especialidad.setCustomValidity("Debe seleccionar una especialidad.");
       especialidad.reportValidity();
       valido = false;
     }
-
-    if (valido && !guardia.value) {
+    else if (!guardia.value) {
       guardia.setCustomValidity("Debe seleccionar una guardia.");
       guardia.reportValidity();
       valido = false;

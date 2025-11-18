@@ -11,6 +11,8 @@ const medicoMap = {
   genero: "genero",
   matricula: "matricula",
   estado: "estado",
+  id_especialidad: "id_especialidad",
+  id_guardia: "id_guardia",
   Especialidad: "especialidad",
   guardia: "guardia" 
 };
