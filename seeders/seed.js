@@ -10,6 +10,7 @@ const Paciente = require("../models/PacienteModels");
 const Rol = require("../models/RolModels");
 const Guardia = require("../models/GuardiaModels");
 const Especialidad = require("../models/EspecialidadModels");
+const Usuario = require("../models/UsuarioModels");
 
 async function seed() {
   try {
@@ -55,14 +56,6 @@ async function seed() {
           "$2b$10$TgWKl8TN1hHWfnl8seyMWud2frIKlYS/PWNXxPHeXdza4q8Mzx1Uu",
         email: "medico@gmail.com",
       },
-    ]);
-
-
-    await Rol.bulkCreate([
-      { id_rol: 1, nombre: "Medico" },
-      { id_rol: 2, nombre: "Enfermero" },
-      { id_rol: 3, nombre: "Recepcionista" },
-      { id_rol: 4, nombre: "Admin" },
     ]);
 
     await Guardia.bulkCreate([

@@ -1,11 +1,23 @@
 mixin modalMedico()
   #modal-editar.hidden
     .modal-contenido
-      h2 Editar Médico
+      h2 Gestión de Médico
       form#form-medico(method="POST", action="#")
-        input(type="hidden", name="_method", value="PUT")
+        input(type="hidden", name="_method", value="POST")
         input(type="hidden", name="id_medico", id="edit-id")
 
+        fieldset#seccion-usuario(style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px;")
+          legend Datos de Acceso (Solo para nuevos)
+          div
+            label(for="nombre_usuario") Usuario:
+            input(type="text", name="nombre_usuario", id="edit-usuario", placeholder="Ej: doc_perez")
+          div
+            label(for="email") Email:
+            input(type="email", name="email", id="edit-email", placeholder="doctor@hospital.com")
+          div
+            label(for="password") Contraseña:
+            input(type="password", name="password", id="edit-password")
+      
         div
           label(for="edit-nombre") Nombre:
           input(type="text", name="nombre", id="edit-nombre", required)

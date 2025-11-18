@@ -21,6 +21,7 @@ const getAllMedicos = async () => {
         },
         {
           model: Guardia,
+          as: "guardia",
           attributes: ["id_guardia", "nombre"],
         },
       ],
@@ -58,6 +59,7 @@ const createMedico = async (medicoRequestDTO) => {
       id_especialidad: medicoEntity.id_especialidad,
       id_guardia: medicoEntity.id_guardia,
       estado: medicoEntity.estado,
+      id_usuario: medicoRequestDTO.id_usuario 
     });
 
     return {

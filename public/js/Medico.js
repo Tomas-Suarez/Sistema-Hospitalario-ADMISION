@@ -3,18 +3,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("modal-editar");
   const cerrarModalBtn = document.getElementById("cerrar-modal");
   const crearBtn = document.getElementById("btn-abrir-crearMedico");
+  
+  const seccionUsuario = document.getElementById("seccion-usuario");
+  const inputUsuario = document.getElementById("edit-usuario");
+  const inputEmail = document.getElementById("edit-email");
+  const inputPassword = document.getElementById("edit-password");
 
-  // Función para limpiar formulario y preparar para creación
+  const inputsValidacion = [
+    "edit-nombre", "edit-apellido", "edit-documento", 
+    "edit-matricula", "edit-id_especialidad", "edit-id_guardia",
+    "edit-usuario", "edit-email", "edit-password" 
+  ];
+
+  inputsValidacion.forEach(id => {
+    const input = document.getElementById(id);
+    if(input) {
+      input.addEventListener("input", () => {
+        input.setCustomValidity(""); 
+      });
+    }
+  });
+
   const limpiarFormulario = () => {
     formMedico.reset();
     document.getElementById("edit-id").value = "";
-    formMedico.action = "/medicos/registro"; // acción de registro
-    // Si existe input hidden _method, lo eliminamos
+    formMedico.action = "/medicos/registro"; 
+    
     const methodInput = formMedico.querySelector('input[name="_method"]');
     if (methodInput) methodInput.remove();
+
+    if (seccionUsuario) {
+      seccionUsuario.style.display = "block";
+      inputUsuario.required = true;
+      inputEmail.required = true;
+      inputPassword.required = true;
+    }
   };
 
-  // Abrir modal de creación
   if (crearBtn) {
     crearBtn.addEventListener("click", () => {
       limpiarFormulario();
@@ -22,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Abrir modal de edición
   document.querySelectorAll(".btn-editar").forEach((btn) => {
     btn.addEventListener("click", () => {
       const medicoId = btn.dataset.id;
@@ -41,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("edit-id_especialidad").value = btn.dataset.especialidad || "";
       document.getElementById("edit-id_guardia").value = btn.dataset.guardia || "";
 
-      // Crear o actualizar input hidden _method
       let methodInput = formMedico.querySelector('input[name="_method"]');
       if (!methodInput) {
         methodInput = document.createElement("input");
@@ -51,19 +74,46 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       methodInput.value = "PUT";
 
+      if (seccionUsuario) {
+        seccionUsuario.style.display = "none";
+        inputUsuario.required = false;
+        inputEmail.required = false;
+        inputPassword.required = false;
+      }
+
       modal.classList.remove("hidden");
     });
   });
 
-  // Cerrar modal
   cerrarModalBtn.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
-  // Validación de formulario antes de enviar
   formMedico.addEventListener("submit", (e) => {
-    e.preventDefault();
     let valido = true;
+
+    if (seccionUsuario && seccionUsuario.style.display !== "none") {
+        if (!inputUsuario.value.trim()) {
+            inputUsuario.setCustomValidity("El usuario es obligatorio.");
+            inputUsuario.reportValidity();
+            valido = false;
+        }
+        if (!inputEmail.value.trim() || !inputEmail.value.includes('@')) {
+            inputEmail.setCustomValidity("Ingrese un email válido.");
+            inputEmail.reportValidity();
+            valido = false;
+        }
+        if (inputPassword.value.length < 4) {
+            inputPassword.setCustomValidity("La contraseña debe tener al menos 4 caracteres.");
+            inputPassword.reportValidity();
+            valido = false;
+        }
+    }
+
+    if (!valido) {
+        e.preventDefault();
+        return;
+    }
 
     const nombre = document.getElementById("edit-nombre");
     const apellido = document.getElementById("edit-apellido");
@@ -72,50 +122,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const especialidad = document.getElementById("edit-id_especialidad");
     const guardia = document.getElementById("edit-id_guardia");
 
-    // Nombre
-    if (nombre.value.trim().length < 3 || nombre.value.trim().length > 40) {
-      nombre.setCustomValidity("El nombre debe tener entre 3 y 40 letras.");
+    if (nombre.value.trim().length < 2) {
+      nombre.setCustomValidity("El nombre debe tener al menos 2 letras.");
       nombre.reportValidity();
       valido = false;
-    } else nombre.setCustomValidity("");
+    } 
 
-    // Apellido
-    if (apellido.value.trim().length < 3 || apellido.value.trim().length > 40) {
-      apellido.setCustomValidity("El apellido debe tener entre 3 y 40 letras.");
+    if (valido && apellido.value.trim().length < 2) {
+      apellido.setCustomValidity("El apellido debe tener al menos 2 letras.");
       apellido.reportValidity();
       valido = false;
-    } else apellido.setCustomValidity("");
+    } 
 
-    // Documento
-    if (!/^\d{7,10}$/.test(documento.value.trim())) {
+    if (valido && !/^\d{7,10}$/.test(documento.value.trim())) {
       documento.setCustomValidity("El DNI debe tener entre 7 y 10 números.");
       documento.reportValidity();
       valido = false;
-    } else documento.setCustomValidity("");
+    } 
 
-    // Matrícula
-    if (matricula.value.trim().length === 0) {
+
+    if (valido && matricula.value.trim().length === 0) {
       matricula.setCustomValidity("Debe ingresar la matrícula.");
       matricula.reportValidity();
       valido = false;
-    } else matricula.setCustomValidity("");
+    }
 
-    // Especialidad
-    if (!especialidad.value) {
+    if (valido && !especialidad.value) {
       especialidad.setCustomValidity("Debe seleccionar una especialidad.");
       especialidad.reportValidity();
       valido = false;
-    } else especialidad.setCustomValidity("");
+    }
 
-    // Guardia
-    if (!guardia.value) {
+    if (valido && !guardia.value) {
       guardia.setCustomValidity("Debe seleccionar una guardia.");
       guardia.reportValidity();
       valido = false;
-    } else guardia.setCustomValidity("");
+    }
 
-    if (valido) {
-      formMedico.submit();
+    if (!valido) {
+      e.preventDefault();
     }
   });
 });

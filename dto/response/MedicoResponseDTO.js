@@ -1,3 +1,5 @@
+const GuardiaResponseDTO = require("./GuardiaResponseDTO"); 
+
 class MedicoResponseDTO {
   constructor({
     id_medico,
@@ -19,8 +21,10 @@ class MedicoResponseDTO {
     this.genero = genero;
     this.matricula = matricula;
     this.estado = estado;
+    
     this.nombre_especialidad = especialidad?.nombre || null;
-    this.guardia = guardia ? guardia.map(g => new GuardiaResponseDTO(g)) : [];
+
+    this.guardia = guardia && guardia.id_guardia ? new GuardiaResponseDTO(guardia) : null;
   }
 }
 

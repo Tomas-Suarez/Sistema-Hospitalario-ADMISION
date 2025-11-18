@@ -64,6 +64,10 @@ EvaluacionMedica.belongsTo(Admision, { foreignKey: "id_admision" });
 Tratamiento.hasMany(EvaluacionMedica, { foreignKey: "id_tratamiento" });
 EvaluacionMedica.belongsTo(Tratamiento, { foreignKey: "id_tratamiento" });
 
+// Relación Médico - Usuario
+Usuario.hasOne(Medico, { foreignKey: "id_usuario" });
+Medico.belongsTo(Usuario, { foreignKey: "id_usuario" });
+
 // Relación Medico - EvaluacionMedica
 Medico.hasMany(EvaluacionMedica, { foreignKey: "id_medico" });
 EvaluacionMedica.belongsTo(Medico, { foreignKey: "id_medico" });
@@ -77,8 +81,8 @@ Especialidad.hasMany(Medico, { foreignKey: "id_especialidad" });
 Medico.belongsTo(Especialidad, { foreignKey: "id_especialidad" });
 
 // Relación Medico - Guardia
-Guardia.hasMany(Medico, { foreignKey: "id_guardia" });
-Medico.belongsTo(Guardia, { foreignKey: "id_guardia" });
+Guardia.hasMany(Medico, { foreignKey: "id_guardia", as: "medicos" });
+Medico.belongsTo(Guardia, { foreignKey: "id_guardia", as: "guardia" });
 
 // Relación Habitacion - Cama
 Habitacion.hasMany(Cama, { foreignKey: "id_habitacion" });
