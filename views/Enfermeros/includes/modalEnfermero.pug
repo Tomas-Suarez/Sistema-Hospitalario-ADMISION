@@ -1,6 +1,49 @@
-include ../includes/formEnfermero.pug
 mixin modalEnfermero()
   #modal-editar.hidden
-    .modal-contenido 
-      h2 Editar Enfermero 
-      +formEnfermero("/enfermeros/actualizar", "edit-id")
+    .modal-contenido
+      h2 Gestión de Enfermero
+      form#form-enfermero(method="POST", action="#")
+        input(type="hidden", name="id_enfermero", id="edit-id")
+
+        fieldset#seccion-usuario(style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px;")
+          legend Datos de Acceso (Solo para nuevos)
+          div
+            label(for="edit-usuario") Usuario:
+            input(type="text", name="nombre_usuario", id="edit-usuario", placeholder="Ej: enf_gomez")
+          div
+            label(for="edit-email") Email:
+            input(type="email", name="email", id="edit-email", placeholder="enfermero@hospital.com")
+          div
+            label(for="edit-password") Contraseña:
+            input(type="password", name="password", id="edit-password")
+
+        div
+          label(for="edit-nombre") Nombre:
+          input(type="text", name="nombre", id="edit-nombre", required)
+        div
+          label(for="edit-apellido") Apellido:
+          input(type="text", name="apellido", id="edit-apellido", required)
+        div
+          label(for="edit-genero") Género:
+          select(name="genero", id="edit-genero", required)
+            option(disabled selected value="") -- Seleccione un género --
+            option(value="Masculino") Masculino
+            option(value="Femenino") Femenino
+            option(value="Otro") Otro
+        div
+          label(for="edit-documento") Documento:
+          input(type="text", name="documento", id="edit-documento", required)
+        div
+          label(for="edit-matricula") Matrícula:
+          input(type="text", name="matricula", id="edit-matricula", required)
+        div
+          label(for="edit-id_guardia") Guardia:
+          select(name="id_guardia", id="edit-id_guardia", required)
+            option(disabled selected value="") -- Seleccione una guardia --
+            if guardias
+              each guardia in guardias
+                - const horario = `${guardia.hora_inicio} a ${guardia.hora_fin}`;
+                option(value=guardia.id_guardia)= `${guardia.nombre} (${horario})`
+        div
+          button(type="submit") Guardar Cambios
+          button(type="button", id="cerrar-modal") Cancelar

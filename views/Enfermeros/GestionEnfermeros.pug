@@ -1,22 +1,75 @@
-doctype html
-html(lang="es")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Lista de Enfermeros
-    link(rel="stylesheet", href="/css/VistaEnfermero.css")
-    link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
-    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
-    script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
-    script(src="/js/DataTableEnfermero.js")
-    script(src="/js/Enfermero.js")
-  body
-    .container
-      include ../includes/nav.pug
-      include includes/tablaEnfermero.pug
-      include includes/modalEnfermero.pug
-      include includes/formEnfermero.pug
+extends ../layout
 
-      +nav()
-      +tablaEnfermeros(enfermeros)
-      +modalEnfermero()
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  script(src="/js/DataTableEnfermero.js")
+  script(src="/js/Enfermero.js")
+
+block content
+  .contenido-medico
+    h1 Lista de Enfermeros
+    button#btn-abrir-crearEnfermero.btn-crearEnfermero(type="button")
+      span.editar-boton
+        img.icono-info(src="/img/icon-crearPaciente.png", alt="crear")
+        |  Crear Enfermero
+
+    table#TablaEnfermero
+      thead
+        tr
+          th Nombre
+          th Apellido
+          th Género
+          th Documento
+          th Matrícula
+          th Guardia
+          th Estado
+          th Acciones
+      tbody
+        each enfermero in enfermeros
+          tr
+            td= enfermero.nombre
+            td= enfermero.apellido
+            td= enfermero.genero
+            td= enfermero.documento
+            td= enfermero.matricula
+            td= enfermero.Guardia ? enfermero.Guardia.nombre : (enfermero.guardia ? enfermero.guardia.nombre : "-")
+            td.estado
+              span.estado-indicador(class=enfermero.estado ? 'activo' : 'inactivo')
+              | #{enfermero.estado ? 'Activo' : 'Inactivo'}
+            td
+              button.btn-editar(
+                type="button",
+                data-id=enfermero.id_enfermero,
+                data-nombre=enfermero.nombre,
+                data-apellido=enfermero.apellido,
+                data-genero=enfermero.genero,
+                data-documento=enfermero.documento,
+                data-matricula=enfermero.matricula,
+                //- Pasamos ID de guardia
+                data-id_guardia=enfermero.id_guardia || (enfermero.Guardia ? enfermero.Guardia.id_guardia : "")
+              )
+                span.editar-boton
+                  img.icono-info(src="/img/icon-editar.png", alt="editar")
+                  |  Editar
+
+              form(method="POST", action="/enfermeros/cambiar-estado", style="display:inline")
+                input(type="hidden", name="_method", value="PATCH")
+                input(type="hidden", name="id_enfermero", value=enfermero.id_enfermero)
+                input(type="hidden", name="estado", value=enfermero.estado ? 'false' : 'true')
+                button(type="submit", class="btn-cambiar-estado")
+                  if enfermero.estado
+                    span.estado-boton-rojo
+                      img.icono-info(src="/img/icon-estado.png", alt="Dar de baja", title="Dar de baja")
+                      |  Dar de baja
+                  else
+                    span.estado-boton-verde
+                      img.icono-info(src="/img/icon-estado.png", alt="Dar de alta", title="Dar de alta")
+                      |  Restaurar
+
+  include includes/modalEnfermero.pug
+  +modalEnfermero()

@@ -44,6 +44,10 @@ Admision.belongsTo(MotivoAdmision, { foreignKey: "id_motivo" });
 Admision.hasMany(EvaluacionEnfermeria, { foreignKey: "id_admision" });
 EvaluacionEnfermeria.belongsTo(Admision, { foreignKey: "id_admision" });
 
+// Relación Enfermero - Usuario
+Usuario.hasOne(Enfermero, { foreignKey: "id_usuario" });
+Enfermero.belongsTo(Usuario, { foreignKey: "id_usuario" });
+
 // Relación Enfermero - EvaluacionEnfermeria
 Enfermero.hasMany(EvaluacionEnfermeria, { foreignKey: "id_enfermero" });
 EvaluacionEnfermeria.belongsTo(Enfermero, { foreignKey: "id_enfermero" });

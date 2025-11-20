@@ -1,82 +1,65 @@
 const EnfermeroService = require("../service/EnfermeroService");
 const GuardiaService = require("../service/GuardiaService");
+const { parseEnfermeroFromBody } = require("../helper/EnfermeroHelper");
+const UsuarioService = require("../service/UsuarioService");
 
-const getAllEnfermero = async (req, res) => {
+const getAllEnfermero = async (req, res, next) => {
   try {
     const enfermeros = await EnfermeroService.getAllEnfermeros();
     const guardias = await GuardiaService.getAllGuardia();
     res.render("Enfermeros/GestionEnfermeros", { enfermeros, guardias });
   } catch (error) {
-    res
-      .status(500)
-      .send("Ocurrio un error en obtener los Enfermeros.." + error.message);
+    next(error);
   }
 };
 
-const createEnfermero = async (req, res) => {
+const createEnfermero = async (req, res, next) => {
   try {
-    const datos = {
-      nombre: req.body.nombre,
-      apellido: req.body.apellido,
-      genero: req.body.genero,
-      documento: req.body.documento,
-      matricula: req.body.matricula,
-      id_guardia: parseInt(req.body.id_guardia),
-      estado: true,
+    const datosUsuario = {
+      nombre_usuario: req.body.nombre_usuario,
+      email: req.body.email,
+      password: req.body.password,
+      id_rol: 2 
     };
+    
+    const resultadoUsuario = await UsuarioService.createUsuario(datosUsuario);
 
-    const { enfermeros, creado } = await EnfermeroService.createEnfermero(datos);
-
-    if (creado) {
-      res.redirect("/enfermeros/GestionEnfermero/");
-    } else {
-      res.status(409).send("Error. El enfermero ya fue registrado anteriormente!");
+    if (!resultadoUsuario.creado) {
+        throw new Error("No se pudo crear el usuario para el enfermero.");
     }
+
+    const datosEnfermero = parseEnfermeroFromBody(req.body);
+
+    datosEnfermero.id_usuario = resultadoUsuario.usuario.id_usuario;
+    await EnfermeroService.createEnfermero(datosEnfermero);
+
+    res.redirect("/enfermeros/GestionEnfermero/");
   } catch (error) {
-    res
-      .status(500)
-      .send("Ocurrió un error al crear el enfermero: " + error.message);
+    next(error);
   }
 };
 
 const updateEnfermero = async (req, res) => {
   try {
-    const datos = {
-      id_enfermero: req.body.id_enfermero,
-      nombre: req.body.nombre,
-      apellido: req.body.apellido,
-      genero: req.body.genero,
-      matricula: req.body.matricula,
-      id_guardia: req.body.id_guardia,
-    };
-
+    const id_enfermero = parseInt(req.body.id_enfermero);
+    const datos = parseEnfermeroFromBody(req.body, id_enfermero);
     await EnfermeroService.updateEnfermero(datos);
 
     res.redirect("/enfermeros/GestionEnfermero/");
   } catch (error) {
-    res
-      .status(500)
-      .send("Ocurrió un error al actualizar el enfermero: " + error.message);
+    next(error);
   }
 };
 
-const changeStatusEnfermero = async (req, res) => {
+const changeStatusEnfermero = async (req, res, next) => {
   try {
-    console.log("BODY:", req.body);
-    const datos = {
-      id_enfermero: req.body.id_enfermero,
-      estado: req.body.estado === "true",
-    };
-
-    await EnfermeroService.changeStatusEnfermero(datos);
+    const id_enfermero = parseInt(req.body.id_enfermero);
+    const estado = req.body.estado === 'true';
+    await EnfermeroService.changeStatusEnfermero( { id_enfermero, estado});
 
     res.redirect("/enfermeros/GestionEnfermero/");
   } catch (error) {
-    res
-      .status(500)
-      .send(
-        "Ocurrió un error al cambiar el estado del enfermero: " + error.message
-      );
+    next(error);
   }
 };
 

@@ -23,8 +23,8 @@ router.post(
     enfermeroController.createEnfermero
   );
   
-  router.post("/actualizar", enfermeroController.updateEnfermero);
+  router.put("/actualizar", enfermeroController.updateEnfermero);
 
-  router.post("/cambiar-estado", enfermeroController.changeStatusEnfermero);
+  router.patch("/cambiar-estado", enfermeroController.changeStatusEnfermero);
 
 module.exports = router;
