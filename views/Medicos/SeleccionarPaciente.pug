@@ -43,5 +43,8 @@ block content
             td= new Date(item.admision.fecha_entrada).toLocaleDateString('es-AR')
             td= item.admision.motivo ? item.admision.motivo.descripcion : '-'
             td
-              button.btn-editar(type="button" style="background-color: #2143db; color: white; padding: 5px 10px; border-radius: 5px; border: none;")
+              a.btn-editar(
+                href=`/evaluaciones/crear/${item.admision.id_admision}`, 
+                style="background-color: #2143db; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; display: inline-block; text-align: center;"
+              )
                 | Ver Paciente

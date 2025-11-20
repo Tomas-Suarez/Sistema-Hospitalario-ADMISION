@@ -1,0 +1,110 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="/css/RegistrarAdmision.css") 
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  
+  script.
+    document.addEventListener("DOMContentLoaded", () => {
+      if ($('#TablaHistorial').length > 0) {
+        $('#TablaHistorial').DataTable({
+          language: { url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json" },
+          order: [[0, 'desc']]
+        });
+      }
+
+      const modal = document.getElementById("modal-editar");
+      const btnAbrir = document.getElementById("btn-abrir-modal");
+      const btnCerrar = document.getElementById("cerrar-modal");
+
+      if (btnAbrir) {
+        btnAbrir.addEventListener("click", () => {
+          modal.classList.remove("hidden");
+        });
+      }
+
+      if (btnCerrar) {
+        btnCerrar.addEventListener("click", () => {
+          modal.classList.add("hidden");
+        });
+      }
+      
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.add("hidden");
+        }
+      });
+    });
+
+block content
+  .contenido-medico
+    h1 Historia Clínica
+
+    .form-card(style="background-color: #e3f2fd; border-left: 6px solid #2196f3; margin-bottom: 20px; width: 100%; max-width: 100%; box-sizing: border-box;")
+      h2(style="margin-top: 0; color: #0d47a1;") 
+        | #{admision.paciente.apellido}, #{admision.paciente.nombre}
+      
+      div(style="display: flex; justify-content: space-between; color: #333; margin-top: 10px;")
+        p 
+          strong DNI: 
+          | #{admision.paciente.documento}
+        p 
+          strong Ingreso: 
+          | #{new Date(admision.fecha_entrada).toLocaleDateString('es-AR')}
+        p 
+          strong Diagnóstico: 
+          | #{admision.motivo ? admision.motivo.descripcion : '-'}
+
+    div(style="text-align: right; margin-bottom: 10px;")
+      button#btn-abrir-modal.btn-crearMedico(type="button")
+        span.editar-boton
+          img.icono-info(src="/img/icon-evaluacion.png", alt="crear")
+          | Nueva Evolución
+
+    .form-card(style="width: 100%; max-width: 100%; box-sizing: border-box; padding: 20px;")
+      h3(style="margin-top: 0; margin-bottom: 15px;") Evoluciones Previas
+      table#TablaHistorial(style="width: 100%;")
+        thead
+          tr
+            th Fecha
+            th Médico
+            th Tratamiento
+            th Nota
+        tbody
+          if historial
+            each ev in historial
+              tr
+                td(data-sort=ev.fecha)= new Date(ev.fecha).toLocaleString('es-AR')
+                td= ev.medico ? ev.medico.apellido : '-'
+                td(style="font-weight: bold;")= ev.tratamiento ? ev.tratamiento.nombre : '-'
+                td= ev.observaciones
+
+  #modal-editar.hidden
+    .modal-contenido(style="width: 600px; max-width: 90%;")
+      h2 Nueva Evolución
+      
+      form(action="/evaluaciones/guardar" method="POST")
+        input(type="hidden", name="id_admision", value=admision.id_admision)
+
+        div
+          label(for="observaciones") Evolución Clínica:
+          textarea(name="observaciones", id="observaciones", rows="5", required, placeholder="Escriba la evolución del paciente...", style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 15px;")
+
+        div
+          label(for="id_tratamiento") Tratamiento:
+          select(name="id_tratamiento", id="id_tratamiento", required, style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 15px;")
+            option(disabled selected value="") -- Seleccione --
+            if tratamientos
+              each t in tratamientos
+                option(value=t.id_tratamiento)= t.nombre
+            else
+              option(disabled) No hay tratamientos cargados
+
+        div
+          button(type="submit") Guardar
+          button(type="button", id="cerrar-modal", style="background-color: #dc3545; margin-top: 10px;") Cancelar

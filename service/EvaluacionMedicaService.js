@@ -1,3 +1,6 @@
+const EvaluacionMedica = require("../models/EvaluacionMedicaModels");
+const Medico = require("../models/MedicoModels");
+const Tratamiento = require("../models/TratamientoModels");
 const EvaluacionMapper = require("../mappers/EvaluacionMedicaMapper");
 
 const createEvaluacion = async (evaluacionRequestDTO) => {
@@ -10,6 +13,24 @@ const createEvaluacion = async (evaluacionRequestDTO) => {
   }
 };
 
+const getEvaluacionesPorAdmision = async (id_admision) => {
+  try {
+    const evaluaciones = await EvaluacionMedica.findAll({
+      where: { id_admision },
+      include: [
+        { model: Medico, attributes: ['apellido'] },
+        { model: Tratamiento, attributes: ['nombre'] }
+      ],
+      order: [['fecha', 'DESC']]
+    });
+    
+    return evaluaciones.map(ev => EvaluacionMapper.toDto(ev));
+  } catch (error) {
+    throw new Error("Error al buscar evaluaciones: " + error.message);
+  }
+};
+
 module.exports = {
-  createEvaluacion
+  createEvaluacion,
+  getEvaluacionesPorAdmision,
 };
