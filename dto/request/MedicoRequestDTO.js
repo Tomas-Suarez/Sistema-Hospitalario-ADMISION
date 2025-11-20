@@ -4,7 +4,6 @@ class MedicoRequestDTO {
     nombre,
     apellido,
     documento,
-    telefono,
     genero,
     matricula,
     estado,
@@ -15,10 +14,8 @@ class MedicoRequestDTO {
     this.nombre = nombre;
     this.apellido = apellido;
     this.documento = documento;
-    this.telefono = telefono;
     this.genero = genero;
     this.matricula = matricula;
-    this.peso = peso;
     this.estado = estado;
     this.id_especialidad = id_especialidad;
     this.id_guardia = id_guardia;

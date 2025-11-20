@@ -18,6 +18,7 @@ const admisionRoutes = require("./routes/AdmisionRoutes");
 const habitacionRoutes = require("./routes/HabitacionRoutes");
 const asignacionRoutes = require("./routes/AsignacionDormitorioRoutes");
 const usuarioRoutes = require("./routes/UsuarioRoutes");
+const evaluacionRoutes = require("./routes/EvaluacionRoutes");
 
 // Configuracion del motor de plantillas - PUG
 app.set("view engine", "pug");
@@ -54,6 +55,7 @@ app.use("/admisiones", admisionRoutes);
 app.use("/habitaciones", habitacionRoutes);
 app.use("/asignaciones", asignacionRoutes);
 app.use("/usuarios", usuarioRoutes);
+app.use("/evaluaciones", evaluacionRoutes);
 
 // Ruta principal donde se encuentra la vista principal
 app.get(

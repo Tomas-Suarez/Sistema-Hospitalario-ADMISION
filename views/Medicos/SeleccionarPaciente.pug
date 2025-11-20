@@ -1,0 +1,47 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  script.
+    $(document).ready(function () {
+      $('#TablaPacientes').DataTable({
+        language: { url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json" }
+      });
+    });
+
+block content
+  .contenido-medico
+    h1 Pacientes Internados
+    p Seleccione un paciente para ver sus datos.
+
+    table#TablaPacientes
+      thead
+        tr
+          th Ubicación
+          th Paciente
+          th DNI
+          th Ingreso
+          th Motivo
+          th Acción
+      tbody
+        each item in internaciones
+          tr
+            td
+              strong= `Hab. ${item.cama.habitacion.numero}`
+              br
+              span(style="font-size: 0.9em; color: #333;")= item.cama.habitacion.ala.nombre
+              br
+              span(style="font-size: 0.8em; color: #666;")= `Cama ${item.cama.numero}`
+            
+            td= item.admision.paciente.apellido + ", " + item.admision.paciente.nombre
+            td= item.admision.paciente.documento
+            td= new Date(item.admision.fecha_entrada).toLocaleDateString('es-AR')
+            td= item.admision.motivo ? item.admision.motivo.descripcion : '-'
+            td
+              button.btn-editar(type="button" style="background-color: #2143db; color: white; padding: 5px 10px; border-radius: 5px; border: none;")
+                | Ver Paciente

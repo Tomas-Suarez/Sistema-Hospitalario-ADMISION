@@ -6,7 +6,6 @@ class MedicoResponseDTO {
     nombre,
     apellido,
     documento,
-    telefono,
     genero,
     matricula,
     estado,
@@ -19,7 +18,6 @@ class MedicoResponseDTO {
     this.nombre = nombre;
     this.apellido = apellido;
     this.documento = documento;
-    this.telefono = telefono;
     this.genero = genero;
     this.matricula = matricula;
     this.estado = estado;
