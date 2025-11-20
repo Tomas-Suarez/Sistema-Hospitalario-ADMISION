@@ -4,6 +4,7 @@ const IngresoService = require("../service/TipoIngresoService");
 const MotivoService = require("../service/MotivoAdmisionService");
 const AlaService = require("../service/AlaService");
 const HabitacionService = require("../service/HabitacionService");
+const AdmisionService = require("../service/AdmisionService");
 const { parsePacienteFromBody } = require("../helper/PacienteHelper");
 const { HABITACION_EMERGENCIA } = require("../constants/HabitacionConstants");
 
@@ -134,6 +135,20 @@ const formEmergencia = async (req, res, next) => {
   }
 };
 
+const getHistorial = async (req, res, next) => {
+  try {
+    const { id_paciente } = req.params;
+
+    const paciente = await pacienteService.getPacienteById(id_paciente);
+
+    const historial = await AdmisionService.getHistorialPorPaciente(id_paciente);
+
+    res.render("Paciente/Historial", { paciente, historial });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllPacientes,
   formAdmision,
@@ -142,4 +157,5 @@ module.exports = {
   changeStatusPaciente,
   cargarPaciente,
   formEmergencia,
+  getHistorial,
 };

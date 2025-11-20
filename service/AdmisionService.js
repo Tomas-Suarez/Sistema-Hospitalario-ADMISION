@@ -112,8 +112,37 @@ const darDeBajaAdmision = async (id_admision) => {
   }
 };
 
+const getAdmisionById = async (id_admision) => {
+  const admision = await Admision.findByPk(id_admision, {
+    include: [
+      { model: Paciente }, 
+      { model: Motivo }
+    ]
+  });
+
+  if (!admision) {
+    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID); 
+  }
+  return AdmisionMapper.toDto(admision);;
+};
+
+const getHistorialPorPaciente = async (id_paciente) => {
+  const admisiones = await Admision.findAll({
+    where: { id_paciente },
+    include: [
+      { model: Motivo, attributes: ["descripcion"] },
+      { model: TipoIngreso, attributes: ["descripcion"] },
+    ],
+    order: [['fecha_entrada', 'DESC']]
+  });
+  
+  return admisiones.map(AdmisionMapper.toDto);
+};
+
 module.exports = {
   getAllAdmisiones,
   createAdmision,
   darDeBajaAdmision,
+  getAdmisionById,
+  getHistorialPorPaciente,
 };

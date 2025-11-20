@@ -1,0 +1,49 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaPaciente.css")
+
+block content
+  .contenido-paciente
+    h1 Historial Clínico
+    
+    .form-card(style="margin-bottom: 20px; background-color: #e1f5fe;")
+      h2 #{paciente.apellido}, #{paciente.nombre}
+      p(style="margin-top: 5px;") 
+        strong DNI: 
+        | #{paciente.documento}
+      p
+        strong Obra Social: 
+        | #{paciente.nombre_seguro || 'No posee'}
+
+    if historial.length > 0
+      table#TablaPaciente
+        thead
+          tr
+            th Fecha Ingreso
+            th Fecha Alta
+            th Motivo
+            th Tipo Ingreso
+            th Estado
+        tbody
+          each item in historial
+            tr
+              td= new Date(item.fecha_entrada).toLocaleDateString('es-AR')
+              td= item.fecha_salida ? new Date(item.fecha_salida).toLocaleDateString('es-AR') : "En curso"
+              td= item.motivo
+              td= item.tipo_ingreso
+              td
+                if item.estado
+                  span.estado-indicador.activo
+                  | Internado
+                else
+                  span.estado-indicador.inactivo
+                  | Alta
+
+    else
+      div(style="padding: 30px; text-align: center; background-color: #eee; border-radius: 10px; color: #666;")
+        h3 No hay registros previos
+        p Este paciente no tiene internaciones registradas en el sistema.
+
+    div(style="margin-top: 20px;")
+      a(href="/pacientes/GestionPaciente", style="text-decoration: none; background-color: #666; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;") Volver

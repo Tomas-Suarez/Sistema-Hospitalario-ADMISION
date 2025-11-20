@@ -122,9 +122,18 @@ const changeStatusMedico = async ({ id_medico, estado}) => {
     return { actualizado: true };
 };
 
+const getMedicoByUsuarioId = async (id_usuario) => {
+  const medico = await Medico.findOne({ where: { id_usuario } });
+  if (!medico) {
+    throw new ResourceNotFoundException("No se encontró un perfil médico asociado a este usuario.");
+  }
+  return medico;
+};
+
 module.exports = {
   getAllMedicos,
   createMedico,
   updateMedico,
   changeStatusMedico,
+  getMedicoByUsuarioId
 };

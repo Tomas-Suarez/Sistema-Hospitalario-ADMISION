@@ -40,5 +40,7 @@ router.get("/internacion-emergencia", pacienteController.formEmergencia);
 // Cambiar el estado del paciente
 router.patch("/cambiar-estado/:id", pacienteController.changeStatusPaciente);
 
+router.get("/historial/:id_paciente", pacienteController.getHistorial);
+
 
 module.exports = router;
