@@ -45,7 +45,7 @@ app.use(
       return method;
     }
   })
-); // NOTA: No me funciona el app.use(methodOverride('_method')); Lo tuve que hacer de la otra forma
+);
 
 // Rutas
 app.use("/pacientes", pacienteRoutes);

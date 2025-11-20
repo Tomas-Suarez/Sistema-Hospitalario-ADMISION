@@ -44,6 +44,11 @@ EvaluacionMedica.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    fecha: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    }
   },
   {
     sequelize,

@@ -11,6 +11,7 @@ const Rol = require("../models/RolModels");
 const Guardia = require("../models/GuardiaModels");
 const Especialidad = require("../models/EspecialidadModels");
 const Usuario = require("../models/UsuarioModels");
+const Tratamiento = require("../models/TratamientoModels");
 
 async function seed() {
   try {
@@ -85,6 +86,16 @@ async function seed() {
       { id_especialidad: 3, nombre: "Pediatría" },
       { id_especialidad: 4, nombre: "Traumatología" },
       { id_especialidad: 5, nombre: "Medicina General" },
+    ]);
+
+    await Tratamiento.bulkCreate([
+      { nombre: "Antibióticos intravenosos", descripcion: "Administración de antibióticos de amplio espectro.", duracion: "7 días", indicaciones: "Monitorizar reacción alérgica." },
+      { nombre: "Analgesia controlada", descripcion: "Manejo del dolor con opioides o AINEs.", duracion: "Según evolución", indicaciones: "Evaluar escala del dolor cada 4 horas." },
+      { nombre: "Oxigenoterapia", descripcion: "Soporte ventilatorio no invasivo.", duracion: "Continua", indicaciones: "Mantener saturación > 92%." },
+      { nombre: "Hidratación parenteral", descripcion: "Reposición de líquidos y electrolitos.", duracion: "24 horas", indicaciones: "Control de diuresis." },
+      { nombre: "Reposo absoluto", descripcion: "Restricción total de la movilidad.", duracion: "Indefinida", indicaciones: "Prevención de escaras." },
+      { nombre: "Kinesioterapia respiratoria", descripcion: "Ejercicios para mejorar la ventilación pulmonar.", duracion: "15 minutos", indicaciones: "2 veces al día." },
+      { nombre: "Control evolutivo", descripcion: "Observación y monitoreo de signos vitales.", duracion: "Continua", indicaciones: "Registrar novedades en historia clínica." }
     ]);
 
     await Paciente.bulkCreate([
