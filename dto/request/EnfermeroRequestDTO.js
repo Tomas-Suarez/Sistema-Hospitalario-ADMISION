@@ -15,7 +15,6 @@ class EnfermeroRequestDTO {
     this.documento = documento;
     this.genero = genero;
     this.matricula = matricula;
-    this.peso = peso;
     this.estado = estado;
     this.id_guardia = id_guardia;
   }

@@ -16,6 +16,7 @@ const getAllEnfermeros = async () => {
       include: [
         {
           model: Guardia,
+          as: "guardia",
           attributes: ["id_guardia", "nombre"],
         },
       ],

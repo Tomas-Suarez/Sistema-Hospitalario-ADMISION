@@ -53,8 +53,8 @@ Enfermero.hasMany(EvaluacionEnfermeria, { foreignKey: "id_enfermero" });
 EvaluacionEnfermeria.belongsTo(Enfermero, { foreignKey: "id_enfermero" });
 
 // Relación Enfermero - Guardia
-Guardia.hasMany(Enfermero, { foreignKey: "id_guardia" });
-Enfermero.belongsTo(Guardia, { foreignKey: "id_guardia" });
+Guardia.hasMany(Enfermero, { foreignKey: "id_guardia", as: "enfermeros" });
+Enfermero.belongsTo(Guardia, { foreignKey: "id_guardia", as: "guardia" });
 
 // Relación PlanCuidados - EvaluacionEnfermeria
 PlanCuidados.hasMany(EvaluacionEnfermeria, { foreignKey: "id_plan" });
