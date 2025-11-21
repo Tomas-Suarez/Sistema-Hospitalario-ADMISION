@@ -293,7 +293,7 @@ button, .btn-editar, .btn-historial, .btn-cambiar-estado,
 
 .detalle-container {
   background-color: white;
-  padding: 30px;
+  padding: 40px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   max-width: 800px;
@@ -306,12 +306,13 @@ button, .btn-editar, .btn-historial, .btn-cambiar-estado,
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 5px;
+  margin-top: 15px;
 }
 
 .valor-dato {
   font-size: 1.1em;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #eee;
   padding-bottom: 5px;
 }
@@ -322,4 +323,25 @@ button, .btn-editar, .btn-historial, .btn-cambiar-estado,
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 0 4px 4px 0;
+  page-break-inside: avoid;
+}
+
+.btn-pdf {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+}
+
+.btn-pdf:hover {
+  background-color: #c82333;
 }
