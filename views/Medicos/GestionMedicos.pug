@@ -7,7 +7,7 @@ block head
 block scripts
   script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
-  script(src="/js/DataTableMedico.js")
+  script(src="/js/DataTableGlobal.js")
   script(src="/js/Medico.js")
 
 block content
@@ -18,7 +18,7 @@ block content
         img.icono-info(src="/img/icon-crearMedico.png", alt="crear")
         |  Crear Médico
 
-    table#TablaMedico
+    table#TablaMedico.datatable-estandar
       thead
         tr
           th Documento

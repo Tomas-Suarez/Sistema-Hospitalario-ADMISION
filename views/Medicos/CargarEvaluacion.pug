@@ -8,15 +8,7 @@ block head
 block scripts
   script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
-  
-  script.
-    document.addEventListener("DOMContentLoaded", () => {
-      if ($('#TablaHistorial').length > 0) {
-        $('#TablaHistorial').DataTable({
-          language: { url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json" },
-          order: [[0, 'desc']]
-        });
-      }
+  script(src="/js/DataTableGlobal.js")
 
       const modal = document.getElementById("modal-editar");
       const btnAbrir = document.getElementById("btn-abrir-modal");
@@ -68,7 +60,7 @@ block content
 
     .form-card(style="width: 100%; max-width: 100%; box-sizing: border-box; padding: 20px;")
       h3(style="margin-top: 0; margin-bottom: 15px;") Evoluciones Previas
-      table#TablaHistorial(style="width: 100%;")
+      table#TablaHistorial.datatable-estandar(style="width: 100%;")
         thead
           tr
             th Fecha
