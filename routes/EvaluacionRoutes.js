@@ -9,4 +9,6 @@ router.get("/crear/:id_admision", checkRole("Medico"), EvaluacionController.getF
 
 router.post("/guardar", checkRole("Medico"), EvaluacionController.createEvaluacion);
 
+router.get("/detalle/:id_evaluacion", checkRole("Medico"), EvaluacionController.getDetalleEvaluacion);
+
 module.exports = router;

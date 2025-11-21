@@ -62,8 +62,26 @@ const getFormularioEvaluacion = async (req, res, next) => {
   }
 };
 
+const getDetalleEvaluacion = async (req, res, next) => {
+  try {
+    const { id_evaluacion } = req.params;
+
+    const evaluacion = await EvaluacionService.getEvaluacionById(id_evaluacion);
+
+    const admision = await AdmisionService.getAdmisionById(evaluacion.id_admision);
+
+    res.render("Medicos/DetalleEvaluacion", { 
+      evaluacion,
+      admision
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getPacientesInternados,
   createEvaluacion,
   getFormularioEvaluacion,
+  getDetalleEvaluacion,
 };

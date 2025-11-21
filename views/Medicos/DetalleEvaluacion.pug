@@ -1,0 +1,42 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+
+block content
+  .contenido-medico
+    div(style="margin-bottom: 20px;")
+      a(href=`/evaluaciones/crear/${admision.id_admision}`, style="text-decoration: none; color: #666; font-weight: bold;") 
+        | ← Volver a la Historia Clínica
+
+    .detalle-container
+      h1(style="margin-top: 0; color: #0277bd;") Detalle de Evolución # #{evaluacion.id_evaluacion_medica}
+      
+      div(style="background-color: #e3f2fd; padding: 15px; border-radius: 6px; margin-bottom: 30px; display: flex; justify-content: space-between;")
+        div
+          strong Paciente: 
+          | #{admision.paciente.apellido}, #{admision.paciente.nombre}
+        div
+          strong DNI: 
+          | #{admision.paciente.documento}
+        div
+          strong Fecha Evolución: 
+          | #{new Date(evaluacion.fecha).toLocaleString('es-AR')}
+
+      .label-dato PROFESIONAL A CARGO
+      .valor-dato #{evaluacion.medico.apellido}, #{evaluacion.medico.nombre} (Mat. #{evaluacion.medico.matricula})
+
+      .label-dato EVOLUCIÓN CLÍNICA (NOTA)
+      .valor-dato(style="background: #fff; border: none; padding: 0;") 
+        p(style="white-space: pre-line; line-height: 1.6;") #{evaluacion.observaciones || 'Sin observaciones registradas.'}
+
+      .label-dato INDICACIONES / TRATAMIENTOS
+      if evaluacion.Tratamientos && evaluacion.Tratamientos.length > 0
+        each t in evaluacion.Tratamientos
+          div.box-tratamiento
+            h3(style="margin: 0 0 5px 0; color: #17a2b8;")= t.nombre
+            p(style="margin: 0; font-size: 0.9em; color: #555;")= t.descripcion
+            if t.duracion
+              small(style="display:block; margin-top:5px; color: #888;") Duración: #{t.duracion}
+      else
+        p(style="color: #999; font-style: italic;") No se indicaron tratamientos en esta evolución.
