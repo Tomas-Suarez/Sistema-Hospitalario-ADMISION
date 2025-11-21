@@ -20,4 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.classList.add("hidden");
     }
   });
+
+  if (typeof $ !== 'undefined') {
+    $('#select-tratamientos').select2({
+      placeholder: "Buscar y seleccionar tratamientos...",
+      allowClear: true,
+      width: '100%',
+      dropdownParent: $('#modal-editar')
+    });
+  }
 });

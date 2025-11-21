@@ -19,6 +19,7 @@ const MotivoAdmision = require("./MotivoAdmisionModels");
 const Ala = require("./AlaModels");
 const Usuario = require("./UsuarioModels");
 const Rol = require("./RolModels");
+const EvaluacionTratamiento = require("./EvaluacionTratamientoModels");
 
 // Relación Paciente - Admision
 Paciente.hasMany(Admision, { foreignKey: "id_paciente" });
@@ -31,10 +32,6 @@ ContactoEmergencia.belongsTo(Paciente, { foreignKey: "id_paciente" });
 // Relación Paciente - SeguroMedico
 SeguroMedico.hasMany(Paciente, { foreignKey: "id_seguro" });
 Paciente.belongsTo(SeguroMedico, { foreignKey: "id_seguro" });
-
-// Relación Paciente - Admision
-Paciente.hasMany(Admision, { foreignKey: "id_paciente" });
-Admision.belongsTo(Paciente, { foreignKey: "id_paciente" });
 
 // Relación Admision - MotivoAdmision
 MotivoAdmision.hasMany(Admision, { foreignKey: "id_motivo" });
@@ -64,9 +61,20 @@ EvaluacionEnfermeria.belongsTo(PlanCuidados, { foreignKey: "id_plan" });
 Admision.hasMany(EvaluacionMedica, { foreignKey: "id_admision" });
 EvaluacionMedica.belongsTo(Admision, { foreignKey: "id_admision" });
 
-// Relación Tratamiento - EvaluacionMedica
-Tratamiento.hasMany(EvaluacionMedica, { foreignKey: "id_tratamiento" });
-EvaluacionMedica.belongsTo(Tratamiento, { foreignKey: "id_tratamiento" });
+// Relación Muchos a Muchos Evaluacion - Tratamiento
+EvaluacionMedica.belongsToMany(Tratamiento, { 
+  through: EvaluacionTratamiento, 
+  foreignKey: "id_evaluacion_medica",
+  otherKey: "id_tratamiento",
+  uniqueKey: "eval_trat_unique"
+});
+
+Tratamiento.belongsToMany(EvaluacionMedica, { 
+  through: EvaluacionTratamiento, 
+  foreignKey: "id_tratamiento",
+  otherKey: "id_evaluacion_medica",
+  uniqueKey: "eval_trat_unique"
+});
 
 // Relación Médico - Usuario
 Usuario.hasOne(Medico, { foreignKey: "id_usuario" });

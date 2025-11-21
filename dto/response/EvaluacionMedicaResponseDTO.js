@@ -7,13 +7,15 @@ class EvaluacionMedicaResponseDTO {
     fecha,
     observaciones,
     medico,
-    tratamiento
+    Tratamientos
   }) {
     this.id_evaluacion_medica = id_evaluacion_medica;
     this.fecha = fecha;
     this.observaciones = observaciones;
     this.medico = medico ? new MedicoResponseDTO(medico) : null;
-    this.tratamiento = tratamiento ? new TratamientoResponseDTO(tratamiento) : null;
+    this.Tratamientos = (Tratamientos && Array.isArray(Tratamientos))
+      ? Tratamientos.map(t => new TratamientoResponseDTO(t))
+      : [];
   }
 }
 

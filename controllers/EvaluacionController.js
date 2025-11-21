@@ -16,20 +16,25 @@ const getPacientesInternados = async (req, res, next) => {
 
 const createEvaluacion = async (req, res, next) => {
   try {
+    const medico = await MedicoService.getMedicoByUsuarioId(
+      req.user.id_usuario
+    );
 
-    const medico = await MedicoService.getMedicoByUsuarioId(req.user.id_usuario);
+    let tratamientos = req.body.tratamientos;
+    if (tratamientos && !Array.isArray(tratamientos)) {
+      tratamientos = [tratamientos];
+    }
 
     const datos = {
       id_medico: medico.id_medico,
       id_admision: parseInt(req.body.id_admision),
-      id_tratamiento: parseInt(req.body.id_tratamiento),
-      observaciones: req.body.observaciones
+      tratamientos: tratamientos || [],
+      observaciones: req.body.observaciones,
     };
 
     await EvaluacionService.createEvaluacion(datos);
 
     res.redirect("/evaluaciones/pacientes");
-    
   } catch (error) {
     next(error);
   }
@@ -41,14 +46,16 @@ const getFormularioEvaluacion = async (req, res, next) => {
 
     const admision = await AdmisionService.getAdmisionById(id_admision);
 
-    const historial = await EvaluacionService.getEvaluacionesPorAdmision(id_admision);
+    const historial = await EvaluacionService.getEvaluacionesPorAdmision(
+      id_admision
+    );
 
     const tratamientos = await TratamientoService.getAllTratamientos();
 
-    res.render("Medicos/CargarEvaluacion", { 
-      admision, 
-      historial, 
-      tratamientos 
+    res.render("Medicos/CargarEvaluacion", {
+      admision,
+      historial,
+      tratamientos,
     });
   } catch (error) {
     next(error);
