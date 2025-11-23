@@ -3,6 +3,7 @@ extends ../layout
 block head
   link(rel="stylesheet", href="/css/VistaMedico.css")
   link(rel="stylesheet", href="/css/RegistrarAdmision.css") 
+  link(rel="stylesheet", href="/css/CargarEvaluacion.css")
   link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
 
 block scripts
@@ -22,15 +23,9 @@ block content
         | #{admision.paciente.apellido}, #{admision.paciente.nombre}
       
       div(style="display: flex; justify-content: space-between; color: #333; margin-top: 10px;")
-        p 
-          strong DNI: 
-          | #{admision.paciente.documento}
-        p 
-          strong Ingreso: 
-          | #{new Date(admision.fecha_entrada).toLocaleDateString('es-AR')}
-        p 
-          strong Diagnóstico: 
-          | #{admision.motivo ? admision.motivo.descripcion : '-'}
+        p: strong DNI: #{admision.paciente.documento}
+        p: strong Ingreso: #{new Date(admision.fecha_entrada).toLocaleDateString('es-AR')}
+        p: strong Diagnóstico: #{admision.motivo ? admision.motivo.descripcion : '-'}
 
     div(style="text-align: right; margin-bottom: 10px;")
       button#btn-abrir-modal.btn-crearMedico(type="button")
@@ -57,11 +52,11 @@ block content
                 td(style="font-size: 1em;")
                   if ev.observaciones && ev.observaciones.trim() !== ""
                     span.badge-nota Nota
-                  
                   if ev.Tratamientos && ev.Tratamientos.length > 0
                     span.badge-tratamiento Tratamientos
-
-                  if (!ev.observaciones || ev.observaciones.trim() === "") && (!ev.Tratamientos || ev.Tratamientos.length === 0)
+                  if ev.SolicitudPruebas && ev.SolicitudPruebas.length > 0
+                    span.badge-estudio Estudios
+                  if (!ev.observaciones || ev.observaciones.trim() === "") && (!ev.Tratamientos || ev.Tratamientos.length === 0) && (!ev.SolicitudPruebas || ev.SolicitudPruebas.length === 0)
                     span(style="color:#999; font-style:italic") -
 
                 td
@@ -82,16 +77,25 @@ block content
 
         div
           label(for="observaciones") Evolución Clínica:
-          textarea(name="observaciones", id="observaciones", rows="5", required, placeholder="Escriba la evolución del paciente...", style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 15px;")
+          textarea(name="observaciones", id="observaciones", rows="4", required, placeholder="Escriba la evolución...", style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 15px;")
 
         div(style="margin-bottom: 20px;")
-          label(for="select-tratamientos") Tratamientos a indicar:
+          label(for="select-tratamientos") Indicaciones / Tratamientos:
           select(name="tratamientos", id="select-tratamientos", multiple="multiple", style="width: 100%;")
             if tratamientos
               each t in tratamientos
                 option(value=t.id_tratamiento)= t.nombre
             else
               option(disabled) No hay tratamientos cargados
+
+        div(style="margin-bottom: 20px;")
+          label(for="select-pruebas") Solicitud de Estudios / Prácticas:
+          select(name="pruebas", id="select-pruebas", multiple="multiple", style="width: 100%;")
+            if pruebas
+              each p in pruebas
+                option(value=p.id_tipo_prueba)= p.nombre
+            else
+              option(disabled) No hay pruebas cargadas
 
         div(style="margin-top: 15px;")
           button(type="submit") Guardar

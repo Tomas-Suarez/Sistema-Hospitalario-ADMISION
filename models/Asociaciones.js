@@ -20,6 +20,8 @@ const Ala = require("./AlaModels");
 const Usuario = require("./UsuarioModels");
 const Rol = require("./RolModels");
 const EvaluacionTratamiento = require("./EvaluacionTratamientoModels");
+const TipoPrueba = require("./TipoPruebaModels");
+const SolicitudPrueba = require("./SolicitudPruebaModels");
 
 // Relación Paciente - Admision
 Paciente.hasMany(Admision, { foreignKey: "id_paciente" });
@@ -60,6 +62,22 @@ EvaluacionEnfermeria.belongsTo(PlanCuidados, { foreignKey: "id_plan" });
 // Relación Admision - EvaluacionMedica
 Admision.hasMany(EvaluacionMedica, { foreignKey: "id_admision" });
 EvaluacionMedica.belongsTo(Admision, { foreignKey: "id_admision" });
+
+// 1. Admisión - Solicitudes
+Admision.hasMany(SolicitudPrueba, { foreignKey: "id_admision" });
+SolicitudPrueba.belongsTo(Admision, { foreignKey: "id_admision" });
+
+// 2. Médico - Solicitudes
+Medico.hasMany(SolicitudPrueba, { foreignKey: "id_medico" });
+SolicitudPrueba.belongsTo(Medico, { foreignKey: "id_medico" });
+
+// 3. Tipo de Prueba - Solicitudes
+TipoPrueba.hasMany(SolicitudPrueba, { foreignKey: "id_tipo_prueba" });
+SolicitudPrueba.belongsTo(TipoPrueba, { foreignKey: "id_tipo_prueba" });
+
+// 4. Evaluación Médica - Solicitudes
+EvaluacionMedica.hasMany(SolicitudPrueba, { foreignKey: "id_evaluacion_medica" });
+SolicitudPrueba.belongsTo(EvaluacionMedica, { foreignKey: "id_evaluacion_medica" });
 
 // Relación Muchos a Muchos Evaluacion - Tratamiento
 EvaluacionMedica.belongsToMany(Tratamiento, { 

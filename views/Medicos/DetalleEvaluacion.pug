@@ -60,6 +60,14 @@ block content
               small(style="display:block; margin-top:5px; color: #888;") Duración: #{t.duracion}
       else
         p(style="color: #999; font-style: italic;") No se indicaron tratamientos en esta evolución.
+
+      .label-dato SOLICITUD DE ESTUDIOS
+      if evaluacion.SolicitudPruebas && evaluacion.SolicitudPruebas.length > 0
+        each p in evaluacion.SolicitudPruebas
+          div.box-tratamiento(style="border-left: 4px solid #ffc107;")
+            h4(style="margin: 0; color: #856404;")= p.nombre_prueba
+      else
+        p(style="color: #999; font-style: italic;") No se solicitaron estudios en esta evolución.
       
       div(style="margin-top: 60px; display: flex; justify-content: flex-end; page-break-inside: avoid;")
         div(style="text-align: center; width: 200px; border-top: 1px solid #333; padding-top: 5px;")

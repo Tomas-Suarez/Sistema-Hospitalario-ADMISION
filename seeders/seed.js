@@ -13,6 +13,7 @@ const Especialidad = require("../models/EspecialidadModels");
 const Usuario = require("../models/UsuarioModels");
 const Tratamiento = require("../models/TratamientoModels");
 const Medico = require("../models/MedicoModels");
+const TipoPrueba = require("../models/TipoPruebaModels");
 
 async function seed() {
   try {
@@ -146,6 +147,21 @@ async function seed() {
         duracion: "Continua",
         indicaciones: "Registrar novedades en historia clínica.",
       },
+    ]);
+
+    await TipoPrueba.bulkCreate([
+      { nombre: "Análisis de Sangre (Hemograma Completo)" },
+      { nombre: "Orina Completa" },
+      { nombre: "Radiografía de Tórax (Frente y Perfil)" },
+      { nombre: "Electrocardiograma (ECG)" },
+      { nombre: "Ecografía Abdominal" },
+      { nombre: "Tomografía Computada (TAC) de Cerebro" },
+      { nombre: "Resonancia Magnética (RMN)" },
+      { nombre: "Test Rápido COVID-19" },
+      { nombre: "PCR COVID-19" },
+      { nombre: "Cultivo de Sangre (Hemocultivo)" },
+      { nombre: "Perfil Lipídico" },
+      { nombre: "Hepatograma" }
     ]);
 
     await Paciente.bulkCreate([

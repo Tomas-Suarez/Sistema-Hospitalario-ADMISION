@@ -10,7 +10,8 @@ const evaluacionMap = {
   observaciones: "observaciones",
   fecha: "fecha",
   Medico: "medico",
-  Tratamientos: "Tratamientos"
+  Tratamientos: "Tratamientos",
+  SolicitudPruebas: "SolicitudPruebas"
 };
 
 function toEntity(requestDTO) {

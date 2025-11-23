@@ -24,6 +24,9 @@ require("../models/AltaHospitalariaModels");
 require("../models/MotivoAltaModels");
 require("../models/RolModels");
 require("../models/UsuarioModels");
+require("../models/EvaluacionTratamientoModels");
+require("../models/TipoPruebaModels");
+require("../models/SolicitudPruebaModels")
 
 async function syncDatabase() {
   try {

@@ -1,0 +1,55 @@
+.select2-container--default .select2-selection--multiple {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.badge-nota {
+  display: inline-block;
+  padding: 3px 8px;
+  margin-right: 5px;
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.8em;
+}
+
+.badge-tratamiento {
+  display: inline-block;
+  padding: 3px 8px;
+  margin-right: 5px;
+  background-color: #cff4fc;
+  color: #055160;
+  border: 1px solid #b6effb;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.8em;
+}
+
+.badge-estudio {
+  display: inline-block;
+  padding: 3px 8px;
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.8em;
+}
+
+#TablaHistorial td:nth-child(1),
+#TablaHistorial th:nth-child(1) {
+  width: 180px !important;
+  max-width: 180px !important;
+  white-space: nowrap;
+}
+
+#TablaHistorial td:nth-child(3),
+#TablaHistorial th:nth-child(3),
+#TablaHistorial td:last-child,
+#TablaHistorial th:last-child {
+  text-align: center !important;
+  vertical-align: middle;
+}

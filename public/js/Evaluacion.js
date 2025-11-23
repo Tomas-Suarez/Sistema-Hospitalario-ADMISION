@@ -29,4 +29,19 @@ document.addEventListener("DOMContentLoaded", () => {
       dropdownParent: $('#modal-editar')
     });
   }
+
+    if (typeof $ !== 'undefined' && $('#select-pruebas').length > 0) {
+    $('#select-pruebas').select2({
+      placeholder: "Buscar estudios...",
+      allowClear: true, width: '100%', dropdownParent: $('#modal-editar')
+    });
+  }
+});
+
+$(document).ready(function() {
+  if ($('#TablaHistorial').length) {
+    const table = $('#TablaHistorial').DataTable();
+    
+    table.order([0, 'desc']).draw();
+  }
 });

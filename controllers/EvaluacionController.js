@@ -3,6 +3,7 @@ const EvaluacionService = require("../service/EvaluacionMedicaService");
 const AdmisionService = require("../service/AdmisionService");
 const TratamientoService = require("../service/TratamientoService");
 const MedicoService = require("../service/MedicoService");
+const TipoPruebaService = require("../service/TipoPruebaService");
 
 const getPacientesInternados = async (req, res, next) => {
   try {
@@ -25,10 +26,16 @@ const createEvaluacion = async (req, res, next) => {
       tratamientos = [tratamientos];
     }
 
+    let pruebas = req.body.pruebas;
+    if (pruebas && !Array.isArray(pruebas)) {
+      pruebas = [pruebas];
+    }
+
     const datos = {
       id_medico: medico.id_medico,
       id_admision: parseInt(req.body.id_admision),
       tratamientos: tratamientos || [],
+      pruebas: pruebas || [],
       observaciones: req.body.observaciones,
     };
 
@@ -51,11 +58,13 @@ const getFormularioEvaluacion = async (req, res, next) => {
     );
 
     const tratamientos = await TratamientoService.getAllTratamientos();
+    const pruebas = await TipoPruebaService.getAllPruebas();
 
     res.render("Medicos/CargarEvaluacion", {
       admision,
       historial,
       tratamientos,
+      pruebas,
     });
   } catch (error) {
     next(error);
