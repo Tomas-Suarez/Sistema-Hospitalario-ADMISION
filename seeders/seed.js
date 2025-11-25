@@ -104,7 +104,21 @@ async function seed() {
       { nombre: "Nueces / Frutos Secos" },
       { nombre: "Huevo" },
       { nombre: "Leche / Lactosa" },
-      { nombre: "Ninguna" }
+      { nombre: "Ninguna" },
+    ]);
+
+    await Antecedente.bulkCreate([
+      { nombre: "Diabetes Tipo 1" },
+      { nombre: "Diabetes Tipo 2" },
+      { nombre: "Hipertensión Arterial" },
+      { nombre: "Asma" },
+      { nombre: "EPOC" },
+      { nombre: "Insuficiencia Cardíaca" },
+      { nombre: "Hipotiroidismo" },
+      { nombre: "Celiaquía" },
+      { nombre: "Fumador" },
+      { nombre: "Ex-Fumador" },
+      { nombre: "Ninguno" },
     ]);
 
     await Medico.bulkCreate([
@@ -117,7 +131,7 @@ async function seed() {
         matricula: "MN-12345",
         id_especialidad: 1,
         id_guardia: 1,
-        estado: true
+        estado: true,
       },
     ]);
 
@@ -178,7 +192,7 @@ async function seed() {
       { nombre: "PCR COVID-19" },
       { nombre: "Cultivo de Sangre (Hemocultivo)" },
       { nombre: "Perfil Lipídico" },
-      { nombre: "Hepatograma" }
+      { nombre: "Hepatograma" },
     ]);
 
     await Paciente.bulkCreate([

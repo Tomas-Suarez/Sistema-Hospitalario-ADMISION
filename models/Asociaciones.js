@@ -23,7 +23,9 @@ const EvaluacionTratamiento = require("./EvaluacionTratamientoModels");
 const TipoPrueba = require("./TipoPruebaModels");
 const SolicitudPrueba = require("./SolicitudPruebaModels");
 const Alergia = require("./AlergiaModels");
-const PacienteAlergia = require("./PacienteAlergiaModels.js");
+const PacienteAlergia = require("./PacienteAlergiaModels");
+const Antecedente = require("./AntecedenteModels");
+const PacienteAntecedente = require("./PacienteAntecedenteModels");
 
 // Relación Paciente - Admision
 Paciente.hasMany(Admision, { foreignKey: "id_paciente" });
@@ -96,8 +98,22 @@ Tratamiento.belongsToMany(EvaluacionMedica, {
   uniqueKey: "eval_trat_unique"
 });
 
+// Relacion Paciente - Alergia
 Paciente.belongsToMany(Alergia, { through: PacienteAlergia, foreignKey: 'id_paciente' });
 Alergia.belongsToMany(Paciente, { through: PacienteAlergia, foreignKey: 'id_alergia' });
+
+// Relacion Antecedente - Paciente
+Paciente.belongsToMany(Antecedente, { 
+  through: PacienteAntecedente, 
+  foreignKey: 'id_paciente',
+  otherKey: 'id_antecedente'
+});
+
+Antecedente.belongsToMany(Paciente, { 
+  through: PacienteAntecedente, 
+  foreignKey: 'id_antecedente',
+  otherKey: 'id_paciente'
+});
 
 // Relación Médico - Usuario
 Usuario.hasOne(Medico, { foreignKey: "id_usuario" });
