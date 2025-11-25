@@ -15,6 +15,7 @@ const Tratamiento = require("../models/TratamientoModels");
 const Medico = require("../models/MedicoModels");
 const TipoPrueba = require("../models/TipoPruebaModels");
 const MotivoAlta = require("../models/MotivoAltaModels");
+const Alergia = require("../models/AlergiaModels");
 
 async function seed() {
   try {
@@ -89,6 +90,21 @@ async function seed() {
       { id_especialidad: 3, nombre: "Pediatría" },
       { id_especialidad: 4, nombre: "Traumatología" },
       { id_especialidad: 5, nombre: "Medicina General" },
+    ]);
+
+    await Alergia.bulkCreate([
+      { nombre: "Penicilina" },
+      { nombre: "Látex" },
+      { nombre: "Sulfamidas" },
+      { nombre: "Aines (Ibuprofeno/Aspirina)" },
+      { nombre: "Polen" },
+      { nombre: "Ácaros" },
+      { nombre: "Picadura de Abeja" },
+      { nombre: "Mariscos" },
+      { nombre: "Nueces / Frutos Secos" },
+      { nombre: "Huevo" },
+      { nombre: "Leche / Lactosa" },
+      { nombre: "Ninguna" }
     ]);
 
     await Medico.bulkCreate([
