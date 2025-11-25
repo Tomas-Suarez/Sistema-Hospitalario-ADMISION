@@ -1,4 +1,3 @@
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -21,6 +20,8 @@ html, body {
   background-color: #28b3ca;
   color: white;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .logo img {
@@ -31,6 +32,8 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .nombre-hospital {
@@ -45,6 +48,10 @@ html, body {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .section-title {
@@ -75,4 +82,9 @@ html, body {
 
 .nav-item:hover {
   background-color: #59c6d7;
+}
+
+.nav-menu li:last-child {
+  margin-top: auto;
+  padding-top: 10px;
 }

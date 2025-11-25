@@ -14,6 +14,7 @@ const Usuario = require("../models/UsuarioModels");
 const Tratamiento = require("../models/TratamientoModels");
 const Medico = require("../models/MedicoModels");
 const TipoPrueba = require("../models/TipoPruebaModels");
+const MotivoAlta = require("../models/MotivoAltaModels");
 
 async function seed() {
   try {
@@ -342,6 +343,12 @@ async function seed() {
       { descripcion: "Caída de altura" },
       { descripcion: "Intoxicación por sustancias" },
       { descripcion: "Fracturas" },
+    ]);
+
+    await MotivoAlta.bulkCreate([
+      { descripcion: "Alta Médica" },
+      { descripcion: "Traslado a otra institución" },
+      { descripcion: "Alta Voluntaria" },
     ]);
 
     await Ala.bulkCreate([

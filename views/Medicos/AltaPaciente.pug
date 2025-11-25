@@ -1,0 +1,47 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/RegistrarAdmision.css")
+
+block content
+  .container
+    .contenido
+      h1 Registrar Alta Médica
+
+      .form-card
+        form(action="/evaluaciones/alta/buscar" method="GET")
+          label(for="documento") DNI del Paciente:
+          input(type="text", name="documento", id="documento", required, placeholder="Ingrese DNI", value=documento)
+          button(type="submit") Buscar Paciente Internado
+
+        if error
+          p(style="color: red; font-weight: bold; margin-top: 10px;")
+            | #{error}
+
+      if admision
+        .form-card
+          h2 Paciente Encontrado
+          ul(style="margin-bottom: 20px;")
+            li(style="color:rgb(33, 35, 172); font-weight: bold;")
+              | #{admision.paciente.apellido}, #{admision.paciente.nombre} (DNI: #{admision.paciente.documento})
+            li
+              | Ingreso: #{new Date(admision.fecha_entrada).toLocaleDateString('es-AR')}
+            li
+              | Ubicación actual: #{admision.habitacion ? `Habitación ${admision.habitacion.numero}` : 'Sin asignar'}
+
+          form(action="/evaluaciones/alta/confirmar" method="POST")
+            input(type="hidden", name="id_admision", value=admision.id_admision)
+
+            div
+              label(for="id_motivo_alta") Motivo del Alta:
+              select(name="id_motivo_alta", id="id_motivo_alta", required)
+                option(disabled selected value="") -- Seleccione motivo --
+                each m in motivos
+                  option(value=m.id_motivo_alta)= m.descripcion
+
+            div
+              label(for="detalles") Instrucciones / Receta de Salida:
+              textarea(name="detalles", id="detalles", rows="5", required, placeholder="Indique medicación al alta, pautas de alarma y fecha de control...", style="width: 100%; padding: 10px;")
+
+            div
+              button(type="submit", style="background-color: #dc3545;") Confirmar Alta

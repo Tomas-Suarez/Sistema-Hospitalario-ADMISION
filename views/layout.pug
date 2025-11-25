@@ -73,17 +73,19 @@ html(lang="es")
             li
               a(href="/pacientes/GestionPaciente/", class="nav-item")
                 img(src="/img/icon-paciente.png", alt="paciente")
-                | Mis Pacientes
+                | Pacientes en general
 
             li.section-title EVALUACIONES
             li
               a(href="/evaluaciones/pacientes", class="nav-item")
                 img(src="/img/icon-evaluacion.png", alt="medica")
                 | Evaluación médica
+
+            li.section-title ALTA HOSPITALARIA
             li
-              a(href="#", class="nav-item")
-                img(src="/img/icon-info.png", alt="consulta")
-                | Consultar por paciente
+              a(href="/evaluaciones/alta", class="nav-item")
+                img(src="/img/icon-cancelar.png", alt="alta")
+                | Registrar Alta
 
           //- ================= ENFERMERO =================
           else if userRole === "Enfermero"

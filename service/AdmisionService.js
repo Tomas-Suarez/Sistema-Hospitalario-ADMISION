@@ -54,14 +54,15 @@ const getAllAdmisiones = async () => {
 };
 
 // Control para ver si tenemos una admision activa, para evitar duplicados
-
-//SE USA EN EL CODIGO DE ABAJO
 const getAdmisionActivaByPaciente = async (id_paciente) => {
   const admisionActiva = await Admision.findOne({
     where: {
       id_paciente,
       estado: true,
     },
+    include: [
+      { model: Paciente }
+    ]
   });
 
   return AdmisionMapper.toDto(admisionActiva);
@@ -145,4 +146,5 @@ module.exports = {
   darDeBajaAdmision,
   getAdmisionById,
   getHistorialPorPaciente,
+  getAdmisionActivaByPaciente,
 };
