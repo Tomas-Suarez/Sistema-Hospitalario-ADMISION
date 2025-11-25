@@ -1,4 +1,5 @@
 const AlergiaResponseDTO = require("./AlergiaResponseDTO");
+const AntecedenteResponseDTO = require("./AntecedenteResponseDTO");
 
 class PacienteResponseDTO {
   constructor({
@@ -30,6 +31,10 @@ class PacienteResponseDTO {
     this.nombre_seguro = seguro?.nombre || null;
     this.alergias = (alergias && Array.isArray(alergias)) 
       ? alergias.map(a => new AlergiaResponseDTO(a)) 
+      : [];
+
+    this.antecedentes = (antecedentes && Array.isArray(antecedentes))
+      ? antecedentes.map(ant => new AntecedenteResponseDTO(ant))
       : [];
   }
 }
