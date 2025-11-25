@@ -1,3 +1,5 @@
+const AlergiaResponseDTO = require("./AlergiaResponseDTO");
+
 class PacienteResponseDTO {
   constructor({
     id_paciente,
@@ -12,6 +14,7 @@ class PacienteResponseDTO {
     peso,
     estado,
     seguro,
+    alergias,
   }) {
     this.id_paciente = id_paciente;
     this.nombre = nombre;
@@ -25,6 +28,9 @@ class PacienteResponseDTO {
     this.peso = peso;
     this.estado = estado;
     this.nombre_seguro = seguro?.nombre || null;
+    this.alergias = (alergias && Array.isArray(alergias)) 
+      ? alergias.map(a => new AlergiaResponseDTO(a)) 
+      : [];
   }
 }
 

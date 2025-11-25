@@ -14,6 +14,7 @@ const pacienteMap = {
   estatura: "estatura",
   peso: "peso",
   estado: "estado",
+  "SeguroMedico": "seguro"
 };
 
 function toEntity(pacienteRequestDTO) {
@@ -24,8 +25,16 @@ function toEntity(pacienteRequestDTO) {
 }
 
 function toDto(pacienteEntity) {
-  const dtoObj = objectMapper(pacienteEntity.toJSON(), pacienteMap);
-  return new PacienteResponseDTO(dtoObj);
+  if (!pacienteEntity) return null;
+
+  const json = pacienteEntity.toJSON ? pacienteEntity.toJSON() : pacienteEntity;
+  
+  const dtoObj = objectMapper(json, pacienteMap);
+
+  return new PacienteResponseDTO({
+    ...dtoObj,
+    alergias: json.Alergias, 
+  });
 }
 
 function updateEntityFromDto(pacienteRequestDTO, entity) {
