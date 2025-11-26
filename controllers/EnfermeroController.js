@@ -2,6 +2,18 @@ const EnfermeroService = require("../service/EnfermeroService");
 const GuardiaService = require("../service/GuardiaService");
 const { parseEnfermeroFromBody } = require("../helper/EnfermeroHelper");
 const UsuarioService = require("../service/UsuarioService");
+const AlergiaService = require("../service/AlergiaService");
+const AntecedenteService = require("../service/AntecendeteService");
+const PacienteService = require("../service/PacienteService");
+const { parseHistoriaFromBody } = require("../helper/HistoriaClinicaHelper");
+
+const getVistaHistoria = (req, res) => {
+  res.render("Enfermeros/RegistrarHistoria", {
+    documento: "",
+    error: null,
+    paciente: null,
+  });
+};
 
 const getAllEnfermero = async (req, res, next) => {
   try {
@@ -19,13 +31,13 @@ const createEnfermero = async (req, res, next) => {
       nombre_usuario: req.body.nombre_usuario,
       email: req.body.email,
       password: req.body.password,
-      id_rol: 2 
+      id_rol: 2,
     };
-    
+
     const resultadoUsuario = await UsuarioService.createUsuario(datosUsuario);
 
     if (!resultadoUsuario.creado) {
-        throw new Error("No se pudo crear el usuario para el enfermero.");
+      throw new Error("No se pudo crear el usuario para el enfermero.");
     }
 
     const datosEnfermero = parseEnfermeroFromBody(req.body);
@@ -54,10 +66,48 @@ const updateEnfermero = async (req, res) => {
 const changeStatusEnfermero = async (req, res, next) => {
   try {
     const id_enfermero = parseInt(req.body.id_enfermero);
-    const estado = req.body.estado === 'true';
-    await EnfermeroService.changeStatusEnfermero( { id_enfermero, estado});
+    const estado = req.body.estado === "true";
+    await EnfermeroService.changeStatusEnfermero({ id_enfermero, estado });
 
     res.redirect("/enfermeros/GestionEnfermero/");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const buscarPacienteHistoria = async (req, res) => {
+  const { documento } = req.query;
+  try {
+    const paciente = await PacienteService.getPacienteByDNI(documento);
+    const alergiasDisponibles = await AlergiaService.getAllAlergia();
+    const antecedentesDisponibles =
+    await AntecedenteService.getAllAntecedente();
+
+    const alergiasSel = paciente.alergias.map((a) => a.id_alergia);
+    const antecedentesSel = paciente.antecedentes.map((a) => a.id_antecedente);
+
+    res.render("Enfermeros/RegistrarHistoria", {
+      documento,
+      paciente,
+      alergiasDisponibles,
+      antecedentesDisponibles,
+      alergiasSel,
+      antecedentesSel,
+    });
+  } catch (e) {
+    res.render("Enfermeros/RegistrarHistoria", {
+      documento,
+      error: "Paciente no encontrado",
+      paciente: null,
+    });
+  }
+};
+
+const guardarHistoria = async (req, res, next) => {
+  try {
+    const datos = parseHistoriaFromBody(req.body);
+    await PacienteService.updateHistoriaClinica(datos.id_paciente, datos);
+    res.redirect(`/enfermeros/historia/buscar?documento=${datos.documento}`);
   } catch (error) {
     next(error);
   }
@@ -68,4 +118,7 @@ module.exports = {
   createEnfermero,
   updateEnfermero,
   changeStatusEnfermero,
+  buscarPacienteHistoria,
+  getVistaHistoria,
+  guardarHistoria,
 };

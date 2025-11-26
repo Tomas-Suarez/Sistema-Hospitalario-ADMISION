@@ -1,0 +1,43 @@
+extends ../layout
+block head
+  link(rel="stylesheet", href="/css/RegistrarAdmision.css")
+  link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js")
+  script.
+    $(document).ready(function() {
+      $('.select-multiple').select2({ placeholder: "Seleccione opciones...", allowClear: true, width: '100%' });
+    });
+
+block content
+  .container
+    .contenido
+      h1 Evaluación Inicial de Enfermería
+      .form-card
+        form(action="/enfermeros/historia/buscar" method="GET")
+          label(for="documento") DNI del Paciente:
+          input(type="text", name="documento", value=documento, required)
+          button(type="submit") Buscar
+
+      if paciente
+        .form-card
+          h2 #{paciente.apellido}, #{paciente.nombre}
+          form(action="/enfermeros/historia/guardar" method="POST")
+            input(type="hidden", name="id_paciente", value=paciente.id_paciente)
+            input(type="hidden", name="documento", value=paciente.documento)
+
+            div(style="margin-bottom: 20px;")
+              label Alergias:
+              select(name="alergias", class="select-multiple", multiple="multiple")
+                each a in alergiasDisponibles
+                  option(value=a.id_alergia selected=alergiasSel.includes(a.id_alergia))= a.nombre
+
+            div(style="margin-bottom: 20px;")
+              label Antecedentes:
+              select(name="antecedentes", class="select-multiple", multiple="multiple")
+                each ant in antecedentesDisponibles
+                  option(value=ant.id_antecedente selected=antecedentesSel.includes(ant.id_antecedente))= ant.nombre
+
+            button(type="submit") Guardar Historia

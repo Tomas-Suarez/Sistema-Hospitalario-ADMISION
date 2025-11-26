@@ -99,20 +99,33 @@ Tratamiento.belongsToMany(EvaluacionMedica, {
 });
 
 // Relacion Paciente - Alergia
-Paciente.belongsToMany(Alergia, { through: PacienteAlergia, foreignKey: 'id_paciente' });
-Alergia.belongsToMany(Paciente, { through: PacienteAlergia, foreignKey: 'id_alergia' });
+Paciente.belongsToMany(Alergia, { 
+  through: PacienteAlergia, 
+  foreignKey: 'id_paciente',
+  otherKey: 'id_alergia',
+  as: 'alergias'
+});
+
+Alergia.belongsToMany(Paciente, { 
+  through: PacienteAlergia, 
+  foreignKey: 'id_alergia',
+  otherKey: 'id_paciente',
+  as: 'pacientes'
+});
 
 // Relacion Antecedente - Paciente
 Paciente.belongsToMany(Antecedente, { 
   through: PacienteAntecedente, 
   foreignKey: 'id_paciente',
-  otherKey: 'id_antecedente'
+  otherKey: 'id_antecedente',
+  as: 'antecedentes'
 });
 
 Antecedente.belongsToMany(Paciente, { 
   through: PacienteAntecedente, 
   foreignKey: 'id_antecedente',
-  otherKey: 'id_paciente'
+  otherKey: 'id_paciente',
+  as: 'pacientes'
 });
 
 // Relación Médico - Usuario

@@ -13,6 +13,9 @@ const {
   ERROR_DNI_EXISTENTE_CREATE,
 } = require("../constants/PacienteConstants");
 
+const Alergia = require("../models/AlergiaModels");
+const Antecedente = require("../models/AntecedenteModels");
+
 // Nos permite obtener todos los pacientes, incluyendo el seguro medico
 const getAllPacientes = async () => {
   const pacientes = await Paciente.findAll({
@@ -111,6 +114,11 @@ const changeStatusPaciente = async ({ id_paciente, estado }) => {
 const getPacienteByDNI = async (documento) => {
   const paciente = await Paciente.findOne({
     where: { documento: documento },
+    include: [
+      { model: SeguroMedico },
+      { model: Alergia, as: "alergias" },
+      { model: Antecedente, as: "antecedentes" },
+    ],
   });
 
   if (!paciente) {
@@ -125,16 +133,37 @@ const getPacienteByDNI = async (documento) => {
 // Nos permite obtener un paciente mediante su ID
 const getPacienteById = async (id_paciente) => {
   const paciente = await Paciente.findByPk(id_paciente, {
-    include: {
-      model: SeguroMedico,
-      attributes: ["id_seguro", "nombre"],
-    },
+    include: [
+      { model: SeguroMedico, attributes: ["id_seguro", "nombre"] },
+      { model: Alergia, as: "alergias" },
+      { model: Antecedente, as: "antecedentes" },
+    ],
   });
 
   if (!paciente) {
     throw new ResourceNotFoundException(
       PACIENTE_NO_ENCONTRADO_POR_ID + id_paciente
     );
+  }
+
+  return PacienteMapper.toDto(paciente);
+};
+
+const updateHistoriaClinica = async (id_paciente, datos) => {
+  const paciente = await Paciente.findByPk(id_paciente);
+
+  if (!paciente) {
+    throw new ResourceNotFoundException(
+      PACIENTE_NO_ENCONTRADO_POR_ID + id_paciente
+    );
+  }
+
+  if (datos.alergias) {
+    await paciente.setAlergias(datos.alergias);
+  }
+
+  if (datos.antecedentes) {
+    await paciente.setAntecedentes(datos.antecedentes);
   }
 
   return PacienteMapper.toDto(paciente);
@@ -148,4 +177,5 @@ module.exports = {
   changeStatusPaciente,
   getPacienteByDNI,
   getPacienteById,
+  updateHistoriaClinica,
 };

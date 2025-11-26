@@ -16,6 +16,7 @@ class PacienteResponseDTO {
     estado,
     seguro,
     alergias,
+    antecedentes,
   }) {
     this.id_paciente = id_paciente;
     this.nombre = nombre;

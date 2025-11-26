@@ -16,6 +16,7 @@ const Medico = require("../models/MedicoModels");
 const TipoPrueba = require("../models/TipoPruebaModels");
 const MotivoAlta = require("../models/MotivoAltaModels");
 const Alergia = require("../models/AlergiaModels");
+const Antecedente = require("../models/AntecedenteModels");
 
 async function seed() {
   try {
