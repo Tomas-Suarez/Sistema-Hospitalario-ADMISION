@@ -12,12 +12,16 @@ const {
 } = require("../constants/ErrorConstants");
 
 const {
-   PACIENTE_NO_ENCONTRADO_POR_ID,
-    PACIENTE_INACTIVO_PARA_ADMISION 
-  } = require("../constants/PacienteConstants");
+  PACIENTE_NO_ENCONTRADO_POR_ID,
+  PACIENTE_INACTIVO_PARA_ADMISION,
+} = require("../constants/PacienteConstants");
 const ResourceNotFoundException = require("../exceptions/ResourceNotFoundException");
 const { getPacienteById } = require("./PacienteService");
 const InactivePatientException = require("../exceptions/InactivePatientException");
+const MotivoAdmision = require("../models/MotivoAdmisionModels");
+const Cama = require("../models/CamaModels");
+const Habitacion = require("../models/HabitacionModels");
+const Ala = require("../models/AlaModels");
 
 //Obtenemos todas las admisiones - incluyendo los datos de "Ingreso" y algunos de "Paciente"
 const getAllAdmisiones = async () => {
@@ -61,8 +65,20 @@ const getAdmisionActivaByPaciente = async (id_paciente) => {
       estado: true,
     },
     include: [
-      { model: Paciente }
-    ]
+      { model: Paciente },
+      { model: MotivoAdmision },
+      {
+        model: AsignacionDormitorio,
+        required: false,
+        where: { fecha_fin: null },
+        include: [
+          {
+            model: Cama,
+            include: [{ model: Habitacion, include: [Ala] }],
+          },
+        ],
+      },
+    ],
   });
 
   return AdmisionMapper.toDto(admisionActiva);
@@ -74,11 +90,11 @@ const createAdmision = async (datos) => {
 
   const pacienteExistente = await getPacienteById(datos.id_paciente);
 
-  if(!pacienteExistente){
+  if (!pacienteExistente) {
     throw new ResourceNotFoundException(PACIENTE_NO_ENCONTRADO_POR_ID);
   }
 
-  if(!pacienteExistente.estado){
+  if (!pacienteExistente.estado) {
     throw new InactivePatientException(PACIENTE_INACTIVO_PARA_ADMISION);
   }
 
@@ -115,16 +131,13 @@ const darDeBajaAdmision = async (id_admision) => {
 
 const getAdmisionById = async (id_admision) => {
   const admision = await Admision.findByPk(id_admision, {
-    include: [
-      { model: Paciente }, 
-      { model: Motivo }
-    ]
+    include: [{ model: Paciente }, { model: Motivo }],
   });
 
   if (!admision) {
-    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID); 
+    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID);
   }
-  return AdmisionMapper.toDto(admision);;
+  return AdmisionMapper.toDto(admision);
 };
 
 const getHistorialPorPaciente = async (id_paciente) => {
@@ -134,9 +147,9 @@ const getHistorialPorPaciente = async (id_paciente) => {
       { model: Motivo, attributes: ["descripcion"] },
       { model: TipoIngreso, attributes: ["descripcion"] },
     ],
-    order: [['fecha_entrada', 'DESC']]
+    order: [["fecha_entrada", "DESC"]],
   });
-  
+
   return admisiones.map(AdmisionMapper.toDto);
 };
 

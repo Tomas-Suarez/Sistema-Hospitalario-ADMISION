@@ -1,0 +1,85 @@
+.ficha-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 850px;
+  margin: 20px auto;
+  border-top: 6px solid #009688;
+}
+
+.ficha-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.ficha-titulo {
+  font-size: 24px;
+  color: #00796b;
+  margin: 0;
+}
+
+.dato-box {
+  margin-bottom: 25px;
+}
+
+.dato-label {
+  color: #666;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 2px;
+}
+
+.dato-valor {
+  font-size: 1.1em;
+  color: #333;
+  line-height: 1.6;
+}
+
+.badge-alergia {
+  display: inline-block;
+  padding: 5px 12px;
+  margin: 3px;
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.badge-antecedente {
+  display: inline-block;
+  padding: 5px 12px;
+  margin: 3px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.search-box-container {
+  background-color: #e0f2f1;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.select2-container--default .select2-selection--multiple {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}

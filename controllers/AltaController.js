@@ -5,12 +5,14 @@ const MotivoAlta = require("../models/MotivoAltaModels");
 const AsignacionDormitorio = require("../models/AsignDormitorioModels");
 const Cama = require("../models/CamaModels");
 const Habitacion = require("../models/HabitacionModels");
+const Ala = require("../models/AlaModels");
+const { PACIENTE_NN } = require("../constants/PacienteConstants");
 
 const getVistaAlta = (req, res) => {
-  res.render("Medicos/AltaPaciente", { 
-    documento: "", 
-    error: null, 
-    admision: null 
+  res.render("Medicos/AltaPaciente", {
+    documento: "",
+    error: null,
+    admision: null,
   });
 };
 
@@ -25,30 +27,47 @@ const buscarPacienteParaAlta = async (req, res, next) => {
       return res.render("Medicos/AltaPaciente", {
         documento,
         error: "No existe ningún paciente registrado con ese DNI.",
-        admision: null
+        admision: null,
       });
     }
 
-    const admision = await AdmisionService.getAdmisionActivaByPaciente(paciente.id_paciente);
+    const admision = await AdmisionService.getAdmisionActivaByPaciente(
+      paciente.id_paciente
+    );
 
     if (!admision) {
       return res.render("Medicos/AltaPaciente", {
         documento,
         error: "El paciente existe, pero NO está internado actualmente.",
+        admision: null,
+      });
+    }
+
+    if (paciente.id_paciente === PACIENTE_NN || paciente.documento === "99999999") {
+      return res.render("Medicos/AltaPaciente", {
+        documento,
+        error: "ACCIÓN NO PERMITIDA: No se puede dar el alta a un paciente NN. Debe identificarlo primero actualizando sus datos personales.",
         admision: null
       });
     }
 
     const asignacion = await AsignacionDormitorio.findOne({
-        where: { id_admision: admision.id_admision, fecha_fin: null },
-        include: [{ 
-            model: Cama, 
-            include: [Habitacion] 
-        }]
+      where: { id_admision: admision.id_admision, fecha_fin: null },
+      include: [
+        {
+          model: Cama,
+          include: [
+            {
+              model: Habitacion,
+              include: [Ala],
+            },
+          ],
+        },
+      ],
     });
 
     if (asignacion && asignacion.Cama && asignacion.Cama.Habitacion) {
-        admision.habitacion = asignacion.Cama.Habitacion; 
+      admision.habitacion = asignacion.Cama.Habitacion;
     }
 
     const motivos = await MotivoAlta.findAll();
@@ -57,9 +76,8 @@ const buscarPacienteParaAlta = async (req, res, next) => {
       documento,
       error: null,
       admision,
-      motivos
+      motivos,
     });
-
   } catch (error) {
     next(error);
   }
@@ -77,5 +95,5 @@ const procesarAlta = async (req, res, next) => {
 module.exports = {
   getVistaAlta,
   buscarPacienteParaAlta,
-  procesarAlta
+  procesarAlta,
 };

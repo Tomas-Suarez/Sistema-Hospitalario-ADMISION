@@ -1,43 +1,99 @@
 extends ../layout
+
 block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
   link(rel="stylesheet", href="/css/RegistrarAdmision.css")
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css")
+  link(rel="stylesheet", href="/css/RegistrarHistoria.css")
 
 block scripts
   script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   script(src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js")
-  script.
-    $(document).ready(function() {
-      $('.select-multiple').select2({ placeholder: "Seleccione opciones...", allowClear: true, width: '100%' });
-    });
+  script(src="/js/RegistrarHistoria.js")
 
 block content
-  .container
-    .contenido
-      h1 Evaluación Inicial de Enfermería
-      .form-card
-        form(action="/enfermeros/historia/buscar" method="GET")
-          label(for="documento") DNI del Paciente:
-          input(type="text", name="documento", value=documento, required)
-          button(type="submit") Buscar
+  .contenido-medico(style="padding-top: 20px;")
+    
+    .search-box-container
+      form(action="/enfermeros/historia/buscar" method="GET" style="display: flex; gap: 10px; width: 100%; max-width: 600px;")
+        div(style="flex: 1;")
+          input(type="text", name="documento", placeholder="Ingrese DNI del Paciente...", value=documento, style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #bbb;")
+        button(type="submit" style="padding: 10px 20px; background-color: #009688; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;") Buscar
 
-      if paciente
-        .form-card
-          h2 #{paciente.apellido}, #{paciente.nombre}
+    if error
+      div(style="text-align: center; margin-top: 20px; color: #d32f2f; font-weight: bold;")
+        | #{error}
+
+    if paciente
+      .ficha-container
+        .ficha-header
+          div
+            h1.ficha-titulo Historia Clínica de Enfermería
+            span(style="color: #666;") Evaluación Inicial
+          div
+            button#btn-editar-historia(type="button", style="background-color: #0288d1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;")
+              img(src="/img/icon-editar.png", style="width: 16px; filter: brightness(0) invert(1);")
+              | Editar / Cargar Datos
+
+        div(style="background-color: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #558b2f;")
+          div(style="display: grid; grid-template-columns: 1fr 1fr 1fr;")
+            div
+              strong Paciente: 
+              | #{paciente.apellido}, #{paciente.nombre}
+            div
+              strong DNI: 
+              | #{paciente.documento}
+            div
+              strong Edad: 
+              - const edad = new Date().getFullYear() - new Date(paciente.fecha_nacimiento).getFullYear()
+              | #{edad} años
+
+        .dato-box
+          .dato-label ALERGIAS REGISTRADAS
+          .dato-valor
+            if paciente.alergias && paciente.alergias.length > 0
+              each alergia in paciente.alergias
+                span.badge-alergia= alergia.nombre
+            else
+              span(style="color: #999; font-style: italic;") No se registraron alergias (o no constan datos).
+
+        .dato-box
+          .dato-label ANTECEDENTES MÉDICOS
+          .dato-valor
+            if paciente.antecedentes && paciente.antecedentes.length > 0
+              each ant in paciente.antecedentes
+                span.badge-antecedente= ant.nombre
+            else
+              span(style="color: #999; font-style: italic;") Sin antecedentes patológicos cargados.
+
+      div(style="text-align: center; margin-top: 20px; color: #888; font-size: 0.9em;")
+        | Fin del registro de evaluación inicial.
+
+      #modal-editar.hidden
+        .modal-contenido(style="width: 600px; max-width: 90%; border-top: 5px solid #009688;")
+          h2(style="color: #00796b;") Actualizar Historia Clínica
+          p(style="margin-bottom: 15px;") Seleccione los datos correspondientes para #{paciente.nombre} #{paciente.apellido}.
+
           form(action="/enfermeros/historia/guardar" method="POST")
             input(type="hidden", name="id_paciente", value=paciente.id_paciente)
-            input(type="hidden", name="documento", value=paciente.documento)
+            input(type="hidden", name="documento_hidden", value=paciente.documento)
 
             div(style="margin-bottom: 20px;")
-              label Alergias:
-              select(name="alergias", class="select-multiple", multiple="multiple")
-                each a in alergiasDisponibles
-                  option(value=a.id_alergia selected=alergiasSel.includes(a.id_alergia))= a.nombre
+              label(for="select-alergias" style="font-weight: bold; display: block; margin-bottom: 5px;") Alergias:
+              select(name="alergias", id="select-alergias", class="select-multiple", multiple="multiple")
+                if alergiasDisponibles
+                  each a in alergiasDisponibles
+                    - var isSelected = alergiasSel.includes(a.id_alergia)
+                    option(value=a.id_alergia selected=isSelected)= a.nombre
 
             div(style="margin-bottom: 20px;")
-              label Antecedentes:
-              select(name="antecedentes", class="select-multiple", multiple="multiple")
-                each ant in antecedentesDisponibles
-                  option(value=ant.id_antecedente selected=antecedentesSel.includes(ant.id_antecedente))= ant.nombre
+              label(for="select-antecedentes" style="font-weight: bold; display: block; margin-bottom: 5px;") Antecedentes:
+              select(name="antecedentes", id="select-antecedentes", class="select-multiple", multiple="multiple")
+                if antecedentesDisponibles
+                  each ant in antecedentesDisponibles
+                    - var isSelected = antecedentesSel.includes(ant.id_antecedente)
+                    option(value=ant.id_antecedente selected=isSelected)= ant.nombre
 
-            button(type="submit") Guardar Historia
+            div(style="margin-top: 20px; text-align: right;")
+              button(type="button", id="cerrar-modal", style="background-color: #78909c; margin-right: 10px; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;") Cancelar
+              button(type="submit", style="background-color: #009688; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;") Guardar Cambios

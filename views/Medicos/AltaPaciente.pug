@@ -1,47 +1,80 @@
 extends ../layout
 
 block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
   link(rel="stylesheet", href="/css/RegistrarAdmision.css")
+  link(rel="stylesheet", href="/css/AltaPaciente.css")
+
+block scripts
+  script(src="/js/AltaPaciente.js")
 
 block content
-  .container
-    .contenido
-      h1 Registrar Alta Médica
+  .contenido-medico(style="padding-top: 30px;")
+    
+    .search-box-container
+      form(action="/evaluaciones/alta/buscar" method="GET" style="display: flex; gap: 10px; width: 100%; max-width: 700px;")
+        div(style="flex: 1; position: relative;")
+          input(type="text", name="documento", placeholder="Ingrese DNI del Paciente a dar de alta...", value=documento, style="width: 100%; padding: 14px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px;")
+        button(type="submit" style="padding: 0 25px; background-color: #009688; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px;") Buscar Paciente
 
-      .form-card
-        form(action="/evaluaciones/alta/buscar" method="GET")
-          label(for="documento") DNI del Paciente:
-          input(type="text", name="documento", id="documento", required, placeholder="Ingrese DNI", value=documento)
-          button(type="submit") Buscar Paciente Internado
+    if error
+      div(style="max-width: 850px; margin: 0 auto; background-color: #ffebee; color: #c62828; padding: 15px; border-radius: 6px; border: 1px solid #ffcdd2; text-align: center; font-weight: bold;")
+        | #{error}
 
-        if error
-          p(style="color: red; font-weight: bold; margin-top: 10px;")
-            | #{error}
+    if admision
+      .ficha-container
+        .ficha-header
+          div
+            h1.ficha-titulo Gestión de Alta Hospitalaria
+            span.ficha-subtitulo Revise los datos antes de confirmar la salida.
+          div
+            button#btn-iniciar-alta(type="button", style="background-color: #c62828; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 5px rgba(198, 40, 40, 0.3);")
+              img(src="/img/icon-cancelar.png", style="width: 18px; filter: brightness(0) invert(1);")
+              | Procesar Alta Médica
 
-      if admision
-        .form-card
-          h2 Paciente Encontrado
-          ul(style="margin-bottom: 20px;")
-            li(style="color:rgb(33, 35, 172); font-weight: bold;")
-              | #{admision.paciente.apellido}, #{admision.paciente.nombre} (DNI: #{admision.paciente.documento})
-            li
-              | Ingreso: #{new Date(admision.fecha_entrada).toLocaleDateString('es-AR')}
-            li
-              | Ubicación actual: #{admision.habitacion ? `Habitación ${admision.habitacion.numero}` : 'Sin asignar'}
+        .info-grid
+          .dato-item
+            span.dato-label Paciente
+            span.dato-valor #{admision.paciente.apellido}, #{admision.paciente.nombre}
+            div(style="font-size: 0.9em; color: #666; margin-top: 4px;") DNI: #{admision.paciente.documento}
+
+          .dato-item
+            span.dato-label Fecha de Ingreso
+            span.dato-valor #{new Date(admision.fecha_entrada).toLocaleDateString('es-AR')}
+            div(style="font-size: 0.9em; color: #666; margin-top: 4px;") Hora: #{new Date(admision.fecha_entrada).toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'})} hs
+
+          .dato-item.destacado
+            span.dato-label Ubicación Actual
+            if admision.habitacion
+              span.dato-valor Habitación #{admision.habitacion.numero}
+              div(style="font-size: 0.9em; color: #0d47a1; margin-top: 4px;") #{admision.habitacion.Ala ? admision.habitacion.Ala.nombre : 'Ala desconocida'}
+            else
+              span.dato-valor(style="color: #999;") Sin habitación asignada (En espera)
+
+          .dato-item
+            span.dato-label Motivo de Internación
+            span.dato-valor #{admision.motivo || 'No especificado'}
+
+      #modal-alta.hidden
+        .modal-contenido(style="width: 600px; max-width: 95%; border-top: 5px solid #c62828;")
+          .modal-header-alta
+            h2 Confirmar Alta Médica
+            p(style="color: #666; margin-top: 5px;") Se cerrará la admisión y se liberará la cama del paciente.
 
           form(action="/evaluaciones/alta/confirmar" method="POST")
             input(type="hidden", name="id_admision", value=admision.id_admision)
 
-            div
-              label(for="id_motivo_alta") Motivo del Alta:
-              select(name="id_motivo_alta", id="id_motivo_alta", required)
-                option(disabled selected value="") -- Seleccione motivo --
+            div(style="margin-bottom: 20px;")
+              label(for="id_motivo_alta" style="font-weight: bold; display: block; margin-bottom: 8px;") Motivo de Salida:
+              select(name="id_motivo_alta", id="id_motivo_alta", required, style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;")
+                option(disabled selected value="") -- Seleccione el motivo --
                 each m in motivos
                   option(value=m.id_motivo_alta)= m.descripcion
 
-            div
-              label(for="detalles") Instrucciones / Receta de Salida:
-              textarea(name="detalles", id="detalles", rows="5", required, placeholder="Indique medicación al alta, pautas de alarma y fecha de control...", style="width: 100%; padding: 10px;")
+            div(style="margin-bottom: 25px;")
+              label(for="detalles" style="font-weight: bold; display: block; margin-bottom: 8px;") Instrucciones / Receta
+              textarea(name="detalles", id="detalles", rows="5", required, placeholder="Escriba las indicaciones para el paciente...", style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; resize: vertical;")
 
-            div
-              button(type="submit", style="background-color: #dc3545;") Confirmar Alta
+            div(style="text-align: right; padding-top: 10px; border-top: 1px solid #eee;")
+              button(type="submit", style="background-color: #c62828; color: white; border: none; padding: 10px 25px; border-radius: 4px; font-weight: bold; cursor: pointer;") Confirmar y Finalizar
+              button#cerrar-modal(type="button", style="background-color: #eceff1; color: #333; border: 1px solid #ccc; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-right: 10px; font-weight: bold;") Cancelar
