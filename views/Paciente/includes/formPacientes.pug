@@ -1,47 +1,82 @@
 mixin formPaciente(action)
+
   form#form-paciente(method="POST", action=action)
-    //- Sobre escribe a PATH, si estoy editando el paciente
     if action.includes('actualizar')
       input(type="hidden", name="_method", value="PUT")
 
     input(type="hidden", name="id_paciente", id="edit-id")
-    div
-      label(for="edit-nombre") Nombre:
-      input(type="text", name="nombre", id="edit-nombre", required)
-    div
-      label(for="edit-apellido") Apellido:
-      input(type="text", name="apellido", id="edit-apellido", required)
-    div
-      label(for="edit-telefono") Teléfono:
-      input(type="text", name="telefono", id="edit-telefono", required)
-    div
-      label(for="edit-domicilio") Domicilio:
-      input(type="text", name="domicilio", id="edit-domicilio", required)
-    div
-      - const hoy = new Date().toISOString().split('T')[0]
-      label(for="edit-fecha_nacimiento") Fecha nacimiento:
-      input(type="date", name="fecha_nacimiento", id="edit-fecha_nacimiento", max=hoy, required)
-    div
-      label(for="edit-documento") Documento:
-      input(type="text", name="documento", id="edit-documento", required)
-    div
-      label(for="edit-genero") Género:
-      select(name="genero", id="edit-genero", required)
-        option(value="Masculino") Masculino
-        option(value="Femenino") Femenino
-    div
-      label(for="edit-estatura") Estatura (cm):
-      input(type="text", name="estatura", id="edit-estatura" placeholder="Opcional")
-    div
-      label(for="edit-peso") Peso (kg):
-      input(type="text", name="peso", id="edit-peso" placeholder="Opcional")
-    div
-      label(for="edit-seguro") Seguro médico:
-      select(name="id_seguro", id="edit-seguro", required)
-        option(disabled selected value="") -- Seleccione un seguro --
-        option(value="null") No posee seguro médico
-        each seguro in seguros
-          option(value=seguro.id_seguro)= seguro.nombre
-    div
-      button(type="submit") Guardar Cambios
-      button(type="button", id="cerrar-modal") Cancelar
+
+    .form-section-title Datos Personales
+
+    .form-row
+      .form-col
+        label(for="edit-nombre") Nombre:
+        input(type="text", name="nombre", id="edit-nombre", required)
+      .form-col
+        label(for="edit-apellido") Apellido:
+        input(type="text", name="apellido", id="edit-apellido", required)
+
+    .form-row
+      .form-col
+        label(for="edit-documento") Documento (DNI):
+        input(type="text", name="documento", id="edit-documento", required)
+      .form-col
+        - const hoy = new Date().toISOString().split('T')[0]
+        label(for="edit-fecha_nacimiento") Fecha nacimiento:
+        input(type="date", name="fecha_nacimiento", id="edit-fecha_nacimiento", max=hoy, required)
+
+    .form-row
+      .form-col
+        label(for="edit-genero") Género:
+        select(name="genero", id="edit-genero", required)
+          option(value="Masculino") Masculino
+          option(value="Femenino") Femenino
+      .form-col
+        label(for="edit-telefono") Teléfono Personal:
+        input(type="text", name="telefono", id="edit-telefono", required)
+
+    .form-row
+      .form-col
+        label(for="edit-domicilio") Domicilio:
+        input(type="text", name="domicilio", id="edit-domicilio", required)
+    
+    .form-section-title Datos Clínicos
+
+    .form-row
+      .form-col
+        label(for="edit-estatura") Estatura (cm):
+        input(type="text", name="estatura", id="edit-estatura" placeholder="Ej: 175")
+      .form-col
+        label(for="edit-peso") Peso (kg):
+        input(type="text", name="peso", id="edit-peso" placeholder="Ej: 80.5")
+
+    .form-row
+      .form-col
+        label(for="edit-seguro") Seguro médico:
+        select(name="id_seguro", id="edit-seguro", required)
+          option(disabled selected value="") -- Seleccione --
+          option(value="null") No posee seguro médico
+          if seguros
+            each seguro in seguros
+              option(value=seguro.id_seguro)= seguro.nombre
+
+    .form-section-title Contacto de Emergencia
+    
+    fieldset.fieldset-contactos
+      legend.legend-contacto
+        span Opcional (Máx 1)
+        button#btn-add-contacto(type="button", title="Agregar") +
+
+      #lista-contactos
+
+      p#mensaje-sin-contactos(style="color: #999; font-style: italic; font-size: 0.85em; margin: 2px 0;") Sin contactos cargados.
+
+      template#template-contacto
+        div.contacto-row
+          input(type="text", name="nombres_contacto[]", placeholder="Nombre completo", required)
+          input(type="text", name="telefonos_contacto[]", placeholder="Teléfono", required)
+          button.btn-remove-contacto(type="button", title="Quitar") -
+
+    .buttons-container
+      button(type="submit", style="background-color: #007bff; color: white;") Guardar Cambios
+      button(type="button", id="cerrar-modal", style="background-color: #90a4ae; color: white;") Cancelar

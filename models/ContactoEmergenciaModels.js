@@ -14,7 +14,6 @@ ContactoEmergencia.init(
     id_paciente: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
       references: {
         model: Paciente,
         key: "id_paciente",

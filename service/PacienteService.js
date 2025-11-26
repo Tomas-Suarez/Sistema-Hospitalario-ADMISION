@@ -5,6 +5,9 @@ const PacienteMapper = require("../mappers/PacienteMapper");
 const { Op } = require("sequelize");
 const DuplicatedResourceException = require("../exceptions/DuplicatedResourceException");
 const ResourceNotFoundException = require("../exceptions/ResourceNotFoundException");
+const Alergia = require("../models/AlergiaModels");
+const Antecedente = require("../models/AntecedenteModels");
+const ContactoEmergencia = require("../models/ContactoEmergenciaModels");
 const {
   PACIENTE_NN,
   ERROR_DNI_EXISTENTE_UPDATE,
@@ -13,21 +16,15 @@ const {
   ERROR_DNI_EXISTENTE_CREATE,
 } = require("../constants/PacienteConstants");
 
-const Alergia = require("../models/AlergiaModels");
-const Antecedente = require("../models/AntecedenteModels");
-
 // Nos permite obtener todos los pacientes, incluyendo el seguro medico
 const getAllPacientes = async () => {
   const pacientes = await Paciente.findAll({
-    where: {
-      id_paciente: { [Op.ne]: PACIENTE_NN },
-    },
-    include: {
-      model: SeguroMedico,
-      attributes: ["id_seguro", "nombre"],
-    },
+    where: { id_paciente: { [Op.ne]: PACIENTE_NN } },
+    include: [
+      { model: SeguroMedico, attributes: ["id_seguro", "nombre"] },
+      { model: ContactoEmergencia, as: 'contactos' }
+    ],
   });
-
   return pacientes.map(PacienteMapper.toDto);
 };
 
@@ -35,12 +32,11 @@ const getAllPacientes = async () => {
 const getAllPacientesActivos = async () => {
   const pacientes = await Paciente.findAll({
     where: { estado: true },
-    include: {
-      model: SeguroMedico,
-      attributes: ["id_seguro", "nombre"],
-    },
+    include: [
+      { model: SeguroMedico, attributes: ["id_seguro", "nombre"] },
+      { model: ContactoEmergencia, as: 'contactos' }
+    ],
   });
-
   return pacientes.map(PacienteMapper.toDto);
 };
 
@@ -59,13 +55,21 @@ const createPaciente = async (pacienteRequestDTO) => {
     );
   }
 
+  if (pacienteRequestDTO.contactos && pacienteRequestDTO.contactos.length > 0) {
+    const nuevosContactos = pacienteRequestDTO.contactos.map((c) => ({
+      ...c,
+      id_paciente: paciente.id_paciente,
+    }));
+
+    await ContactoEmergencia.bulkCreate(nuevosContactos);
+  }
+
   return {
     paciente: PacienteMapper.toDto(paciente),
     creado,
   };
 };
 
-// Nos permite actualizar un paciente mediante su ID
 const updatePaciente = async (pacienteRequestDTO) => {
   const paciente = await Paciente.findByPk(pacienteRequestDTO.id_paciente);
 
@@ -90,6 +94,19 @@ const updatePaciente = async (pacienteRequestDTO) => {
 
   PacienteMapper.updateEntityFromDto(pacienteRequestDTO, paciente);
   await paciente.save();
+
+  await ContactoEmergencia.destroy({
+    where: { id_paciente: paciente.id_paciente },
+  });
+
+  if (pacienteRequestDTO.contactos && pacienteRequestDTO.contactos.length > 0) {
+    const nuevosContactos = pacienteRequestDTO.contactos.map((c) => ({
+      ...c,
+      id_paciente: paciente.id_paciente,
+    }));
+
+    await ContactoEmergencia.bulkCreate(nuevosContactos);
+  }
 
   return { paciente: PacienteMapper.toDto(paciente), actualizado: true };
 };
@@ -118,6 +135,7 @@ const getPacienteByDNI = async (documento) => {
       { model: SeguroMedico },
       { model: Alergia, as: "alergias" },
       { model: Antecedente, as: "antecedentes" },
+      { model: ContactoEmergencia, as: 'contactos' }
     ],
   });
 
@@ -137,6 +155,7 @@ const getPacienteById = async (id_paciente) => {
       { model: SeguroMedico, attributes: ["id_seguro", "nombre"] },
       { model: Alergia, as: "alergias" },
       { model: Antecedente, as: "antecedentes" },
+      { model: ContactoEmergencia, as: 'contactos' }
     ],
   });
 

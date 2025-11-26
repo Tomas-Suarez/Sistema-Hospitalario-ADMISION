@@ -32,8 +32,16 @@ Paciente.hasMany(Admision, { foreignKey: "id_paciente" });
 Admision.belongsTo(Paciente, { foreignKey: "id_paciente" });
 
 // Relación Paciente - ContactoEmergencia
-Paciente.hasOne(ContactoEmergencia, { foreignKey: "id_paciente" });
-ContactoEmergencia.belongsTo(Paciente, { foreignKey: "id_paciente" });
+Paciente.hasMany(ContactoEmergencia, { 
+  foreignKey: "id_paciente", 
+  onDelete: 'CASCADE',
+  as: 'contactos'
+});
+
+ContactoEmergencia.belongsTo(Paciente, { 
+  foreignKey: "id_paciente",
+  as: 'paciente' 
+});
 
 // Relación Paciente - SeguroMedico
 SeguroMedico.hasMany(Paciente, { foreignKey: "id_seguro" });

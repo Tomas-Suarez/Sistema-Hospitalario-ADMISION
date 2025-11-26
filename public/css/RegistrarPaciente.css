@@ -89,3 +89,72 @@ body {
     background-color: #d6f5f9;
   }
   
+.fieldset-contactos {
+  border: 1px solid #bcecf2;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 5px;
+  background-color: #eaffff;
+}
+
+.legend-contacto {
+  width: 100%;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  font-weight: bold;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+/* Botón + */
+#btn-add-contacto {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+}
+
+#btn-add-contacto:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Fila y Botón - */
+.contacto-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.contacto-row input {
+  flex: 1;
+}
+
+.btn-remove-contacto {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+  padding-bottom: 3px;
+}

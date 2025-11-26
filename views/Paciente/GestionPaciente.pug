@@ -3,6 +3,7 @@ extends ../layout
 block head
   link(rel="stylesheet", href="/css/VistaPaciente.css")
   link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+  link(rel="stylesheet", href="/css/formPaciente.css")
 
 block scripts
   script(src="https://code.jquery.com/jquery-3.6.0.min.js")
@@ -55,7 +56,8 @@ block content
                 data-estatura=paciente.estatura,
                 data-peso=paciente.peso,
                 data-contacto_emergencia=paciente.contacto_emergencia,
-                data-id_seguro=paciente.id_seguro
+                data-id_seguro=paciente.id_seguro,
+                data-contactos=JSON.stringify(paciente.contactos)
               )
                 span.editar-boton
                   img.icono-info(src="/img/icon-editar.png", alt="editar")

@@ -35,6 +35,7 @@ function toDto(pacienteEntity) {
     ...dtoObj,
     alergias: json.alergias,
     antecedentes: json.antecedentes,
+    contactos: json.contactos
   });
 }
 
