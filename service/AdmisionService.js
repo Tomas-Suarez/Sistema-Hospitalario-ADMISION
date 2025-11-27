@@ -131,11 +131,30 @@ const darDeBajaAdmision = async (id_admision) => {
 
 const getAdmisionById = async (id_admision) => {
   const admision = await Admision.findByPk(id_admision, {
-    include: [{ model: Paciente }, { model: Motivo }],
+    include: [
+      { model: Paciente },
+      { model: MotivoAdmision },
+      { 
+        model: AsignacionDormitorio,
+        required: false,
+        where: { fecha_fin: null },
+        include: [
+            {
+                model: Cama,
+                include: [
+                    { 
+                        model: Habitacion,
+                        include: [{ model: Ala }]
+                    }
+                ]
+            }
+        ]
+      }
+    ]
   });
 
   if (!admision) {
-    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID);
+    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID); 
   }
   return AdmisionMapper.toDto(admision);
 };

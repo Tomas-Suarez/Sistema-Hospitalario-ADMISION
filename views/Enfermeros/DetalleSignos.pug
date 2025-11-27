@@ -1,0 +1,46 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+
+block content
+  .contenido-medico
+    div(style="margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;")
+      a(href="javascript:history.back()", style="text-decoration: none; color: #666; font-weight: bold;") ← Volver al listado
+
+    .detalle-container(style="border-top: 5px solid #ef6c00;")
+      
+      div(style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ef6c00; padding-bottom: 15px; margin-bottom: 20px;")
+        div
+          h1(style="margin: 0; color: #e65100; font-size: 22px;") Registro de Signos Vitales
+          span(style="color: #666;") Enfermería - Hospital San Vital
+        div(style="text-align: right;")
+          strong Fecha: 
+          | #{new Date(signo.fecha_registro).toLocaleDateString('es-AR')}
+          br
+          small Hora: #{new Date(signo.fecha_registro).toLocaleTimeString('es-AR')}
+
+      .label-dato RESPONSABLE
+      .valor-dato #{signo.enfermero.apellido}, #{signo.enfermero.nombre} (Mat. #{signo.enfermero.matricula})
+
+      .label-dato MEDICIONES
+      div(style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background-color: #fff3e0; padding: 20px; border-radius: 8px; margin-bottom: 20px;")
+        
+        div(style="text-align: center;")
+          span(style="display: block; font-size: 0.9em; color: #666;") TEMPERATURA
+          strong(style="font-size: 1.8em; color: #d84315;") #{signo.temperatura}°C
+        
+        div(style="text-align: center;")
+          span(style="display: block; font-size: 0.9em; color: #666;") PRESIÓN ARTERIAL
+          strong(style="font-size: 1.8em; color: #333;") #{signo.presion_arterial}
+
+        div(style="text-align: center;")
+          span(style="display: block; font-size: 0.9em; color: #666;") FRECUENCIA CARDÍACA
+          strong(style="font-size: 1.5em; color: #333;") #{signo.frecuencia_cardiaca} lpm
+
+        div(style="text-align: center;")
+          span(style="display: block; font-size: 0.9em; color: #666;") SATURACIÓN O2
+          strong(style="font-size: 1.5em; color: #333;") #{signo.saturacion_oxigeno || '-'}
+
+      .label-dato OBSERVACIONES
+      .valor-dato(style="min-height: 50px;") #{signo.observaciones || 'Sin observaciones particulares.'}

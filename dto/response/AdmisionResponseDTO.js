@@ -9,7 +9,9 @@ class AdmisionResponseDTO {
     estado,
     tipo,
     motivo,
-    paciente
+    paciente,
+    numero_habitacion,
+    numero_cama
   }) {
     this.id_admision = id_admision;
     this.fecha_entrada = fecha_entrada;
@@ -19,6 +21,8 @@ class AdmisionResponseDTO {
     this.tipo_ingreso = tipo?.descripcion || null;
     this.motivo = motivo?.descripcion || null;
     this.paciente = paciente ? new PacienteResponseDTO(paciente) : null;
+    this.numero_habitacion = numero_habitacion || null;
+    this.numero_cama = numero_cama || null;
   }
 }
 

@@ -52,4 +52,22 @@ router.get(
   enfermeroController.getPacientesInternados
 );
 
+router.get(
+  "/signos/:id_admision", 
+  checkRole("Enfermero"), 
+  enfermeroController.getVistaSignos
+);
+
+router.post(
+  "/signos/guardar", 
+  checkRole("Enfermero"), 
+  enfermeroController.createSignosVitales
+);
+
+router.get(
+  "/signos/detalle/:id_signo",
+  checkRole("Enfermero"),
+  enfermeroController.getDetalleSignos
+);
+
 module.exports = router;

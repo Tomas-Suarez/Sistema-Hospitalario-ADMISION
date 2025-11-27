@@ -7,6 +7,10 @@ const AntecedenteService = require("../service/AntecendeteService");
 const PacienteService = require("../service/PacienteService");
 const { parseHistoriaFromBody } = require("../helper/HistoriaClinicaHelper");
 const AsignacionService = require("../service/AsignacionDormitorioService");
+const SignosService = require("../service/SignosVitalesService");
+const AdmisionService = require("../service/AdmisionService");
+const { parseSignosFromBody } = require("../helper/SignosVitalesHelper");
+
 
 const getVistaHistoria = (req, res) => {
   res.render("Enfermeros/RegistrarHistoria", {
@@ -124,6 +128,50 @@ const guardarHistoria = async (req, res, next) => {
   }
 };
 
+const getVistaSignos = async (req, res, next) => {
+  try {
+    const { id_admision } = req.params;
+
+    const admision = await AdmisionService.getAdmisionById(id_admision);
+    
+    const historial = await SignosService.getHistorialPorAdmision(id_admision);
+
+    res.render("Enfermeros/CargarSignos", { 
+      admision, 
+      historial 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getDetalleSignos = async (req, res, next) => {
+  try {
+    const { id_signo } = req.params;
+    const signo = await SignosService.getSignoVitalById(id_signo);
+
+    res.render("Enfermeros/DetalleSignos", { 
+      signo
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createSignosVitales = async (req, res, next) => {
+  try {
+    const enfermero = await EnfermeroService.getEnfermeroByUsuarioId(req.user.id_usuario);
+
+    const datos = parseSignosFromBody(req.body, enfermero.id_enfermero);
+
+    await SignosService.createSignosVitales(datos);
+
+    res.redirect(`/enfermeros/signos/${datos.id_admision}`);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllEnfermero,
   createEnfermero,
@@ -132,5 +180,8 @@ module.exports = {
   buscarPacienteHistoria,
   getVistaHistoria,
   guardarHistoria,
-  getPacientesInternados
+  getPacientesInternados,
+  getVistaSignos,
+  createSignosVitales,
+  getDetalleSignos
 };
