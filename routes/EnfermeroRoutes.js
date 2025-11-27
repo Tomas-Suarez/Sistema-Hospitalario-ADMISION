@@ -46,4 +46,10 @@ router.post(
   enfermeroController.guardarHistoria
 );
 
+router.get(
+  "/pacientes",
+  checkRole("Enfermero"),
+  enfermeroController.getPacientesInternados
+);
+
 module.exports = router;

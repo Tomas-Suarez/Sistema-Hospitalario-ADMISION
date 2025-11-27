@@ -91,20 +91,16 @@ html(lang="es")
           else if userRole === "Enfermero"
             li.section-title PACIENTES
             li
-              a(href="/pacientes/GestionPaciente/", class="nav-item")
+              a(href="/enfermeros/pacientes/", class="nav-item")
                 img(src="/img/icon-paciente.png", alt="paciente")
-                | Mis Pacientes
+                | Pacientes internados
 
             li.section-title EVALUACIONES
             li
               a(href="/enfermeros/historia", class="nav-item")
                 img(src="/img/icon-evaluacion.png", alt="enfermeria")
                 | Evaluación Inicial
-            li
-              a(href="#", class="nav-item")
-                img(src="/img/icon-evaluacion.png", alt="signos")
-                | Signos vitales
-
+                
           //- ================= BOTÓN DE LOGOUT =================
           if userRole
             li

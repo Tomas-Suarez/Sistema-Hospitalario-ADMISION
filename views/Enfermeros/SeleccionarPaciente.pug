@@ -1,0 +1,52 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  script(src="/js/DataTableGlobal.js")
+
+block content
+  .contenido-medico
+    h1 Tablero de Enfermería
+    p Pacientes actualmente internados.
+
+    table#TablaPacientes.datatable-estandar
+      thead
+        tr
+          th Ubicación
+          th Paciente
+          th DNI
+          th Diagnóstico Ingreso
+          th Acciones
+      tbody
+        each item in internaciones
+          tr
+            td
+              strong= `Hab. ${item.cama.habitacion.numero}`
+              br
+              span(style="font-size: 0.9em; color: #555;")= item.cama.habitacion.ala.nombre
+              br
+              small(style="color: #888;")= `Cama ${item.cama.numero}`
+            
+            td= item.admision.paciente.apellido + ", " + item.admision.paciente.nombre
+            td= item.admision.paciente.documento
+            td= item.admision.motivo ? item.admision.motivo.descripcion : '-'
+            
+            td
+              a.btn-accion(
+                href=`#`, 
+                style="background-color: #ef6c00; color: white; padding: 6px 10px; border-radius: 4px; text-decoration: none; font-weight: bold; margin-right: 5px; font-size: 0.9em;"
+              )
+                img.icono-info(src="/img/icon-evaluacion.png", style="width: 14px; filter: brightness(0) invert(1); margin-right: 5px;")
+                | Signos Vitales
+
+              a.btn-accion(
+                href=`#`, 
+                style="background-color: #0277bd; color: white; padding: 6px 10px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9em;"
+              )
+                img.icono-info(src="/img/icon-medico.png", style="width: 14px; filter: brightness(0) invert(1); margin-right: 5px;")
+                | Cuidados

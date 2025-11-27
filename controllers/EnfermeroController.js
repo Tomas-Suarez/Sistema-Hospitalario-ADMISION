@@ -6,6 +6,7 @@ const AlergiaService = require("../service/AlergiaService");
 const AntecedenteService = require("../service/AntecendeteService");
 const PacienteService = require("../service/PacienteService");
 const { parseHistoriaFromBody } = require("../helper/HistoriaClinicaHelper");
+const AsignacionService = require("../service/AsignacionDormitorioService");
 
 const getVistaHistoria = (req, res) => {
   res.render("Enfermeros/RegistrarHistoria", {
@@ -13,6 +14,16 @@ const getVistaHistoria = (req, res) => {
     error: null,
     paciente: null,
   });
+};
+
+const getPacientesInternados = async (req, res, next) => {
+  try {
+    const internaciones = await AsignacionService.getAsignacionesActuales();
+
+    res.render("Enfermeros/SeleccionarPaciente", { internaciones });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const getAllEnfermero = async (req, res, next) => {
@@ -121,4 +132,5 @@ module.exports = {
   buscarPacienteHistoria,
   getVistaHistoria,
   guardarHistoria,
+  getPacientesInternados
 };
