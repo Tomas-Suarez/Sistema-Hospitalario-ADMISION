@@ -11,6 +11,8 @@ const {
   ENFERMERO_MATRICULA_EXISTENTE_UPDATE,
 } = require("../constants/EnfermeroConstants");
 
+const Usuario = require("../models/UsuarioModels");
+
 const getAllEnfermeros = async () => {
     const enfermeros = await Enfermero.findAll({
       include: [
@@ -21,7 +23,6 @@ const getAllEnfermeros = async () => {
         },
       ],
     });
-
     return enfermeros.map(EnfermeroMapper.toDto);
 };
 
@@ -114,9 +115,19 @@ const changeStatusEnfermero = async ({ id_enfermero, estado }) => {
     return { actualizado: true };
 };
 
+const getEnfermeroByUsuarioId = async (id_usuario) => {
+  const enfermero = await Enfermero.findOne({ where: { id_usuario } });
+  if (!enfermero) {
+    //TODO: Falta agregar como constante lo que se encuentra en la Excepcion
+    throw new ResourceNotFoundException("No se encontró el enfermero");
+  }
+  return EnfermeroMapper.toDto(enfermero);
+};
+
 module.exports = {
   getAllEnfermeros,
   createEnfermero,
   updateEnfermero,
   changeStatusEnfermero,
+  getEnfermeroByUsuarioId
 };
