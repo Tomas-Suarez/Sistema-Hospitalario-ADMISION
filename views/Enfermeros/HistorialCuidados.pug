@@ -1,0 +1,48 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  script(src="/js/DataTableGlobal.js")
+  script.
+    $(document).ready(function() {
+      if ($('.datatable-estandar').length) {
+        $('.datatable-estandar').DataTable().order([0, 'desc']).draw();
+      }
+    });
+
+block content
+  .contenido-medico
+    
+    div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;")
+      h1 Historial de Cuidados Realizados
+      
+      a(href=`/enfermeros/cuidados/activos/${admision.id_admision}`, style="background-color: #0277bd; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;") Volver
+
+    .form-card(style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #777; width: 100%; max-width: 100%; box-sizing: border-box;")
+      h3(style="margin: 0; color: #333;") #{admision.paciente.apellido}, #{admision.paciente.nombre}
+      span(style="color: #666;") DNI: #{admision.paciente.documento}
+
+    .form-card(style="width: 100%; max-width: 100%; padding: 20px; box-sizing: border-box;")
+      table.datatable-estandar(style="width: 100%;")
+        thead
+          tr
+            th Fecha / Hora
+            th Tratamiento Realizado
+            th Observaciones
+            th Responsable
+        tbody
+          if historial
+            each h in historial
+              tr
+                td(data-sort=h.fecha_realizacion)= new Date(h.fecha_realizacion).toLocaleString('es-AR')
+                td(style="font-weight: bold; color: #0277bd;")= h.tratamiento ? h.tratamiento.nombre : 'Desconocido'
+                
+                td(style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help;" title=h.observaciones)
+                  | #{h.observaciones || '-'}
+                
+                td= h.enfermero ? h.enfermero.apellido : '-'
