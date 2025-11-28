@@ -10,6 +10,8 @@ const AsignacionService = require("../service/AsignacionDormitorioService");
 const SignosService = require("../service/SignosVitalesService");
 const AdmisionService = require("../service/AdmisionService");
 const { parseSignosFromBody } = require("../helper/SignosVitalesHelper");
+const RegistroTratamientoService = require("../service/RegistroTratamientoService");
+const { parseRegistroFromBody } = require("../helper/RegistroTratamientoHelper");
 
 
 const getVistaHistoria = (req, res) => {
@@ -172,6 +174,48 @@ const createSignosVitales = async (req, res, next) => {
   }
 };
 
+const getVistaCuidadosActivos = async (req, res, next) => {
+  try {
+    const { id_admision } = req.params;
+    const admision = await AdmisionService.getAdmisionById(id_admision);
+    const tratamientosIndicados = await RegistroTratamientoService.getTratamientosActivos(id_admision);
+
+    res.render("Enfermeros/CuidadosActivos", {
+      admision,
+      tratamientosIndicados
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getVistaHistorialCuidados = async (req, res, next) => {
+  try {
+    const { id_admision } = req.params;
+    const admision = await AdmisionService.getAdmisionById(id_admision);
+    const historial = await RegistroTratamientoService.getHistorialRegistros(id_admision);
+
+    res.render("Enfermeros/HistorialCuidados", {
+      admision,
+      historial
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const registrarCuidado = async (req, res, next) => {
+  try {
+    const enfermero = await EnfermeroService.getEnfermeroByUsuarioId(req.user.id_usuario);
+    const datos = parseRegistroFromBody(req.body, enfermero.id_enfermero);
+
+    await RegistroTratamientoService.registrarEjecucion(datos);
+
+    res.redirect(`/enfermeros/cuidados/activos/${datos.id_admision}`);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   getAllEnfermero,
   createEnfermero,
@@ -183,5 +227,8 @@ module.exports = {
   getPacientesInternados,
   getVistaSignos,
   createSignosVitales,
-  getDetalleSignos
+  getDetalleSignos,
+  getVistaCuidadosActivos,
+  getVistaHistorialCuidados,
+  registrarCuidado
 };

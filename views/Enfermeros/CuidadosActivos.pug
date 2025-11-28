@@ -1,0 +1,91 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="/css/RegistrarAdmision.css")
+  link(rel="stylesheet", href="/css/AdministrarCuidados.css")
+
+block scripts
+  script(src="/js/AdministrarCuidados.js")
+
+block content
+  .contenido-medico
+    
+    div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;")
+      h1 Plan de Cuidados
+      
+      div(style="display: flex; gap: 10px;")
+        a(href="/enfermeros/pacientes", style="background-color: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;") Volver
+        
+        a(href=`/enfermeros/cuidados/historial/${admision.id_admision}`, style="background-color: #00897b; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px;")
+          img(src="/img/icon-historial.png", style="width: 16px; filter: brightness(0) invert(1);")
+          | Ver Historial
+
+    .form-card(style="background-color: #e1f5fe; border-left: 6px solid #0288d1; margin-bottom: 20px; width: 100%; max-width: 100%; box-sizing: border-box; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);")
+      h2(style="margin-top: 0; color: #01579b;") #{admision.paciente.apellido}, #{admision.paciente.nombre}
+      
+      div(style="display: flex; justify-content: space-between; color: #333; margin-top: 10px; font-size: 1.1em;")
+        div
+          strong DNI: 
+          | #{admision.paciente.documento}
+        div
+          strong Habitación: 
+          | #{admision.numero_habitacion || '-'} (Cama #{admision.numero_cama || '-'})
+        div
+          strong Diagnóstico: 
+          | #{admision.motivo ? admision.motivo.descripcion : '-'}
+
+    if tratamientosIndicados && tratamientosIndicados.length > 0
+      .tratamientos-grid
+        each t in tratamientosIndicados
+          - var ultimoDate = t.ultimo_registro ? new Date(t.ultimo_registro) : null
+          - var hoy = new Date()
+          - var esHoy = ultimoDate && ultimoDate.getDate() === hoy.getDate() && ultimoDate.getMonth() === hoy.getMonth() && ultimoDate.getFullYear() === hoy.getFullYear()
+          
+          .tratamiento-card(class=esHoy ? "realizado-hoy" : "")
+            .card-header
+              h3= t.nombre
+              
+              if ultimoDate
+                 div(style="margin-top: 5px; font-size: 0.9em; color: #333; background-color: rgba(255,255,255,0.6); padding: 2px 6px; border-radius: 4px; display: inline-block;")
+                    strong Última: 
+                    | #{ultimoDate.toLocaleDateString('es-AR')} - #{ultimoDate.toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'})} hs
+              else
+                 span(style="font-size: 0.8em; color: #999; font-style: italic; margin-top: 5px; display: block;") Aún no administrado
+
+            .card-body
+              p.card-desc= t.descripcion
+              if t.indicaciones
+                .card-info
+                  strong Ind: 
+                  | #{t.indicaciones}
+              if t.duracion
+                .card-info
+                  strong Dur: 
+                  | #{t.duracion}
+            
+            .card-footer
+              button.btn-administrar(type="button", data-id=t.id_tratamiento, data-nombre=t.nombre, style=esHoy ? "background-color: #4caf50;" : "")
+                if esHoy
+                  | Registrar Nueva Dosis
+                else
+                  | Registrar Ejecución
+    else
+      p(style="text-align: center; color: #666; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px;") No hay tratamientos activos indicados para este paciente.
+
+    #modal-cuidados.hidden
+      .modal-contenido-cuidados
+        h2 Registrar Cuidado
+        p(style="margin-bottom: 10px;") Tratamiento: 
+          strong#nombre-tratamiento-display(style="color: #0277bd;") -
+        
+        form(action="/enfermeros/cuidados/guardar" method="POST")
+          input(type="hidden", name="id_admision", value=admision.id_admision)
+          input(type="hidden", name="id_tratamiento", id="input-id-tratamiento")
+          
+          label(style="display:block; font-weight:bold; margin-bottom:5px;") Observaciones:
+          textarea(name="observaciones", rows="3", style="width:100%; padding:10px; margin-bottom:15px; border: 1px solid #ccc; border-radius: 4px;")
+
+          div(style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #eee; padding-top: 15px;")
+            button(type="submit", style="background-color: #0277bd; color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%;") Confirmar Realizado
+            button#cerrar-modal-cuidados(type="button", style="padding: 12px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer; color: #333; font-weight: bold; width: 100%;") Cancelar

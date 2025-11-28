@@ -4,7 +4,7 @@ const Tratamiento = require("../models/TratamientoModels");
 const Enfermero = require("../models/EnfermeroModels");
 const RegistroMapper = require("../mappers/RegistroTratamientoMapper");
 
-const getPlanDeCuidados = async (id_admision) => {
+const getTratamientosActivos = async (id_admision) => {
   const evaluaciones = await EvaluacionMedica.findAll({
     where: { id_admision },
     include: [{
@@ -24,8 +24,29 @@ const getPlanDeCuidados = async (id_admision) => {
       });
     }
   });
-  const tratamientosIndicados = Array.from(tratamientosMap.values());
+  
+  const listaTratamientos = Array.from(tratamientosMap.values());
 
+  const listaConEstado = await Promise.all(listaTratamientos.map(async (t) => {
+      const tratamientoPlano = t.toJSON();
+
+      const ultimoRegistro = await RegistroTratamiento.findOne({
+          where: { 
+              id_admision: id_admision,
+              id_tratamiento: t.id_tratamiento
+          },
+          order: [['fecha_realizacion', 'DESC']]
+      });
+
+      tratamientoPlano.ultimo_registro = ultimoRegistro ? ultimoRegistro.fecha_realizacion : null;
+      
+      return tratamientoPlano;
+  }));
+
+  return listaConEstado;
+};
+
+const getHistorialRegistros = async (id_admision) => {
   const registrosPrevios = await RegistroTratamiento.findAll({
     where: { id_admision },
     include: [
@@ -35,19 +56,13 @@ const getPlanDeCuidados = async (id_admision) => {
     order: [['fecha_realizacion', 'DESC']]
   });
 
-  const historial = registrosPrevios.map(r => RegistroMapper.toDto(r));
-
-  return {
-    tratamientosIndicados,
-    historial
-  };
+  return registrosPrevios.map(r => RegistroMapper.toDto(r));
 };
 
 const registrarEjecucion = async (requestDTO) => {
   try {
     const entidad = RegistroMapper.toEntity(requestDTO);
     entidad.id_enfermero = requestDTO.id_enfermero; 
-    
     await entidad.save();
     return true;
   } catch (error) {
@@ -56,6 +71,7 @@ const registrarEjecucion = async (requestDTO) => {
 };
 
 module.exports = {
-  getPlanDeCuidados,
+  getTratamientosActivos,
+  getHistorialRegistros,
   registrarEjecucion
 };

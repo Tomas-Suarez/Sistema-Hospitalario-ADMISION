@@ -53,14 +53,14 @@ router.get(
 );
 
 router.get(
-  "/signos/:id_admision", 
-  checkRole("Enfermero"), 
+  "/signos/:id_admision",
+  checkRole("Enfermero"),
   enfermeroController.getVistaSignos
 );
 
 router.post(
-  "/signos/guardar", 
-  checkRole("Enfermero"), 
+  "/signos/guardar",
+  checkRole("Enfermero"),
   enfermeroController.createSignosVitales
 );
 
@@ -68,6 +68,22 @@ router.get(
   "/signos/detalle/:id_signo",
   checkRole("Enfermero"),
   enfermeroController.getDetalleSignos
+);
+
+router.get(
+  "/cuidados/activos/:id_admision",
+  checkRole("Enfermero"),
+  enfermeroController.getVistaCuidadosActivos
+);
+router.get(
+  "/cuidados/historial/:id_admision",
+  checkRole("Enfermero"),
+  enfermeroController.getVistaHistorialCuidados
+);
+router.post(
+  "/cuidados/guardar",
+  checkRole("Enfermero"),
+  enfermeroController.registrarCuidado
 );
 
 module.exports = router;
