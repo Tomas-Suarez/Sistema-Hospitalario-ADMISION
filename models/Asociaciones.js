@@ -27,6 +27,7 @@ const PacienteAlergia = require("./PacienteAlergiaModels");
 const Antecedente = require("./AntecedenteModels");
 const PacienteAntecedente = require("./PacienteAntecedenteModels");
 const SignosVitales = require("./SignosVitalesModels");
+const RegistroTratamiento = require("../models/RegistroTratamientoModels");
 
 // Relación Paciente - Admision
 Paciente.hasMany(Admision, { foreignKey: "id_paciente" });
@@ -79,6 +80,18 @@ SignosVitales.belongsTo(Admision, { foreignKey: "id_admision" });
 // Relacion Signos vitales - Enfermero
 Enfermero.hasMany(SignosVitales, { foreignKey: "id_enfermero" });
 SignosVitales.belongsTo(Enfermero, { foreignKey: "id_enfermero" });
+
+// Admision - Registro Tratamiento
+Admision.hasMany(RegistroTratamiento, { foreignKey: "id_admision" });
+RegistroTratamiento.belongsTo(Admision, { foreignKey: "id_admision" });
+
+// Relacion Enfermero - Registro Tratamiento
+Enfermero.hasMany(RegistroTratamiento, { foreignKey: "id_enfermero" });
+RegistroTratamiento.belongsTo(Enfermero, { foreignKey: "id_enfermero" });
+
+// Tratamiento - Registro Tratamiento
+Tratamiento.hasMany(RegistroTratamiento, { foreignKey: "id_tratamiento" });
+RegistroTratamiento.belongsTo(Tratamiento, { foreignKey: "id_tratamiento" });
 
 // Relación Admision - EvaluacionMedica
 Admision.hasMany(EvaluacionMedica, { foreignKey: "id_admision" });
