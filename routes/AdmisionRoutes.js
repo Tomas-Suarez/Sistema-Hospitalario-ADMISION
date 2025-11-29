@@ -32,4 +32,6 @@ router.post("/registrarEmergencia", EmergenciaController.registrarYAsignarEmerge
 // Cancelar una admision - Cambiar el estado del estado booleano a false
 router.patch("/cancelarAdmision/:id", AdmisionController.darDeBajaAdmision);
 
+router.post("/identificar", AdmisionController.identificarPaciente);
+
 module.exports = router;

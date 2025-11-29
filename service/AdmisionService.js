@@ -172,6 +172,28 @@ const getHistorialPorPaciente = async (id_paciente) => {
   return admisiones.map(AdmisionMapper.toDto);
 };
 
+const cambiarPacienteDeAdmision = async (id_admision, id_nuevo_paciente) => {
+  const admision = await Admision.findByPk(id_admision);
+  if (!admision) throw new Error("Admisión no encontrada");
+
+  const otraInternacion = await Admision.findOne({
+    where: {
+      id_paciente: id_nuevo_paciente,
+      estado: true,
+      id_admision: { [require("sequelize").Op.ne]: id_admision }
+    }
+  });
+
+  if (otraInternacion) {
+    throw new Error("El paciente destino ya tiene una internación activa en curso.");
+  }
+
+  admision.id_paciente = id_nuevo_paciente;
+  await admision.save();
+
+  return admision;
+};
+
 module.exports = {
   getAllAdmisiones,
   createAdmision,
@@ -179,4 +201,5 @@ module.exports = {
   getAdmisionById,
   getHistorialPorPaciente,
   getAdmisionActivaByPaciente,
+  cambiarPacienteDeAdmision
 };

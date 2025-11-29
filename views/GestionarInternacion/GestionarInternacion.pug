@@ -8,10 +8,12 @@ block scripts
   script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
   script(src="/js/DataTableGlobal.js")
+  script(src="/js/GestionInternacion.js")
 
 block content
   .contenido-internacion
     h1 Lista de Internaciones
+    
     table#TablaInternaciones.datatable-estandar
       thead
         tr
@@ -31,16 +33,39 @@ block content
             td= internacion.cama.habitacion.ala.nombre
             td= internacion.cama.habitacion.numero
             td= internacion.cama.numero
-            td
-              button.btn-dar-alta-hospitalaria(
-                type="button",
-                data-id=internacion.id_internacion
-              )
-                img.icono-info(src="/img/icon-crearPaciente.png", alt="Dar alta")
-                |  Dar alta hospitalaria
+            td(style="display: flex; gap: 5px; flex-wrap: wrap;")
+              
+              if internacion.admision.paciente.documento == '99999999'
+                button.btn-identificar(
+                  type="button",
+                  data-idadmision=internacion.admision.id_admision
+                )
+                  img.icono-info(src="/img/icon-editar.png", alt="Identificar", style="width: 16px; filter: brightness(0) invert(1); margin-right: 5px;")
+                  | Identificar
+
               button.btn-cambiar-habitacion(
                 type="button",
                 data-id=internacion.id_internacion
               )
                 img.icono-info(src="/img/icon-crearPaciente.png", alt="Cambiar habitación")
                 |  Cambiar de habitación
+
+    #modal-identificar.hidden.modal-overlay
+      .modal-content(style="border-top: 5px solid #ff9800;")
+        h2(style="color: #f57c00; margin-top:0;") Identificar Paciente NN
+        p(style="color: #666; font-size: 0.9em; margin-bottom: 20px;") 
+          | Ingrese el DNI del paciente real para asignar esta internación.
+          br
+          strong(style="color: #d32f2f;") Importante: 
+          | El paciente ya debe estar registrado en el sistema.
+
+        form(action="/admisiones/identificar" method="POST")
+          input(type="hidden", name="id_admision", id="input-id-admision-identificar")
+          
+          div(style="margin-bottom: 20px;")
+            label(for="dni_real" style="display:block; font-weight:bold; margin-bottom:5px;") DNI Real del Paciente:
+            input(type="text", name="dni_real", required, placeholder="Ej: 12345678", style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1.1em;")
+
+          div(style="text-align: right; border-top: 1px solid #eee; padding-top: 15px;")
+            button#cerrar-modal-identificar(type="button", style="margin-right: 10px; padding: 10px 20px; background: #eee; border: none; border-radius: 4px; cursor: pointer;") Cancelar
+            button(type="submit", style="background-color: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;") Asignar Identidad

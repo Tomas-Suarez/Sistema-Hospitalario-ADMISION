@@ -1,13 +1,9 @@
 // Importamos los servicios en donde se maneja la logica
-
 const AdmisionService = require("../service/AdmisionService");
 const AlaService = require("../service/AlaService");
 const MotivoService = require("../service/MotivoAdmisionService");
 const PacienteService = require("../service/PacienteService");
 const TipoIngresoService = require("../service/TipoIngresoService");
-const AsignacionDormitorioService = require("../service/AsignacionDormitorioService");
-const HabitacionService = require("../service/HabitacionService");
-const { PACIENTE_NN } = require("../constants/PacienteConstants");
 
 // Controlador para obtener las admisiones, ala y habitacion
 const getAllAdmisiones = async (req, res, next) => {
@@ -81,8 +77,25 @@ const darDeBajaAdmision = async (req, res, next) => {
   }
 };
 
+const identificarPaciente = async (req, res, next) => {
+  try {
+    const { id_admision, dni_real } = req.body;
+
+    const pacienteReal = await PacienteService.getPacienteByDNI(dni_real);
+
+    await AdmisionService.cambiarPacienteDeAdmision(id_admision, pacienteReal.id_paciente);
+
+    res.redirect("/asignaciones/GestionInternacion");
+
+  } catch (error) {
+    console.error("Error al identificar:", error.message);
+    next(error); 
+  }
+};
+
 module.exports = {
   getAllAdmisiones,
   createAdmision,
   darDeBajaAdmision,
+  identificarPaciente
 };
