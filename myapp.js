@@ -14,6 +14,7 @@ const app = express();
 const pacienteRoutes = require("./routes/pacienteRoutes");
 const medicoRoutes = require("./routes/MedicoRoutes");
 const enfermeroRoutes = require("./routes/EnfermeroRoutes");
+const enfermeriaRoutes = require("./routes/EnfermeriaRoutes");
 const admisionRoutes = require("./routes/AdmisionRoutes");
 const habitacionRoutes = require("./routes/HabitacionRoutes");
 const asignacionRoutes = require("./routes/AsignacionDormitorioRoutes");
@@ -51,6 +52,7 @@ app.use(
 app.use("/pacientes", pacienteRoutes);
 app.use("/medicos", medicoRoutes);
 app.use("/enfermeros", enfermeroRoutes);
+app.use("/enfermeria", enfermeriaRoutes);
 app.use("/admisiones", admisionRoutes);
 app.use("/habitaciones", habitacionRoutes);
 app.use("/asignaciones", asignacionRoutes);

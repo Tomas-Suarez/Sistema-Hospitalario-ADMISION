@@ -15,9 +15,9 @@ block content
       h1 Plan de Cuidados
       
       div(style="display: flex; gap: 10px;")
-        a(href="/enfermeros/pacientes", style="background-color: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;") Volver
+        a(href="/enfermeria/pacientes", style="background-color: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;") Volver
         
-        a(href=`/enfermeros/cuidados/historial/${admision.id_admision}`, style="background-color: #00897b; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px;")
+        a(href=`/enfermeria/cuidados/historial/${admision.id_admision}`, style="background-color: #00897b; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px;")
           img(src="/img/icon-historial.png", style="width: 16px; filter: brightness(0) invert(1);")
           | Ver Historial
 
@@ -79,7 +79,7 @@ block content
         p(style="margin-bottom: 10px;") Tratamiento: 
           strong#nombre-tratamiento-display(style="color: #0277bd;") -
         
-        form(action="/enfermeros/cuidados/guardar" method="POST")
+        form(action="/enfermeria/cuidados/guardar" method="POST")
           input(type="hidden", name="id_admision", value=admision.id_admision)
           input(type="hidden", name="id_tratamiento", id="input-id-tratamiento")
           

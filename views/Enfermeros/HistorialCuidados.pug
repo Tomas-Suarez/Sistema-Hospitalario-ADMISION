@@ -21,7 +21,7 @@ block content
     div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;")
       h1 Historial de Cuidados Realizados
       
-      a(href=`/enfermeros/cuidados/activos/${admision.id_admision}`, style="background-color: #0277bd; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;") Volver
+      a(href=`/enfermeria/cuidados/activos/${admision.id_admision}`, style="background-color: #0277bd; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-weight: bold;") Volver
 
     .form-card(style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #777; width: 100%; max-width: 100%; box-sizing: border-box;")
       h3(style="margin: 0; color: #333;") #{admision.paciente.apellido}, #{admision.paciente.nombre}
