@@ -19,14 +19,13 @@ block content
         img.icono-info(src="/img/icon-crearPaciente.png", alt="crear")
         | Crear Recepcionista
 
-    table#TablaRecepcionistas.datatable-estandar
+    table#TablaMedico.datatable-estandar
       thead
         tr
           th ID
           th Usuario
           th Email
           th Rol
-          th Acciones
       tbody
         each recep in recepcionistas
           tr
@@ -34,9 +33,6 @@ block content
             td= recep.nombre_usuario
             td= recep.email
             td= recep.rol ? recep.rol.nombre : 'Sin Rol'
-            td
-              button.btn-editar(type="button")
-                span.editar-boton Editar
 
   #modal-editar.hidden
     .modal-contenido

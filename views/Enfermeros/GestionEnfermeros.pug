@@ -1,7 +1,7 @@
 extends ../layout
 
 block head
-  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="/css/VistaEnfermero.css")
   link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
 
 block scripts
@@ -12,19 +12,18 @@ block scripts
 
 block content
   .contenido-medico
-    h1 Lista de Enfermeros
-    button#btn-abrir-crearEnfermero.btn-crearEnfermero(type="button")
+    h1 Lista de Enfermeros    
+    button#btn-abrir-crearEnfermero.btn-crearMedico(type="button")
       span.editar-boton
         img.icono-info(src="/img/icon-crearPaciente.png", alt="crear")
-        |  Crear Enfermero
+        | Crear Enfermero
 
     table#TablaEnfermero.datatable-estandar
       thead
         tr
+          th Documento
           th Nombre
           th Apellido
-          th Género
-          th Documento
           th Matrícula
           th Guardia
           th Estado
@@ -32,15 +31,16 @@ block content
       tbody
         each enfermero in enfermeros
           tr
+            td= enfermero.documento
             td= enfermero.nombre
             td= enfermero.apellido
-            td= enfermero.genero
-            td= enfermero.documento
             td= enfermero.matricula
-            td= enfermero.Guardia ? enfermero.Guardia.nombre : (enfermero.guardia ? enfermero.guardia.nombre : "-")
+            td= enfermero.guardia ? enfermero.guardia.nombre : (enfermero.Guardia ? enfermero.Guardia.nombre : "-")
+            
             td.estado
               span.estado-indicador(class=enfermero.estado ? 'activo' : 'inactivo')
               | #{enfermero.estado ? 'Activo' : 'Inactivo'}
+            
             td
               button.btn-editar(
                 type="button",
@@ -50,12 +50,11 @@ block content
                 data-genero=enfermero.genero,
                 data-documento=enfermero.documento,
                 data-matricula=enfermero.matricula,
-                //- Pasamos ID de guardia
                 data-id_guardia=enfermero.id_guardia || (enfermero.Guardia ? enfermero.Guardia.id_guardia : "")
               )
                 span.editar-boton
                   img.icono-info(src="/img/icon-editar.png", alt="editar")
-                  |  Editar
+                  | Editar
 
               form(method="POST", action="/enfermeros/cambiar-estado", style="display:inline")
                 input(type="hidden", name="_method", value="PATCH")
@@ -65,11 +64,11 @@ block content
                   if enfermero.estado
                     span.estado-boton-rojo
                       img.icono-info(src="/img/icon-estado.png", alt="Dar de baja", title="Dar de baja")
-                      |  Dar de baja
+                      | Dar de baja
                   else
                     span.estado-boton-verde
                       img.icono-info(src="/img/icon-estado.png", alt="Dar de alta", title="Dar de alta")
-                      |  Restaurar
+                      | Restaurar
 
   include includes/modalEnfermero.pug
   +modalEnfermero()

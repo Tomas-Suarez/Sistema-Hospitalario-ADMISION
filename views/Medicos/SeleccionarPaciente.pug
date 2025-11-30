@@ -14,7 +14,7 @@ block content
     h1 Pacientes Internados
     p Seleccione un paciente para ver sus datos.
 
-    table#TablaPacientes.datatable-estandar
+    table#TablaMedico.datatable-estandar
       thead
         tr
           th Ubicación
@@ -35,11 +35,13 @@ block content
             
             td= item.admision.paciente.apellido + ", " + item.admision.paciente.nombre
             td= item.admision.paciente.documento
-            td= new Date(item.admision.fecha_entrada).toLocaleDateString('es-AR')
+            td(data-sort=item.admision.fecha_entrada)= new Date(item.admision.fecha_entrada).toLocaleDateString('es-AR')
             td= item.admision.motivo ? item.admision.motivo.descripcion : '-'
             td
-              a.btn-editar(
+              a(
                 href=`/evaluaciones/crear/${item.admision.id_admision}`, 
-                style="background-color: #2143db; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; display: inline-block; text-align: center;"
+                style="text-decoration: none;"
               )
-                | Ver Paciente
+                span.informacion-boton
+                  img.icono-info(src="/img/icon-info.png", alt="ver")
+                  | Ver Paciente

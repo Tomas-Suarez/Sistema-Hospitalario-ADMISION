@@ -168,7 +168,7 @@ const createSignosVitales = async (req, res, next) => {
 
     await SignosService.createSignosVitales(datos);
 
-    res.redirect(`/enfermeros/signos/${datos.id_admision}`);
+    res.redirect(`/enfermeria/signos/${datos.id_admision}`);
   } catch (error) {
     next(error);
   }
@@ -211,7 +211,7 @@ const registrarCuidado = async (req, res, next) => {
 
     await RegistroTratamientoService.registrarEjecucion(datos);
 
-    res.redirect(`/enfermeros/cuidados/activos/${datos.id_admision}`);
+    res.redirect(`/enfermeria/cuidados/activos/${datos.id_admision}`);
   } catch (error) {
     next(error);
   }
