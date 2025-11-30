@@ -4,6 +4,8 @@ const Ala = require("../models/AlaModels");
 const AsignacionDormitorio = require("../models/AsignDormitorioModels");
 const Admision = require("../models/AdmisionModels");
 const Paciente = require("../models/PacienteModels");
+const ResourceNotFoundException = require("../exceptions/ResourceNotFoundException");
+const { PACIENTE_NO_ENCONTRADO_POR_ID } = require("../constants/PacienteConstants");
 
 // Obtenemos todas las habitaciones con sus respectivas camas
 const getAllHabitaciones = async () => {
@@ -34,9 +36,10 @@ const getHabitacionesFiltradasPorAlaYGenero = async (alaId, pacienteId) => {
     // Obtenemos el paciente por id
     const paciente = await Paciente.findByPk(pacienteId);
 
-    // Controlamos para ver si existe el paciente
     if (!paciente) {
-      throw new Error("Paciente no encontrado");
+      throw new ResourceNotFoundException(
+        PACIENTE_NO_ENCONTRADO_POR_ID + pacienteId
+      );
     }
 
     // Pasamos el genero del paciente a una variable, para que sea mas legible
@@ -136,23 +139,21 @@ const getHabitacionesFiltradasPorAlaYGenero = async (alaId, pacienteId) => {
 
 //Obtenemos todas las habitciones de emergencia, por el id del ala
 const getHabitacionesEmergencia = async (alaId) => {
-  try {
-    const habitaciones = await Habitacion.findAll({
-      where: { id_ala: alaId },
-      include: [
-        {
-          model: Cama,
-          where: {
-            libre: true,
-            higienizada: true,
-          },
-          attributes: ["id_cama", "libre", "higienizada"],
+  const habitaciones = await Habitacion.findAll({
+    where: { id_ala: alaId },
+    include: [
+      {
+        model: Cama,
+        where: {
+          libre: true,
+          higienizada: true,
         },
-      ],
-      attributes: ["id_habitacion", "numero", "capacidad"],
-    });
-    return habitaciones;
-  } catch (error) {}
+        attributes: ["id_cama", "libre", "higienizada"],
+      },
+    ],
+    attributes: ["id_habitacion", "numero", "capacidad"],
+  });
+  return habitaciones;
 };
 
 module.exports = {

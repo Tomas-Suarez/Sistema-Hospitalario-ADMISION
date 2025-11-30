@@ -117,10 +117,11 @@ const changeStatusEnfermero = async ({ id_enfermero, estado }) => {
 
 const getEnfermeroByUsuarioId = async (id_usuario) => {
   const enfermero = await Enfermero.findOne({ where: { id_usuario } });
+  
   if (!enfermero) {
-    //TODO: Falta agregar como constante lo que se encuentra en la Excepcion
-    throw new ResourceNotFoundException("No se encontró el enfermero");
+    throw new ResourceNotFoundException(PERFIL_NO_ENCONTRADO);
   }
+  
   return EnfermeroMapper.toDto(enfermero);
 };
 

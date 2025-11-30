@@ -4,6 +4,7 @@ const MedicoConstants = {
     MEDICO_NO_ENCONTRADO_POR_ID: "No se encontró ningun medico con el ID: ",
     MEDICO_DNI_EXISTENTE_UPDATE: "Ocurrio un error! No se puede actualizar el documento porque ya está en uso por otro medico.",
     MEDICO_MATRICULA_EXISTENTE_UPDATE: "Ocurrio un error! No se puede actualizar la matricula porque ya está en uso por otro medico.",
+    PERFIL_NO_ENCONTRADO: "No se encontró el perfil de medico asociado a este usuario.",
 }
 
 module.exports = MedicoConstants;

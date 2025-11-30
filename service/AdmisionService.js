@@ -1,20 +1,26 @@
+const { Op } = require("sequelize");
 const Admision = require("../models/AdmisionModels");
 const TipoIngreso = require("../models/TipoIngresoModels");
 const Paciente = require("../models/PacienteModels");
 const AsignacionDormitorio = require("../models/AsignDormitorioModels");
 const Motivo = require("../models/MotivoAdmisionModels");
 const AdmisionMapper = require("../mappers/AdmisionMapper");
-const { PACIENTE_NN } = require("../constants/PacienteConstants");
 const DuplicatedResourceException = require("../exceptions/DuplicatedResourceException");
+
 const {
   ERROR_ADMISION_EXISTENTE,
   ADMISION_NO_ENCONTRADA_POR_ID,
 } = require("../constants/ErrorConstants");
 
+const { PACIENTE_ADMISION_EN_CURSO } = require("../constants/AdmisionConstants");
 const {
   PACIENTE_NO_ENCONTRADO_POR_ID,
   PACIENTE_INACTIVO_PARA_ADMISION,
+  PACIENTE_NN
 } = require("../constants/PacienteConstants");
+
+
+
 const ResourceNotFoundException = require("../exceptions/ResourceNotFoundException");
 const { getPacienteById } = require("./PacienteService");
 const InactivePatientException = require("../exceptions/InactivePatientException");
@@ -50,11 +56,11 @@ const getAllAdmisiones = async () => {
   });
 
   // Filtrar solo las admisiones que no tienen ninguna asignación
-  const sinAsignacion = admisiones.filter(
+  const admisionesPendientes = admisiones.filter(
     (admision) => admision.AsignacionDormitorios.length === 0
   );
 
-  return sinAsignacion.map(AdmisionMapper.toDto);
+  return admisionesPendientes.map(AdmisionMapper.toDto);
 };
 
 // Control para ver si tenemos una admision activa, para evitar duplicados
@@ -117,7 +123,7 @@ const createAdmision = async (datos) => {
   };
 };
 
-// Cancelamos una admision - Cambiamos el estado booleano, a false
+// Dar de baja (Borrado logico) una admision
 const darDeBajaAdmision = async (id_admision) => {
   const [actualizado] = await Admision.update(
     { estado: false },
@@ -134,32 +140,38 @@ const getAdmisionById = async (id_admision) => {
     include: [
       { model: Paciente },
       { model: MotivoAdmision },
-      { 
+      {
         model: AsignacionDormitorio,
         required: false,
         where: { fecha_fin: null },
         include: [
-            {
-                model: Cama,
-                include: [
-                    { 
-                        model: Habitacion,
-                        include: [{ model: Ala }]
-                    }
-                ]
-            }
-        ]
-      }
-    ]
+          {
+            model: Cama,
+            include: [
+              {
+                model: Habitacion,
+                include: [{ model: Ala }],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
 
   if (!admision) {
-    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID); 
+    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID);
   }
   return AdmisionMapper.toDto(admision);
 };
 
 const getHistorialPorPaciente = async (id_paciente) => {
+  const paciente = await Paciente.findByPk(id_paciente);
+
+  if (!paciente) {
+    throw new ResourceNotFoundException(PACIENTE_NO_ENCONTRADO_POR_ID);
+  }
+
   const admisiones = await Admision.findAll({
     where: { id_paciente },
     include: [
@@ -174,18 +186,21 @@ const getHistorialPorPaciente = async (id_paciente) => {
 
 const cambiarPacienteDeAdmision = async (id_admision, id_nuevo_paciente) => {
   const admision = await Admision.findByPk(id_admision);
-  if (!admision) throw new Error("Admisión no encontrada");
+
+  if (!admision) {
+    throw new ResourceNotFoundException(ADMISION_NO_ENCONTRADA_POR_ID);
+  }
 
   const otraInternacion = await Admision.findOne({
     where: {
       id_paciente: id_nuevo_paciente,
       estado: true,
-      id_admision: { [require("sequelize").Op.ne]: id_admision }
-    }
+      id_admision: { [Op.ne]: id_admision },
+    },
   });
 
   if (otraInternacion) {
-    throw new Error("El paciente destino ya tiene una internación activa en curso.");
+    throw new DuplicatedResourceException(PACIENTE_ADMISION_EN_CURSO);
   }
 
   admision.id_paciente = id_nuevo_paciente;
@@ -201,5 +216,5 @@ module.exports = {
   getAdmisionById,
   getHistorialPorPaciente,
   getAdmisionActivaByPaciente,
-  cambiarPacienteDeAdmision
+  cambiarPacienteDeAdmision,
 };

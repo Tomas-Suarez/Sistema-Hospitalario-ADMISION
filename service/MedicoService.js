@@ -8,6 +8,7 @@ const {
   MEDICO_NO_ENCONTRADO_POR_ID,
   MEDICO_DNI_EXISTENTE_UPDATE,
   MEDICO_MATRICULA_EXISTENTE_UPDATE,
+  PERFIL_NO_ENCONTRADO,
 } = require("../constants/MedicoConstants");
 const DuplicatedResourceException = require("../exceptions/DuplicatedResourceException");
 const ResourceNotFoundException = require("../exceptions/ResourceNotFoundException");
@@ -125,7 +126,7 @@ const changeStatusMedico = async ({ id_medico, estado}) => {
 const getMedicoByUsuarioId = async (id_usuario) => {
   const medico = await Medico.findOne({ where: { id_usuario } });
   if (!medico) {
-    throw new ResourceNotFoundException("No se encontró un perfil médico asociado a este usuario.");
+    throw new ResourceNotFoundException(PERFIL_NO_ENCONTRADO);
   }
   return medico;
 };
