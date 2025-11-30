@@ -75,4 +75,11 @@ router.get(
   pacienteController.formEmergencia
 );
 
+// Informacion detallada sobre el paciente
+router.get(
+  "/detalle/:id",
+  checkRole(["Admin", "Recepcionista", "Medico", "Enfermero"]),
+  pacienteController.getDetallePaciente
+);
+
 module.exports = router;

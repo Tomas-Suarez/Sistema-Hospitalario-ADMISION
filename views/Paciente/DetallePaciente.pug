@@ -1,0 +1,83 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaPaciente.css")
+  link(rel="stylesheet", href="/css/RegistrarHistoria.css") 
+
+block content
+  .contenido-paciente
+    
+    div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;")
+      h1 Ficha del Paciente
+      a(href="/pacientes/GestionPaciente", style="background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;") Volver
+
+    .ficha-container(style="margin-top: 0;")
+      .ficha-header
+        div
+          h1.ficha-titulo #{paciente.apellido}, #{paciente.nombre}
+          span(style="color: #666;") DNI: #{paciente.documento}
+        div(style="text-align: right;")
+          span.estado-indicador(class=paciente.estado ? 'activo' : 'inactivo')
+          strong(style="margin-left: 5px;") #{paciente.estado ? 'Activo' : 'Inactivo'}
+
+      div(style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;")
+        .dato-box
+          .dato-label Fecha de Nacimiento / Edad
+          .dato-valor #{new Date(paciente.fecha_nacimiento).toLocaleDateString('es-AR')} (#{paciente.edad} años)
+        
+        .dato-box
+          .dato-label Género
+          .dato-valor #{paciente.genero}
+
+        .dato-box
+          .dato-label Teléfono
+          .dato-valor #{paciente.telefono}
+
+        .dato-box
+          .dato-label Domicilio
+          .dato-valor #{paciente.domicilio}
+
+        .dato-box
+          .dato-label Obra Social / Seguro
+          .dato-valor(style="font-weight: bold; color: #0277bd;") #{paciente.nombre_seguro || 'No posee seguro médico'}
+
+        div(style="display: flex; gap: 20px;")
+          .dato-box(style="flex: 1;")
+            .dato-label Peso
+            .dato-valor #{paciente.peso ? paciente.peso + ' kg' : '-'}
+          .dato-box(style="flex: 1;")
+            .dato-label Estatura
+            .dato-valor #{paciente.estatura ? paciente.estatura + ' cm' : '-'}
+
+    .ficha-container
+      h2(style="color: #00796b; margin-top: 0; margin-bottom: 15px; font-size: 1.2em; border-bottom: 2px solid #b2dfdb; padding-bottom: 10px;") Información Clínica
+
+      .dato-box
+        .dato-label Alergias Registradas
+        .dato-valor
+          if paciente.alergias && paciente.alergias.length > 0
+            each alergia in paciente.alergias
+              span.badge-alergia= alergia.nombre
+          else
+            span(style="color: #999; font-style: italic;") No registra alergias.
+
+      .dato-box
+        .dato-label Antecedentes Patológicos
+        .dato-valor
+          if paciente.antecedentes && paciente.antecedentes.length > 0
+            each ant in paciente.antecedentes
+              span.badge-antecedente= ant.nombre
+          else
+            span(style="color: #999; font-style: italic;") No registra antecedentes.
+
+    .ficha-container
+      h2(style="color: #c62828; margin-top: 0; margin-bottom: 15px; font-size: 1.2em; border-bottom: 2px solid #ffcdd2; padding-bottom: 10px;") Contactos de Emergencia
+
+      if paciente.contactos && paciente.contactos.length > 0
+        each contacto in paciente.contactos
+          div(style="background-color: #ffebee; padding: 15px; border-radius: 6px; border-left: 4px solid #ef5350; margin-bottom: 10px;")
+            div(style="font-weight: bold; font-size: 1.1em;") #{contacto.nombre_completo}
+            div(style="color: #555; margin-top: 5px;") 📞 #{contacto.telefono}
+      else
+        div(style="padding: 15px; background-color: #f5f5f5; border-radius: 6px; text-align: center; color: #777;")
+          | No se han cargado contactos de emergencia.

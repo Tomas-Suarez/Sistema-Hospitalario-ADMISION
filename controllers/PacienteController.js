@@ -149,6 +149,26 @@ const getHistorial = async (req, res, next) => {
   }
 };
 
+const getDetallePaciente = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const paciente = await pacienteService.getPacienteById(id);
+    
+    const hoy = new Date();
+    const nacimiento = new Date(paciente.fecha_nacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
+    paciente.edad = edad;
+
+    res.render("Paciente/DetallePaciente", { paciente });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllPacientes,
   formAdmision,
@@ -158,4 +178,5 @@ module.exports = {
   cargarPaciente,
   formEmergencia,
   getHistorial,
+  getDetallePaciente,
 };
