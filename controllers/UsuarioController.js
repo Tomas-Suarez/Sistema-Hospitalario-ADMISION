@@ -77,7 +77,7 @@ const loginUsuario = async (req, res, next) => {
   } catch (error) {
     if (error.name === "InvalidCredentialsException") {
       return res.status(401).render("Usuario/LoginUsuario", {
-        mensajeError: CREDENCIALES_INVALIDAS,
+        mensajeError: error.message,
       });
     }
     next(error);
