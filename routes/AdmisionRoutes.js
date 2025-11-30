@@ -1,37 +1,60 @@
 const express = require("express");
 const router = express.Router();
-const AdmisionController = require("../controllers/AdmisionController");
-const EmergenciaController = require("../controllers/EmergenciaController");
-const { validarAdmision } = require("../middlewares/admisionValidator");
 const { validationResult } = require("express-validator");
 
-// Obtenes las admisiones
-router.get("/InternacionPaciente", AdmisionController.getAllAdmisiones);
+const AdmisionController = require("../controllers/AdmisionController");
+const EmergenciaController = require("../controllers/EmergenciaController");
 
-// Crear una nueva admision
+const { validarAdmision } = require("../middlewares/admisionValidator");
+const checkRole = require("../middlewares/authRole");
+
+// Middleware auxiliar para manejar errores de validación
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("Admision/RegistrarAdmision", {
+      errors: errors.array(),
+      oldData: req.body,
+    });
+  }
+  next();
+};
+
+// Obtener las admisiones pendientes
+router.get(
+  "/InternacionPaciente",
+  checkRole("Recepcionista"),
+  AdmisionController.getAllAdmisiones
+);
+
+// Crear una nueva admisión
 router.post(
   "/registrar",
+  checkRole("Recepcionista"),
   validarAdmision,
-  (req, res, next) => {
-    const errors = validationResult(req);
-    console.log(errors);
-    if (!errors.isEmpty()) {
-      return res.status(400).render("Admisiones/RegistrarAdmision", {
-        errors: errors.array(),
-        oldData: req.body,
-      });
-    }
-    next();
-  },
+  handleValidationErrors,
   AdmisionController.createAdmision
 );
 
-// Creamos una admision y luego asignamos una habitacion
-router.post("/registrarEmergencia", EmergenciaController.registrarYAsignarEmergencia);
+// Crear una admisión de emergencia y asignar habitación automáticamente
+router.post(
+  "/registrarEmergencia",
+  checkRole("Recepcionista"),
+  EmergenciaController.registrarYAsignarEmergencia
+);
 
-// Cancelar una admision - Cambiar el estado del estado booleano a false
-router.patch("/cancelarAdmision/:id", AdmisionController.darDeBajaAdmision);
+// Cancelar una admisión (Baja lógica)
+router.patch(
+  "/cancelarAdmision/:id",
+  checkRole("Recepcionista"),
+  AdmisionController.darDeBajaAdmision
+);
 
-router.post("/identificar", AdmisionController.identificarPaciente);
+// Identificar a un paciente NN en una admisión existente
+router.post(
+  "/identificar",
+  checkRole("Medico"),
+  AdmisionController.identificarPaciente
+);
 
 module.exports = router;

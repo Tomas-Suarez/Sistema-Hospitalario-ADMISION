@@ -1,21 +1,58 @@
 const express = require("express");
 const router = express.Router();
+
 const EvaluacionController = require("../controllers/EvaluacionController");
-const checkRole = require("../middlewares/authRole");
 const AltaController = require("../controllers/AltaController");
 
-router.get("/pacientes", checkRole("Medico"), EvaluacionController.getPacientesInternados);
+const checkRole = require("../middlewares/authRole");
 
-router.get("/crear/:id_admision", checkRole("Medico"), EvaluacionController.getFormularioEvaluacion);
+// Listado de pacientes internados para evaluar
+router.get(
+  "/pacientes",
+  checkRole("Medico"),
+  EvaluacionController.getPacientesInternados
+);
 
-router.post("/guardar", checkRole("Medico"), EvaluacionController.createEvaluacion);
+// Formulario de nueva evaluación/evolución
+router.get(
+  "/crear/:id_admision",
+  checkRole("Medico"),
+  EvaluacionController.getFormularioEvaluacion
+);
 
-router.get("/detalle/:id_evaluacion", checkRole("Medico"), EvaluacionController.getDetalleEvaluacion);
+// Guardar nueva evaluación
+router.post(
+  "/guardar",
+  checkRole("Medico"),
+  EvaluacionController.createEvaluacion
+);
 
-router.get("/alta", checkRole("Medico"), AltaController.getVistaAlta);
+// Ver detalle de una evaluación
+router.get(
+  "/detalle/:id_evaluacion",
+  checkRole("Medico"),
+  EvaluacionController.getDetalleEvaluacion
+);
 
-router.get("/alta/buscar", checkRole("Medico"), AltaController.buscarPacienteParaAlta);
+// Vista principal para gestionar el alta
+router.get(
+  "/alta",
+  checkRole("Medico"),
+  AltaController.getVistaAlta
+);
 
-router.post("/alta/confirmar", checkRole("Medico"), AltaController.procesarAlta);
+// Buscar paciente para dar de alta
+router.get(
+  "/alta/buscar",
+  checkRole("Medico"),
+  AltaController.buscarPacienteParaAlta
+);
+
+// Confirmar y procesar el alta
+router.post(
+  "/alta/confirmar",
+  checkRole("Medico"),
+  AltaController.procesarAlta
+);
 
 module.exports = router;

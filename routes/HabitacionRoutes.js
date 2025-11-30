@@ -1,10 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const habitacionController = require("../controllers/HabitacionController");
+const checkRole = require("../middlewares/authRole");
 
-router.get("/ListaHabitacion", habitacionController.getHabitaciones);
+// Mostrar listado de todas las habitaciones y su estado (Camas libres/ocupadas)
+router.get(
+  "/ListaHabitacion", 
+  checkRole(["Recepcionista", "Admin"]), 
+  habitacionController.getHabitaciones
+);
 
-router.get("/por-ala", habitacionController.getHabitacionesPorAlaYGenero);
-
+// API interna: Devuelve habitaciones disponibles filtradas por Ala y Género
+// (Utilizada dinámicamente desde el formulario de Admisión)
+router.get(
+  "/por-ala", 
+  checkRole("Recepcionista"), 
+  habitacionController.getHabitacionesPorAlaYGenero
+);
 
 module.exports = router;

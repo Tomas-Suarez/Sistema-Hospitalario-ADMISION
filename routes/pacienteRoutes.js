@@ -1,46 +1,78 @@
 const express = require("express");
 const router = express.Router();
-const pacienteController = require("../controllers/PacienteController");
-const { validarPaciente } = require("../middlewares/pacienteValidator");
 const { validationResult } = require("express-validator");
 
-// Crear paciente
+const pacienteController = require("../controllers/PacienteController");
+
+const { validarPaciente } = require("../middlewares/pacienteValidator");
+const checkRole = require("../middlewares/authRole");
+
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("Paciente/RegistrarPaciente", {
+      errors: errors.array(),
+      oldData: req.body,
+    });
+  }
+  next();
+};
+
+router.get(
+  "/GestionPaciente",
+  checkRole(["Admin", "Recepcionista", "Medico"]),
+  pacienteController.getAllPacientes
+);
+
+// Registrar nuevo paciente (Acceso: Admin y Recepción)
 router.post(
   "/registro",
+  checkRole(["Admin", "Recepcionista"]),
   validarPaciente,
-  async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).render("Pacientes/RegistrarPaciente", {
-        errors: errors.array(),
-        oldData: req.body,
-      });
-    }
-    next();
-  },
+  handleValidationErrors,
   pacienteController.createPaciente
 );
 
+// Actualizar paciente (Acceso: Admin y Recepción)
+router.put(
+  "/actualizar/:id",
+  checkRole(["Admin", "Recepcionista"]),
+  pacienteController.updatePaciente
+);
 
-// Actualizar paciente
-router.put("/actualizar/:id", pacienteController.updatePaciente);
+// Cambiar estado/Baja lógica (Acceso: Admin y Recepción)
+router.patch(
+  "/cambiar-estado/:id",
+  checkRole(["Admin", "Recepcionista"]),
+  pacienteController.changeStatusPaciente
+);
 
-// Mostrar todos los pacientes
-router.get("/GestionPaciente", pacienteController.getAllPacientes);
+// Ver historial clínico (Acceso: Admin, Recepción y Médicos)
+router.get(
+  "/historial/:id_paciente",
+  checkRole(["Admin", "Recepcionista", "Medico"]),
+  pacienteController.getHistorial
+);
 
-//Permite cargar el form de la parte de registro admision
-router.get("/RegistrarAdmision", pacienteController.formAdmision);
+// Cargar formulario de registro de admisión
+router.get(
+  "/RegistrarAdmision",
+  checkRole("Recepcionista"),
+  pacienteController.formAdmision
+);
 
-//Obtenemos el paciente por su documento(DNI)
-router.get("/obtener-paciente", pacienteController.cargarPaciente);
+// Buscar paciente por DNI para admisión
+router.get(
+  "/obtener-paciente",
+  checkRole("Recepcionista"),
+  pacienteController.cargarPaciente
+);
 
-//permite cargar el form de la parte de emergencia
-router.get("/internacion-emergencia", pacienteController.formEmergencia);
-
-// Cambiar el estado del paciente
-router.patch("/cambiar-estado/:id", pacienteController.changeStatusPaciente);
-
-router.get("/historial/:id_paciente", pacienteController.getHistorial);
-
+// Cargar formulario de ingreso por emergencia (NN)
+router.get(
+  "/internacion-emergencia",
+  checkRole("Recepcionista"),
+  pacienteController.formEmergencia
+);
 
 module.exports = router;
