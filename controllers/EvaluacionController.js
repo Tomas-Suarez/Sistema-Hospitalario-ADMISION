@@ -41,7 +41,7 @@ const createEvaluacion = async (req, res, next) => {
 
     await EvaluacionService.createEvaluacion(datos);
 
-    res.redirect("/evaluaciones/pacientes");
+    res.redirect(`/evaluaciones/crear/${datos.id_admision}`);
   } catch (error) {
     next(error);
   }
@@ -77,11 +77,13 @@ const getDetalleEvaluacion = async (req, res, next) => {
 
     const evaluacion = await EvaluacionService.getEvaluacionById(id_evaluacion);
 
-    const admision = await AdmisionService.getAdmisionById(evaluacion.id_admision);
+    const admision = await AdmisionService.getAdmisionById(
+      evaluacion.id_admision
+    );
 
-    res.render("Medicos/DetalleEvaluacion", { 
+    res.render("Medicos/DetalleEvaluacion", {
       evaluacion,
-      admision
+      admision,
     });
   } catch (error) {
     next(error);

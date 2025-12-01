@@ -124,7 +124,7 @@ const guardarHistoria = async (req, res, next) => {
   try {
     const datos = parseHistoriaFromBody(req.body);
     await PacienteService.updateHistoriaClinica(datos.id_paciente, datos);
-    res.redirect(`/enfermeros/historia/buscar?documento=${datos.documento}`);
+    res.redirect(`/enfermeria/historia/buscar?documento=${datos.documento}`);
   } catch (error) {
     next(error);
   }

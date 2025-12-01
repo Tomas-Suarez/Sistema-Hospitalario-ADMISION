@@ -4,6 +4,7 @@ const Paciente = require("../models/PacienteModels");
 const Habitacion = require("../models/HabitacionModels");
 const Ala = require("../models/AlaModels");
 const Admision = require("../models/AdmisionModels");
+const MotivoAdmision = require("../models/MotivoAdmisionModels");
 
 const AsignacionDormitorioMapper = require("../mappers/AsignacionDormitorioMapper");
 
@@ -26,6 +27,9 @@ const getAsignacionesActuales = async () => {
             model: Paciente,
             as: 'Paciente',
             attributes: ["id_paciente", "documento", "nombre", "apellido"],
+          },
+          {
+            model: MotivoAdmision, 
           }
         ]
       },

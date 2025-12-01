@@ -53,7 +53,7 @@ router.patch(
 // Identificar a un paciente NN en una admisión existente
 router.post(
   "/identificar",
-  checkRole("Medico"),
+  checkRole("Recepcionista"),
   AdmisionController.identificarPaciente
 );
 

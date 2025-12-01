@@ -74,7 +74,7 @@ block content
           h2(style="color: #00796b;") Actualizar Historia Clínica
           p(style="margin-bottom: 15px;") Seleccione los datos correspondientes para #{paciente.nombre} #{paciente.apellido}.
 
-          form(action="/enfermeros/historia/guardar" method="POST")
+          form(action="/enfermeria/historia/guardar" method="POST")
             input(type="hidden", name="id_paciente", value=paciente.id_paciente)
             input(type="hidden", name="documento_hidden", value=paciente.documento)
 

@@ -9,17 +9,18 @@ block scripts
   script(src="https://code.jquery.com/jquery-3.6.0.min.js")
   script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
   script(src="/js/DataTableGlobal.js")
-
   script(src="/js/Paciente.js")
 
 block content
   .contenido-paciente
 
     h1 Lista de Pacientes
-    button#btn-abrir-crearPaciente.btn-crearPaciente(type="button")
-      span.editar-boton
-        img.icono-info(src="/img/icon-crearPaciente.png", alt="crear")
-        |  Crear Paciente
+    
+    if userRole === 'Admin' || userRole === 'Recepcionista'
+      button#btn-abrir-crearPaciente.btn-crearPaciente(type="button")
+        span.editar-boton
+          img.icono-info(src="/img/icon-crearPaciente.png", alt="crear")
+          |  Crear Paciente
 
     table#TablaPaciente.datatable-estandar
       thead
@@ -43,25 +44,26 @@ block content
               span.estado-indicador(class=paciente.estado ? 'activo' : 'inactivo')
               | #{paciente.estado ? 'Activo' : 'Inactivo'}
             td
-              button.btn-editar(
-                type="button",
-                data-id=paciente.id_paciente,
-                data-nombre=paciente.nombre,
-                data-apellido=paciente.apellido,
-                data-fecha_nacimiento=paciente.fecha_nacimiento,
-                data-genero=paciente.genero,
-                data-documento=paciente.documento,
-                data-telefono=paciente.telefono,
-                data-domicilio=paciente.domicilio,
-                data-estatura=paciente.estatura,
-                data-peso=paciente.peso,
-                data-contacto_emergencia=paciente.contacto_emergencia,
-                data-id_seguro=paciente.id_seguro,
-                data-contactos=JSON.stringify(paciente.contactos)
-              )
-                span.editar-boton
-                  img.icono-info(src="/img/icon-editar.png", alt="editar")
-                  |  Editar
+              if userRole === 'Admin' || userRole === 'Recepcionista'
+                button.btn-editar(
+                  type="button",
+                  data-id=paciente.id_paciente,
+                  data-nombre=paciente.nombre,
+                  data-apellido=paciente.apellido,
+                  data-fecha_nacimiento=paciente.fecha_nacimiento,
+                  data-genero=paciente.genero,
+                  data-documento=paciente.documento,
+                  data-telefono=paciente.telefono,
+                  data-domicilio=paciente.domicilio,
+                  data-estatura=paciente.estatura,
+                  data-peso=paciente.peso,
+                  data-contacto_emergencia=paciente.contacto_emergencia,
+                  data-id_seguro=paciente.id_seguro,
+                  data-contactos=JSON.stringify(paciente.contactos)
+                )
+                  span.editar-boton
+                    img.icono-info(src="/img/icon-editar.png", alt="editar")
+                    |  Editar
 
               a.btn-historial(href=`/pacientes/historial/${paciente.id_paciente}`)
                 span.historial-boton
@@ -73,18 +75,19 @@ block content
                   img.icono-info(src="/img/icon-info.png", alt="info")
                   |  Información
 
-              form(method="POST", action=`/pacientes/cambiar-estado/${paciente.id_paciente}`, style="display:inline")
-                input(type="hidden", name="_method", value="PATCH")
-                input(type="hidden", name="estado", value=paciente.estado ? 'false' : 'true')
-                button(type="submit", class="btn-cambiar-estado")
-                  if paciente.estado
-                    span.estado-boton-rojo
-                      img.icono-info(src="/img/icon-estado.png", alt="Dar de baja", title="Dar de baja")
-                      |  Eliminar
-                  else
-                    span.estado-boton-verde
-                      img.icono-info(src="/img/icon-estado.png", alt="Dar de alta", title="Dar de alta")
-                      |  Restaurar
+              if userRole === 'Admin' || userRole === 'Recepcionista'
+                form(method="POST", action=`/pacientes/cambiar-estado/${paciente.id_paciente}`, style="display:inline")
+                  input(type="hidden", name="_method", value="PATCH")
+                  input(type="hidden", name="estado", value=paciente.estado ? 'false' : 'true')
+                  button(type="submit", class="btn-cambiar-estado")
+                    if paciente.estado
+                      span.estado-boton-rojo
+                        img.icono-info(src="/img/icon-estado.png", alt="Dar de baja", title="Dar de baja")
+                        |  Eliminar
+                    else
+                      span.estado-boton-verde
+                        img.icono-info(src="/img/icon-estado.png", alt="Dar de alta", title="Dar de alta")
+                        |  Restaurar
 
   script.
     document.querySelectorAll('.edad').forEach(td => {
@@ -98,5 +101,6 @@ block content
       td.textContent = `${edad} años`;
     });
 
-  include includes/modalPaciente.pug
-  +modalPaciente()
+  if userRole === 'Admin' || userRole === 'Recepcionista'
+    include includes/modalPaciente.pug
+    +modalPaciente()
