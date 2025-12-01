@@ -45,7 +45,8 @@ block content
 
               button.btn-cambiar-habitacion(
                 type="button",
-                data-id=internacion.id_internacion
+                data-idadmision=internacion.admision.id_admision,
+                data-idpaciente=internacion.admision.paciente.id_paciente
               )
                 img.icono-info(src="/img/icon-crearPaciente.png", alt="Cambiar habitación")
                 |  Cambiar de habitación
@@ -69,3 +70,31 @@ block content
           div(style="text-align: right; border-top: 1px solid #eee; padding-top: 15px;")
             button#cerrar-modal-identificar(type="button", style="margin-right: 10px; padding: 10px 20px; background: #eee; border: none; border-radius: 4px; cursor: pointer;") Cancelar
             button(type="submit", style="background-color: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;") Asignar Identidad
+
+    #modal-cambio-habitacion.hidden.modal-overlay
+      .modal-content(style="border-top: 5px solid #5d4037;")
+        h2(style="color: #5d4037; margin-top:0;") Cambiar Habitación
+        p(style="color: #666; font-size: 0.9em; margin-bottom: 20px;") Seleccione la nueva ubicación para el paciente.
+
+        form(action="/asignaciones/cambiar" method="POST")
+          input(type="hidden", name="id_admision", id="input-id-admision-cambio")
+          input(type="hidden", id="input-id-paciente-cambio") 
+
+          div(style="margin-bottom: 15px;")
+            label(for="select-ala-cambio" style="display:block; font-weight:bold; margin-bottom:5px;") Nueva Ala:
+            select(id="select-ala-cambio", required, style="width: 100%; padding: 8px;")
+              option(disabled selected value="") -- Seleccione Ala --
+              if alas
+                each ala in alas
+                  option(value=ala.id_ala)= ala.nombre
+              else
+                 option(disabled) No hay alas cargadas
+
+          div(style="margin-bottom: 20px;")
+            label(for="select-habitacion-cambio" style="display:block; font-weight:bold; margin-bottom:5px;") Nueva Habitación:
+            select(name="id_habitacion", id="select-habitacion-cambio", required, disabled, style="width: 100%; padding: 8px;")
+              option(disabled selected value="") -- Seleccione primero el Ala --
+
+          div(style="text-align: right; border-top: 1px solid #eee; padding-top: 15px;")
+            button(type="submit", style="background-color: #5d4037; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;") Confirmar Cambio
+            button#cerrar-modal-cambio(type="button", style="margin-right: 10px; padding: 10px 20px; background: #eee; border: none; border-radius: 4px; cursor: pointer;") Cancelar

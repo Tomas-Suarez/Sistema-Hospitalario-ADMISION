@@ -5,6 +5,7 @@ const Habitacion = require("../models/HabitacionModels");
 const Ala = require("../models/AlaModels");
 const Admision = require("../models/AdmisionModels");
 const MotivoAdmision = require("../models/MotivoAdmisionModels");
+const sequelize = require("../models/db");
 
 const AsignacionDormitorioMapper = require("../mappers/AsignacionDormitorioMapper");
 
@@ -101,9 +102,66 @@ const createAsignacionDormitorio = async (datos) => {
     };
 };
 
-// TODO: Falta cambio de habitacion
+const cambiarHabitacion = async ({ id_admision, id_habitacion }) => {
+  return await sequelize.transaction(async (t) => {
+    
+    // 1. Buscar la asignación actual ACTIVA del paciente
+    const asignacionActual = await AsignacionDormitorio.findOne({
+      where: { 
+        id_admision, 
+        fecha_fin: null 
+      },
+      transaction: t
+    });
+
+    if (!asignacionActual) {
+      throw new Error("El paciente no tiene una asignación de cama activa para cambiar.");
+    }
+
+    // 2. Liberar la cama ANTERIOR (la ensuciamos)
+    await Cama.update(
+      { libre: true, higienizada: false },
+      { where: { id_cama: asignacionActual.id_cama }, transaction: t }
+    );
+
+    // 3. Cerrar la asignación ANTERIOR
+    asignacionActual.fecha_fin = new Date();
+    await asignacionActual.save({ transaction: t });
+
+    // 4. BUSCAR CAMA LIBRE EN LA NUEVA HABITACIÓN
+    const nuevaCama = await Cama.findOne({
+      where: { 
+        id_habitacion: id_habitacion,
+        libre: true,
+        higienizada: true
+      },
+      transaction: t
+    });
+
+    if (!nuevaCama) {
+      throw new Error("No hay camas disponibles e higienizadas en la habitación seleccionada.");
+    }
+
+    // 5. Ocupar la NUEVA cama
+    await Cama.update(
+      { libre: false },
+      { where: { id_cama: nuevaCama.id_cama }, transaction: t }
+    );
+
+    // 6. Crear la NUEVA asignación
+    const nuevaAsignacion = await AsignacionDormitorio.create({
+      id_admision,
+      id_cama: nuevaCama.id_cama,
+      fecha_inicio: new Date(),
+      fecha_fin: null
+    }, { transaction: t });
+
+    return AsignacionDormitorioMapper.toDto(nuevaAsignacion);
+  });
+};
 
 module.exports = {
   createAsignacionDormitorio,
   getAsignacionesActuales,
+  cambiarHabitacion
 };

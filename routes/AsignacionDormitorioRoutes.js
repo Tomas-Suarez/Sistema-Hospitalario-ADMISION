@@ -17,4 +17,11 @@ router.post(
   AsignacionDormitorioController.createAsignacionDormitorio
 );
 
+// Cambio de habitacion
+router.post(
+  "/cambiar", 
+  checkRole("Recepcionista"), 
+  AsignacionDormitorioController.cambiarHabitacion
+);
+
 module.exports = router;
