@@ -18,4 +18,10 @@ router.get(
   habitacionController.getHabitacionesPorAlaYGenero
 );
 
+router.post(
+  "/higienizar/:id_cama",
+  checkRole(["Recepcionista"]), 
+  habitacionController.higienizarCama
+);
+
 module.exports = router;

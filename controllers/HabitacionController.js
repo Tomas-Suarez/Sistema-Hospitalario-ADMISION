@@ -1,16 +1,13 @@
 const HabitacionService = require("../service/HabitacionService");
+const CamaService = require("../service/CamaService");
 
 // Controlador para ovtener todas las habitaciones con sus camas
-const getHabitaciones = async (req, res) => {
+const getHabitaciones = async (req, res, next) => {
   try {
     const habitaciones = await HabitacionService.getAllHabitaciones();
     res.render("Habitaciones/ListaHabitacion", { habitaciones });
   } catch (error) {
-    res
-      .status(500)
-      .render("Ocurrio un error al obtener las habitaciones", {
-        message: error.message,
-      });
+    next(error);
   }
 };
 
@@ -18,8 +15,6 @@ const getHabitaciones = async (req, res) => {
 // Aca pasamos a JSON, porque hacemos un fetch para cuando se seleccione un ala en especifica filtre
 const getHabitacionesPorAlaYGenero = async (req, res) => {
   const { alaId, pacienteId } = req.query;
-
-  console.log("alaId:", alaId, "pacienteId:", pacienteId);
 
   if (!alaId || !pacienteId) {
     return res
@@ -40,7 +35,20 @@ const getHabitacionesPorAlaYGenero = async (req, res) => {
   }
 };
 
+const higienizarCama = async (req, res, next) => {
+  try {
+    const { id_cama } = req.params;
+    
+    await CamaService.higienizarCama(id_cama);
+
+    res.redirect("/habitaciones/ListaHabitacion");
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getHabitaciones,
   getHabitacionesPorAlaYGenero,
+  higienizarCama
 };

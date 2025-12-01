@@ -1,8 +1,8 @@
 extends ../layout
 
 block head
-  title Información de las habitaciones
-  link(rel="stylesheet", href="/css/VistaPaciente.css")
+  title Gestión de Habitaciones
+  link(rel="stylesheet", href="/css/VistaMedico.css")
   link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
 
 block scripts
@@ -11,22 +11,58 @@ block scripts
   script(src="/js/DataTableGlobal.js")
 
 block content
-  .contenido-paciente
-    h1 Información de las habitaciones
+  .contenido-medico
+    h1 Gestión de Habitaciones
 
-    table#TablaPaciente.datatable-estandar
+    table#TablaMedico.datatable-estandar
       thead
         tr
-          th N° Habitación
+          th Habitación
           th Ala
           th Capacidad
-          th Estado Cama N°1
-          th Estado Cama N°2
+          th Detalle de Camas
+          th Acciones
       tbody
         each habitacion in habitaciones
           tr
-            td= habitacion.numero
+            td(style="font-size: 1.1em; font-weight: bold;")= habitacion.numero
             td= habitacion.Ala.nombre
             td= habitacion.capacidad
-            td= habitacion.Camas && habitacion.Camas.length > 0 && habitacion.Camas[0].libre ? 'Libre' : 'Ocupado'
-            td= habitacion.Camas && habitacion.Camas.length > 1 && habitacion.Camas[1].libre ? 'Libre' : 'Ocupado'
+            
+            td
+              if habitacion.Camas && habitacion.Camas.length > 0
+                div(style="display: flex; flex-direction: column; gap: 8px;")
+                  each cama in habitacion.Camas
+                    div(style="display: flex; align-items: center; gap: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 4px;")
+                      strong(style="color: #555;") Cama #{cama.numero}:
+                      +estadoCamaTexto(cama)
+              else
+                span(style="color: #999;") Sin camas registradas
+
+            td
+              if habitacion.Camas && habitacion.Camas.length > 0
+                div(style="display: flex; flex-direction: column; gap: 8px;")
+                  each cama in habitacion.Camas
+                    div(style="height: 24px; display: flex; align-items: center;") 
+                      if cama.libre && !cama.higienizada
+                        form(method="POST", action=`/habitaciones/higienizar/${cama.id_cama}`)
+                          button.btn-accion(
+                            type="submit", 
+                            style="background-color: #ef6c00; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85em; display: flex; align-items: center; gap: 5px; font-weight: bold;"
+                          )
+                            | Higienizar
+                      else
+                        span(style="color: transparent; user-select: none;") -
+
+mixin estadoCamaTexto(cama)
+  if !cama.libre
+    if cama.AsignacionDormitorios && cama.AsignacionDormitorios.length > 0
+      - const paciente = cama.AsignacionDormitorios[0].Admision.Paciente
+      span(style="color: #d32f2f; font-weight: bold;") Ocupada (#{paciente.apellido}, #{paciente.nombre})
+    else
+      span(style="color: #d32f2f; font-weight: bold;") Ocupada
+  else
+    if !cama.higienizada
+      span(style="color: #f57c00; font-weight: bold;") A higienizar
+    else
+      span(style="color: #2e7d32; font-weight: bold;") Disponible

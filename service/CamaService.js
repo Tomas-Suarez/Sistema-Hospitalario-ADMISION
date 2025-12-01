@@ -1,4 +1,5 @@
 const Cama = require("../models/CamaModels");
+const ResourceNotFoundException = require("../exceptions/ResourceNotFoundException");
 
 //Obtenemos todas las camas
 const getAllCamas = async () => {
@@ -12,6 +13,20 @@ const getAllCamas = async () => {
   }
 };
 
+const higienizarCama = async (id_cama) => {
+  const cama = await Cama.findByPk(id_cama);
+
+  if (!cama) {
+    throw new ResourceNotFoundException("Cama no encontrada con ID: " + id_cama);
+  }
+
+  cama.higienizada = true;
+  await cama.save();
+
+  return cama;
+};
+
 module.exports = {
     getAllCamas,
+    higienizarCama
 }

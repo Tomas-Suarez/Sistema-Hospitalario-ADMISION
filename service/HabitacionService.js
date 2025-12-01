@@ -9,7 +9,6 @@ const { PACIENTE_NO_ENCONTRADO_POR_ID } = require("../constants/PacienteConstant
 
 // Obtenemos todas las habitaciones con sus respectivas camas
 const getAllHabitaciones = async () => {
-  try {
     const habitaciones = await Habitacion.findAll({
       attributes: ["numero", "capacidad"],
       include: [
@@ -19,15 +18,34 @@ const getAllHabitaciones = async () => {
         },
         {
           model: Cama,
-          attributes: ["libre"],
+          attributes: ["id_cama", "numero", "libre", "higienizada"], 
+          include: [
+            {
+              model: AsignacionDormitorio,
+              required: false,
+              where: { fecha_fin: null },
+              include: [
+                {
+                  model: Admision,
+                  include: [
+                    {
+                      model: Paciente,
+                      attributes: ["nombre", "apellido"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
       ],
+      order: [
+        ['numero', 'ASC'], 
+        [Cama, 'numero', 'ASC']
+      ] 
     });
 
     return habitaciones;
-  } catch (error) {
-    throw new Error("Error al obtener habitaciones: " + error.message);
-  }
 };
 
 // Filtramos las habitaciones segun el genero del paciente y el ala seleccionada.
