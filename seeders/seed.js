@@ -13,6 +13,7 @@ const Especialidad = require("../models/EspecialidadModels");
 const Usuario = require("../models/UsuarioModels");
 const Tratamiento = require("../models/TratamientoModels");
 const Medico = require("../models/MedicoModels");
+const Enfermero = require("../models/EnfermeroModels");
 const TipoPrueba = require("../models/TipoPruebaModels");
 const MotivoAlta = require("../models/MotivoAltaModels");
 const Alergia = require("../models/AlergiaModels");
@@ -61,6 +62,22 @@ async function seed() {
         password_hash:
           "$2b$10$TgWKl8TN1hHWfnl8seyMWud2frIKlYS/PWNXxPHeXdza4q8Mzx1Uu",
         email: "medico@gmail.com",
+      },
+      {
+        id_usuario: 3,
+        id_rol: 3,
+        nombre_usuario: "SoyRecepcion",
+        password_hash:
+          "$2b$10$9B8ipx9QzpiLqyVurYb.Uu93T7/CoPfn8tj6rUxDzQ7.O3mMVk5Zi",
+        email: "recepcion@hospital.com",
+      },
+      {
+        id_usuario: 4,
+        id_rol: 2,
+        nombre_usuario: "SoyEnfermero",
+        password_hash:
+          "$2b$10$x7q/VKbnZjqfhI42sQTsrubq6SZ9wTB/ztMo5V2J8292iLZy//neG",
+        email: "enfermero@hospital.com",
       },
     ]);
 
@@ -132,6 +149,19 @@ async function seed() {
         matricula: "MN-12345",
         id_especialidad: 1,
         id_guardia: 1,
+        estado: true,
+      },
+    ]);
+
+    await Enfermero.bulkCreate([
+      {
+        id_usuario: 4,
+        id_guardia: 2,
+        nombre: "Esteban",
+        apellido: "Quito",
+        genero: "Masculino",
+        documento: "20304050",
+        matricula: "ENF-8899",
         estado: true,
       },
     ]);
