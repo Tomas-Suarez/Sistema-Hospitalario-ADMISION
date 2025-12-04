@@ -90,9 +90,27 @@ const getDetalleEvaluacion = async (req, res, next) => {
   }
 };
 
+const getHistorialEvaluaciones = async (req, res, next) => {
+  try {
+    const { id_admision } = req.params;
+
+    const admision = await AdmisionService.getAdmisionById(id_admision);
+
+    const historial = await EvaluacionService.getEvaluacionesPorAdmision(id_admision);
+
+    res.render("Medicos/LecturaHistoria", { 
+      admision, 
+      historial 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getPacientesInternados,
   createEvaluacion,
   getFormularioEvaluacion,
   getDetalleEvaluacion,
+  getHistorialEvaluaciones,
 };

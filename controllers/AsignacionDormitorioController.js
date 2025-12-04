@@ -1,5 +1,6 @@
 const AsignacionDormitorioService = require("../service/AsignacionDormitorioService");
 const AlaService = require("../service/AlaService");
+const AdmisionService = require("../service/AdmisionService");
 
 // Obtenemos todas las asignaciones de dormitorio, de cierto paciente (Internados)
 const getAsignacionesActuales = async (req, res, next) => {
@@ -52,8 +53,27 @@ const cambiarHabitacion = async (req, res, next) => {
   }
 };
 
+const verHistorialMovimientos = async (req, res, next) => {
+  try {
+    const { id_admision } = req.params;
+    
+    const movimientos = await AsignacionDormitorioService.getHistorialPorAdmision(id_admision);
+    
+    const admision = await AdmisionService.getAdmisionById(id_admision);
+
+    res.render("Internacion/HistorialMovimientos", { 
+      movimientos, 
+      admision 
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
     createAsignacionDormitorio,
     getAsignacionesActuales,
-    cambiarHabitacion
+    cambiarHabitacion,
+    verHistorialMovimientos
 };

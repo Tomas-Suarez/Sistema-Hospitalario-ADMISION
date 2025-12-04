@@ -160,8 +160,29 @@ const cambiarHabitacion = async ({ id_admision, id_habitacion }) => {
   });
 };
 
+const getHistorialPorAdmision = async (id_admision) => {
+  const asignaciones = await AsignacionDormitorio.findAll({
+    where: { id_admision },
+    include: [
+      {
+        model: Cama,
+        include: [
+          {
+            model: Habitacion,
+            include: [{ model: Ala }]
+          }
+        ]
+      }
+    ],
+    order: [['fecha_inicio', 'DESC']]
+  });
+
+  return asignaciones.map(AsignacionDormitorioMapper.toDto);
+};
+
 module.exports = {
   createAsignacionDormitorio,
   getAsignacionesActuales,
-  cambiarHabitacion
+  cambiarHabitacion,
+  getHistorialPorAdmision,
 };

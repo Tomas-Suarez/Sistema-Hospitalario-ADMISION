@@ -10,8 +10,8 @@ block scripts
 block content
   .contenido-medico
     div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto;")
-      a(href=`/evaluaciones/crear/${admision.id_admision}`, style="text-decoration: none; color: #666; font-weight: bold;") 
-        | ← Volver a la Historia Clínica
+      a(href="javascript:history.back()", style="text-decoration: none; color: #666; font-weight: bold;") 
+        | ← Volver
       
       button.btn-pdf.btn-descargar-pdf(
         type="button",

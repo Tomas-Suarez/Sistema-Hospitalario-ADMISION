@@ -1,0 +1,67 @@
+extends ../layout
+
+block head
+  link(rel="stylesheet", href="/css/VistaMedico.css")
+  link(rel="stylesheet", href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css")
+
+block scripts
+  script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+  script(src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js")
+  script(src="/js/DataTableGlobal.js")
+
+block content
+  .contenido-medico
+    
+    div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;")
+      h1 Historial de Ubicaciones
+      a(href="javascript:history.back()", style="background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;") Volver
+
+    .form-card(style="background-color: #e3f2fd; border-left: 6px solid #2196f3; margin-bottom: 20px; padding: 20px; border-radius: 8px;")
+      h2(style="margin-top: 0; color: #0d47a1;") #{admision.paciente.apellido}, #{admision.paciente.nombre}
+      p(style="color: #333; margin: 5px 0;") 
+        strong DNI: 
+        | #{admision.paciente.documento}
+      p(style="color: #333;") 
+        strong Ingreso: 
+        | #{new Date(admision.fecha_entrada).toLocaleDateString('es-AR')}
+
+    .form-card(style="background-color: #ffffff; padding: 20px; box-sizing: border-box;")
+      table#TablaMedico.datatable-estandar(style="width: 100%;")
+        thead
+          tr
+            th Fecha Desde
+            th Fecha Hasta
+            th Ala
+            th Habitación
+            th Cama
+            th Tiempo de estadía
+        tbody
+          if movimientos.length > 0
+            each mov in movimientos
+              tr
+                td(data-sort=mov.fecha_inicio)= new Date(mov.fecha_inicio).toLocaleString('es-AR')
+                
+                td
+                  if mov.fecha_fin
+                    | #{new Date(mov.fecha_fin).toLocaleString('es-AR')}
+                  else
+                    span.estado-indicador.activo(style="margin-right: 5px;")
+                    strong(style="color: #2e7d32;") Actual
+
+                td= mov.cama.habitacion.ala.nombre
+                td(style="font-weight: bold;")= mov.cama.habitacion.numero
+                td= mov.cama.numero
+
+                td
+                  - const inicio = new Date(mov.fecha_inicio)
+                  - const fin = mov.fecha_fin ? new Date(mov.fecha_fin) : new Date()
+                  - const diffTime = Math.abs(fin - inicio)
+                  - const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) 
+                  - const diffHours = Math.floor((diffTime / (1000 * 60 * 60)) % 24)
+                  if diffDays > 0
+                    | #{diffDays} días, #{diffHours} hs
+                  else
+                    | #{diffHours} hs
+          else
+            tr
+              td(colspan="6" style="text-align: center;") No hay movimientos registrados.

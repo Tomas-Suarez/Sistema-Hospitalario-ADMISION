@@ -34,7 +34,7 @@ router.get(
 // Carga la vista para ver el historial y registrar nuevos signos vitales de una internación
 router.get(
   "/signos/:id_admision",
-  checkRole("Enfermero"),
+  checkRole(["Enfermero", "Medico"]),
   enfermeroController.getVistaSignos
 );
 
@@ -48,7 +48,7 @@ router.post(
 // Muestra el detalle completo de una medición específica histórica
 router.get(
   "/signos/detalle/:id_signo",
-  checkRole("Enfermero"),
+  checkRole(["Enfermero", "Medico"]),
   enfermeroController.getDetalleSignos
 );
 

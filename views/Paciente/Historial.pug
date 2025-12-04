@@ -25,6 +25,7 @@ block content
             th Motivo
             th Tipo Ingreso
             th Estado
+            th Ubicaciones
         tbody
           each item in historial
             tr
@@ -39,6 +40,18 @@ block content
                 else
                   span.estado-indicador.inactivo
                   | Alta
+              
+              td(style="text-align: center;")
+                a(href=`/asignaciones/historial/${item.id_admision}`, title="Ver historial de camas")
+                  img(src="/img/icon-habitacion.png", alt="Ubicaciones", style="width: 24px; height: 24px;")
+
+                if userRole === 'Medico'
+                  a(href=`/evaluaciones/historial/${item.id_admision}`, title="Ver evoluciones médicas")
+                    img(src="/img/icon-evaluacion.png", alt="Historia Clínica", style="width: 24px; height: 24px;")
+
+                if userRole === 'Medico' || userRole === 'Enfermero'
+                  a(href=`/enfermeria/signos/${item.id_admision}`, title="Ver signos vitales", style="text-decoration: none;")
+                    img(src="/img/icon-crearPaciente.png", alt="Signos Vitales", style="width: 24px; height: 24px; filter: hue-rotate(90deg);") 
 
     else
       div(style="padding: 30px; text-align: center; background-color: #eee; border-radius: 10px; color: #666;")

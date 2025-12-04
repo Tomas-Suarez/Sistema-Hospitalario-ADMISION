@@ -14,6 +14,7 @@ block scripts
 
 block content
   .contenido-medico
+    
     div(style="margin-bottom: 15px;")
       h1 Control de Signos Vitales
 
@@ -31,18 +32,21 @@ block content
         div
           strong Habitación: 
           | #{admision.numero_habitacion || '-'} (Cama #{admision.numero_cama || '-'})
+    
     div(style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;")
       
-      a(href="/enfermeria/pacientes", style="background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 14px;")
+      a(href="javascript:history.back()", style="background-color: #6c757d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 14px;")
         | Volver
 
-      button#btn-nuevo-registro(type="button", style="background-color: #ef6c00; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;")
-        img(src="/img/icon-crearPaciente.png", style="width: 16px; filter: brightness(0) invert(1);")
-        | Nuevo Registro
+      if userRole === 'Enfermero' && admision.estado
+        button#btn-nuevo-registro(type="button", style="background-color: #ef6c00; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;")
+          img(src="/img/icon-crearPaciente.png", style="width: 16px; filter: brightness(0) invert(1);")
+          | Nuevo Registro
 
-    .form-card(style="width: 100%; max-width: 100%; box-sizing: border-box; padding: 20px;")
+    .form-card(style="width: 100%; max-width: 100%; box-sizing: border-box; padding: 20px; background-color: #ffffff;")
       h3(style="margin-top: 0; margin-bottom: 15px;") Historial de Mediciones
-      table.datatable-estandar(style="width: 100%;")
+      
+      table#TablaMedico.datatable-estandar(style="width: 100%;")
         thead
           tr
             th Fecha / Hora
@@ -67,37 +71,38 @@ block content
                     img.icono-info(src="/img/icon-info.png", alt="ver")
                     |  Ver Detalle
 
-  #modal-signos.hidden
-    .modal-contenido-signos
-      h2 Nuevo Control
-      p(style="color: #666; margin-bottom: 20px; font-size: 0.9em;") Ingrese los valores actuales.
+  if userRole === 'Enfermero'
+    #modal-signos.hidden
+      .modal-contenido-signos
+        h2 Nuevo Control
+        p(style="color: #666; margin-bottom: 20px; font-size: 0.9em;") Ingrese los valores actuales.
 
-      form(action="/enfermeria/signos/guardar" method="POST")
-        input(type="hidden", name="id_admision", value=admision.id_admision)
+        form(action="/enfermeria/signos/guardar" method="POST")
+          input(type="hidden", name="id_admision", value=admision.id_admision)
 
-        div(style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;")
-          .input-group
-            label Temp (°C):
-            input(type="number", name="temperatura", step="0.1", required, placeholder="36.5")
-          .input-group
-            label Presión (mm Hg):
-            input(type="text", name="presion_arterial", required, placeholder="120/80")
-        
-        div(style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;")
-          .input-group
-            label FC (lpm):
-            input(type="number", name="frecuencia_cardiaca", required, placeholder="80")
-          .input-group
-            label FR (rpm):
-            input(type="number", name="frecuencia_respiratoria", placeholder="16")
-          .input-group
-            label SatO2 (%):
-            input(type="number", name="saturacion_oxigeno", placeholder="98")
+          div(style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;")
+            .input-group
+              label Temp (°C):
+              input(type="number", name="temperatura", step="0.1", required, placeholder="36.5")
+            .input-group
+              label Presión (mm Hg):
+              input(type="text", name="presion_arterial", required, placeholder="120/80")
+          
+          div(style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;")
+            .input-group
+              label FC (lpm):
+              input(type="number", name="frecuencia_cardiaca", required, placeholder="80")
+            .input-group
+              label FR (rpm):
+              input(type="number", name="frecuencia_respiratoria", placeholder="16")
+            .input-group
+              label SatO2 (%):
+              input(type="number", name="saturacion_oxigeno", placeholder="98")
 
-        .input-group
-          label Observaciones:
-          textarea(name="observaciones", rows="2", placeholder="Comentarios adicionales...")
+          .input-group
+            label Observaciones:
+            textarea(name="observaciones", rows="2", placeholder="Comentarios adicionales...")
 
-        .modal-footer
-          button#cerrar-modal-signos(type="button", style="margin-right: 10px; padding: 10px 20px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer; color: #333; font-weight: bold;") Cancelar
-          button(type="submit", style="background-color: #ef6c00; color: white; border: none; padding: 10px 25px; border-radius: 4px; font-weight: bold; cursor: pointer;") Guardar
+          .modal-footer
+            button#cerrar-modal-signos(type="button", style="margin-right: 10px; padding: 10px 20px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer; color: #333; font-weight: bold;") Cancelar
+            button(type="submit", style="background-color: #ef6c00; color: white; border: none; padding: 10px 25px; border-radius: 4px; font-weight: bold; cursor: pointer;") Guardar

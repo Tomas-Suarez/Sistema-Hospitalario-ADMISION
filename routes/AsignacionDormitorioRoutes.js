@@ -24,4 +24,10 @@ router.post(
   AsignacionDormitorioController.cambiarHabitacion
 );
 
+router.get(
+  "/historial/:id_admision",
+  checkRole(["Recepcionista", "Medico"]),
+  AsignacionDormitorioController.verHistorialMovimientos
+);
+
 module.exports = router;

@@ -55,4 +55,10 @@ router.post(
   AltaController.procesarAlta
 );
 
+router.get(
+  "/historial/:id_admision",
+  checkRole(["Medico"]), 
+  EvaluacionController.getHistorialEvaluaciones
+);
+
 module.exports = router;
